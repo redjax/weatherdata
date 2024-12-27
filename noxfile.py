@@ -42,7 +42,7 @@ REQUIREMENTS_OUTPUT_DIR: Path = Path(".")
 # the `resolve()` makes it portable
 VENV_DIR = Path("./.venv").resolve()
 
-LINT_PATHS: list[str] = ["src", "packages"]
+LINT_PATHS: list[str] = ["src", "packages", "applications", "sandbox"]
 
 def install_uv_project(session: nox.Session, external: bool = False) -> None:
     """Method to install uv and the current project in a nox session."""
@@ -139,6 +139,7 @@ def run_vulture_check(session: nox.Session):
     log.info("Checking for dead code with vulture")
     session.run("vulture", "src/", "--min-confidence", "100")
     session.run("vulture", "packages/", "--min-confidence", "100")
+    session.run("vulture", "applications/", "--min-confidence", "100")
     
 
 @nox.session(python=[DEFAULT_PYTHON], name="uv-export")
