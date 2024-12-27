@@ -1,0 +1,10 @@
+{
+    "cSpell.words": [
+        "weatherdata"
+    ],
+    "python.analysis.extraPaths": [
+        "./packages/domain/src",
+        "./packages/cli/src",
+        "./packages/http-lib/src"
+    ]
+}
