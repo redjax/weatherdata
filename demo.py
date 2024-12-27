@@ -1,9 +1,7 @@
 from __future__ import annotations
 
-from domain.exc import FileProcessingError
-import setup
 from core_utils import time_utils
-
+from domain.exc import FileProcessingError
 from http_lib import (
     HttpxController,
     build_request,
@@ -13,6 +11,7 @@ from http_lib import (
 )
 import httpx
 from loguru import logger as log
+import setup
 
 if __name__ == "__main__":
     setup.setup_loguru_logging(log_level="DEBUG")
