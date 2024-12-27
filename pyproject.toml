@@ -5,6 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    "core-utils",
     "domain",
     "http-lib",
     "setup",
@@ -15,6 +16,7 @@ weatherdata = { workspace = true }
 domain = { workspace = true }
 http-lib = { workspace = true }
 setup = { workspace = true }
+core-utils = { workspace = true }
 
 [tool.uv.workspace]
 members = ["packages/*"]

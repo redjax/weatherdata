@@ -6,6 +6,7 @@
         "./packages/domain/src",
         "./packages/cli/src",
         "./packages/http-lib/src",
-        "./packages/setup/src"
+        "./packages/setup/src",
+        "./packages/core-utils/src"
     ]
 }

@@ -4,6 +4,7 @@ requires-python = ">=3.11"
 [manifest]
 members = [
     "cli",
+    "core-utils",
     "domain",
     "http-lib",
     "setup",
@@ -67,6 +68,17 @@ sdist = { url = "https://files.pythonhosted.org/packages/d3/7a/359f4d5df2353f261
 wheels = [
     { url = "https://files.pythonhosted.org/packages/e3/51/9b208e85196941db2f0654ad0357ca6388ab3ed67efdbfc799f35d1f83aa/colorlog-6.9.0-py3-none-any.whl", hash = "sha256:5906e71acd67cb07a71e779c47c4bcb45fb8c2993eebe9e5adcd6a6f1b283eff", size = 11424 },
 ]
+
+[[package]]
+name = "core-utils"
+version = "0.1.0"
+source = { editable = "packages/core-utils" }
+dependencies = [
+    { name = "loguru" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "loguru", specifier = ">=0.7.3" }]
 
 [[package]]
 name = "distlib"
@@ -353,6 +365,7 @@ name = "weatherdata"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
+    { name = "core-utils" },
     { name = "domain" },
     { name = "http-lib" },
     { name = "setup" },
@@ -367,6 +380,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "core-utils", editable = "packages/core-utils" },
     { name = "domain", editable = "packages/domain" },
     { name = "http-lib", editable = "packages/http-lib" },
     { name = "setup", editable = "packages/setup" },
