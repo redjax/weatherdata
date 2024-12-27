@@ -13,6 +13,7 @@ from http_lib import (
 import httpx
 from loguru import logger as log
 import setup
+from domain.weatherapi import location, weather
 
 from weather_client.apis import api_weatherapi
 
@@ -40,7 +41,13 @@ if __name__ == "__main__":
         
         raise exc
     
+    log.info(f"Location: {current_weather['location']}")
+    location_schema = location.LocationIn.model_validate(current_weather["location"])
+    log.debug(f"Location schema: {location_schema}")
+    
     log.info(f"Current weather: {current_weather}")
+    current_weather_schema = weather.current.CurrentWeatherIn.model_validate(current_weather["current"])
+    log.debug(f"Current weather schema: {current_weather_schema}")
     
     try:
         weather_forecast = api_weatherapi.client.get_weather_forecast()
@@ -51,3 +58,5 @@ if __name__ == "__main__":
         raise exc
     
     log.info(f"Weather forecast: {weather_forecast}")
+    weather_forecast_schema = weather.forecast.ForecastJSONIn(forecast_json=weather_forecast["forecast"])
+    log.debug(f"Weather forecast schema: {weather_forecast_schema}")
