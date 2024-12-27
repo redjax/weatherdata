@@ -2,17 +2,15 @@ from __future__ import annotations
 
 import time
 
-from loguru import logger as log
-
 from weather_client.apis.api_weatherapi.constants import WEATHERAPI_BASE_URL
 from weather_client.apis.api_weatherapi.settings import api_key, location_name
+
 from . import requests
 
-import http_lib
-
-import httpx
 import hishel
-
+import http_lib
+import httpx
+from loguru import logger as log
 
 def get_current_weather(
     location: str = location_name,

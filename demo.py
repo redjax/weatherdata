@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-import settings
 from core_utils import time_utils
 from domain.exc import FileProcessingError
+from domain.weatherapi import location, weather
 from http_lib import (
     HttpxController,
     build_request,
@@ -12,9 +12,8 @@ from http_lib import (
 )
 import httpx
 from loguru import logger as log
+import settings
 import setup
-from domain.weatherapi import location, weather
-
 from weather_client.apis import api_weatherapi
 
 if __name__ == "__main__":

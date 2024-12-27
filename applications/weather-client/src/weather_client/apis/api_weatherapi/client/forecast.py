@@ -2,15 +2,13 @@ from __future__ import annotations
 
 import time
 
-import http_lib
-
-from weather_client.apis.api_weatherapi.settings import location_name, api_key
+from weather_client.apis.api_weatherapi.settings import api_key, location_name
 
 from . import requests
 
+import http_lib
 import httpx
 from loguru import logger as log
-
 
 def get_weather_forecast(
     location: str = location_name,

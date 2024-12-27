@@ -1,10 +1,10 @@
+from __future__ import annotations
+
 from weather_client.apis.api_weatherapi.constants import WEATHERAPI_BASE_URL
 
 import http_lib
-
-from loguru import logger as log
 import httpx
-
+from loguru import logger as log
 
 def return_current_weather_request(
     api_key: str, location: str, include_aqi: bool = False, headers: dict | None = None
