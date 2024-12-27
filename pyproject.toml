@@ -7,12 +7,14 @@ requires-python = ">=3.11"
 dependencies = [
     "domain",
     "http-lib",
+    "setup",
 ]
 
 [tool.uv.sources]
 weatherdata = { workspace = true }
 domain = { workspace = true }
 http-lib = { workspace = true }
+setup = { workspace = true }
 
 [tool.uv.workspace]
 members = ["packages/*"]

@@ -5,6 +5,7 @@
     "python.analysis.extraPaths": [
         "./packages/domain/src",
         "./packages/cli/src",
-        "./packages/http-lib/src"
+        "./packages/http-lib/src",
+        "./packages/setup/src"
     ]
 }
