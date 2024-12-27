@@ -7,6 +7,7 @@ members = [
     "core-utils",
     "domain",
     "http-lib",
+    "settings",
     "setup",
     "weatherdata",
 ]
@@ -318,6 +319,21 @@ wheels = [
 ]
 
 [[package]]
+name = "settings"
+version = "0.1.0"
+source = { editable = "packages/settings" }
+dependencies = [
+    { name = "dynaconf" },
+    { name = "loguru" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "dynaconf", specifier = ">=3.2.6" },
+    { name = "loguru", specifier = ">=0.7.3" },
+]
+
+[[package]]
 name = "setup"
 version = "0.1.0"
 source = { editable = "packages/setup" }
@@ -368,6 +384,7 @@ dependencies = [
     { name = "core-utils" },
     { name = "domain" },
     { name = "http-lib" },
+    { name = "settings" },
     { name = "setup" },
 ]
 
@@ -383,6 +400,7 @@ requires-dist = [
     { name = "core-utils", editable = "packages/core-utils" },
     { name = "domain", editable = "packages/domain" },
     { name = "http-lib", editable = "packages/http-lib" },
+    { name = "settings", editable = "packages/settings" },
     { name = "setup", editable = "packages/setup" },
 ]
 

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from settings import app_settings, logging_settings
 from core_utils import time_utils
 from domain.exc import FileProcessingError
 from http_lib import (
@@ -14,7 +15,8 @@ from loguru import logger as log
 import setup
 
 if __name__ == "__main__":
-    setup.setup_loguru_logging(log_level="DEBUG")
+    setup.setup_loguru_logging(log_level=logging_settings.LOGGING_SETTINGS.get("LOG_LEVEL", default="INFO"))
+
     log.debug("Test debug log")
     
     ts = time_utils.get_ts(as_str=True, safe_str=True)
