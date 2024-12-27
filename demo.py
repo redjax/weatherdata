@@ -41,3 +41,13 @@ if __name__ == "__main__":
         raise exc
     
     log.info(f"Current weather: {current_weather}")
+    
+    try:
+        weather_forecast = api_weatherapi.client.get_weather_forecast()
+    except Exception as exc:
+        msg = f"({type(exc)}) Error getting weather forecast. Details: {exc}"
+        log.error(msg)
+        
+        raise exc
+    
+    log.info(f"Weather forecast: {weather_forecast}")
