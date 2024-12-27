@@ -3,6 +3,7 @@
         "weatherdata"
     ],
     "python.analysis.extraPaths": [
+        "./applications/weather-client/src",
         "./packages/domain/src",
         "./packages/cli/src",
         "./packages/http-lib/src",

@@ -14,6 +14,8 @@ import httpx
 from loguru import logger as log
 import setup
 
+from weather_client.apis import api_weatherapi
+
 if __name__ == "__main__":
     setup.setup_loguru_logging(log_level=settings.LOGGING_SETTINGS.get("LOG_LEVEL", default="INFO"))
 
@@ -29,3 +31,13 @@ if __name__ == "__main__":
     with get_http_controller() as http_ctl:
         res: httpx.Response = http_ctl.client.send(req)
         print(f"[{res.status_code}: {res.reason_phrase}]")
+        
+    try:
+        current_weather = api_weatherapi.client.get_current_weather(use_cache=True)
+    except Exception as exc:
+        msg = f"({type(exc)}) Error getting current weather. Details: {exc}"
+        log.error(msg)
+        
+        raise exc
+    
+    log.info(f"Current weather: {current_weather}")

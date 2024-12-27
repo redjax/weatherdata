@@ -1,0 +1,29 @@
+[project]
+name = "weather-client"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "core-utils",
+    "domain",
+    "dynaconf>=3.2.6",
+    "hishel>=0.1.1",
+    "http-lib",
+    "httpx>=0.28.1",
+    "loguru>=0.7.3",
+    "pydantic>=2.10.4",
+    "settings",
+    "setup",
+]
+
+[tool.uv.sources]
+settings = { workspace = true }
+domain = { workspace = true }
+http-lib = { workspace = true }
+core-utils = { workspace = true }
+setup = { workspace = true }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
