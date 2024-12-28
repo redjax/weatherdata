@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from core_utils import time_utils
 import db
 import depends
@@ -19,9 +20,18 @@ import settings
 import setup
 from weather_client.apis import api_weatherapi
 
+demo_db_dict = {"drivername": "sqlite+pysqlite", "username": None, "password": None, "host": None, "port": None, "database": ".db/demo.sqlite3"}
+
 def demo_ts():
     ts = time_utils.get_ts(as_str=True, safe_str=True)
     log.debug(f"Example timestamp: {ts}")
+    
+    
+def demo_db_engine(db_conf: dict = demo_db_dict, echo: bool = False):
+    db_uri = db.get_db_uri(**db_conf)
+    engine = db.get_engine(url=db_uri, echo=echo)
+    
+    return engine
 
 
 def demo_request(use_http_cache: bool = True):
@@ -44,6 +54,14 @@ def demo_request(use_http_cache: bool = True):
     location_schema = location.LocationIn.model_validate(current_weather["location"])
     log.debug(f"Location schema: {location_schema}")
     
+    ## Save location to db
+    try:
+        db_location = api_weatherapi.db_client.location.save_location(location=location_schema, engine=demo_db_engine())
+    except Exception as exc:
+        msg = f"({type(exc)}) Error saving location to database: {exc}"
+        log.error(msg)
+    log.debug(f"Location from database: {db_location}")
+    
     log.info(f"Current weather: {current_weather}")
     current_weather_schema = weather.current.CurrentWeatherIn.model_validate(current_weather["current"])
     log.debug(f"Current weather schema: {current_weather_schema}")
@@ -56,15 +74,15 @@ def demo_request(use_http_cache: bool = True):
         
         raise exc
     
-    log.info(f"Weather forecast: {weather_forecast}")
+    log.info(f"Weather forecast: <output too large>")
     weather_forecast_schema = weather.forecast.ForecastJSONIn(forecast_json=weather_forecast["forecast"])
-    log.debug(f"Weather forecast schema: {weather_forecast_schema}")
+    log.debug(f"Weather forecast schema: <output too large>")
 
 if __name__ == "__main__":
     setup.setup_loguru_logging(log_level=settings.LOGGING_SETTINGS.get("LOG_LEVEL", default="INFO"))
     
     ## Create a demo.sqlite3 database separate from app's database
-    demo_db_uri = depends.get_db_uri(drivername="sqlite+pysqlite", database=".db/demo.sqlite3")
+    demo_db_uri = depends.get_db_uri(**demo_db_dict)
     setup.setup_database(engine=depends.get_db_engine(db_uri=demo_db_uri))
 
     log.debug("Test debug log")
