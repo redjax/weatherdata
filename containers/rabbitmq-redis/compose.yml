@@ -1,4 +1,7 @@
 ---
+networks:
+  rabbitmq_redis_net: {}
+
 services:
   rabbitmq:
     image: rabbitmq:management
@@ -22,6 +25,8 @@ services:
       interval: 30s
       timeout: 30s
       retries: 3
+    networks:
+      - rabbitmq_redis_net
 
   redis:
     ## Fix "overcommit memory" warning
@@ -42,6 +47,8 @@ services:
       interval: 1s
       timeout: 3s
       retries: 5
+    networks:
+      - rabbitmq_redis_net
 
   # redis-commander:
   #   image: rediscommander/redis-commander:latest
@@ -52,3 +59,5 @@ services:
   #     - REDIS_HOSTS=local:redis:${REDIS_PORT:-6379}
   #   ports:
   #     - ${REDIS_COMMANDER_PORT:-8081}:8081
+  #   networks:
+  #     - rabbitmq_redis_net
