@@ -102,7 +102,10 @@ def main(limit: int | None = 96, loop_sleep: int = 900):
         loops += 1
         
         log.info(f"Sleeping for {loop_sleep} second(s)")
-        log.info(f"Loop [{loops}/{limit}]")
+        if limit:
+            log.info(f"Loop [{loops}/{limit}]")
+        else:
+            log.info(f"Loop count: {loops}")
         
         time.sleep(loop_sleep)
         
@@ -113,4 +116,4 @@ if __name__ == "__main__":
     setup.setup_loguru_logging(log_level=settings.LOGGING_SETTINGS.get("LOG_LEVEL", default="INFO"))
     setup.setup_database(engine=return_engine())
     
-    main()
+    main(limit=0)
