@@ -60,6 +60,7 @@ def demo_request():
 
 if __name__ == "__main__":
     setup.setup_loguru_logging(log_level=settings.LOGGING_SETTINGS.get("LOG_LEVEL", default="INFO"))
+    setup.setup_database()
 
     log.debug("Test debug log")
     log.debug(f"WeatherAPI API key: {settings.WEATHERAPI_SETTINGS.get('WEATHERAPI_API_KEY', default=None)}")
