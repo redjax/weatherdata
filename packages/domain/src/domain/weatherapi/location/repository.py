@@ -2,10 +2,9 @@ from __future__ import annotations
 
 import typing as t
 
-from db.base import BaseRepository
-
 from .models import LocationModel
 
+from db.base import BaseRepository
 from loguru import logger as log
 import sqlalchemy as sa
 import sqlalchemy.exc as sa_exc

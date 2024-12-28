@@ -1,21 +1,18 @@
 from __future__ import annotations
 
-from loguru import logger as log
-
-import typing as t
 import json
+import typing as t
+
+from weather_client.apis.api_weatherapi.db_client.location import save_location
 
 import db
 from depends import db_depends
-
-from domain.weatherapi.weather import current as domain_current_weather
 from domain.weatherapi import location as domain_location
-from weather_client.apis.api_weatherapi.db_client.location import save_location
-
+from domain.weatherapi.weather import current as domain_current_weather
+from loguru import logger as log
 import sqlalchemy as sa
-import sqlalchemy.orm as so
 import sqlalchemy.exc as sa_exc
-
+import sqlalchemy.orm as so
 
 def save_current_weather(
     location: t.Union[domain_location.LocationIn, dict, str], current_weather: t.Union[domain_current_weather.CurrentWeatherIn, dict, str], engine: sa.Engine | None = None, echo: bool = False

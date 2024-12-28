@@ -1,19 +1,15 @@
 from __future__ import annotations
 
-from loguru import logger as log
-
-import typing as t
 import json
+import typing as t
 
 import db
 from depends import db_depends
-
 from domain.weatherapi import location as domain_location
-
+from loguru import logger as log
 import sqlalchemy as sa
-import sqlalchemy.orm as so
 import sqlalchemy.exc as sa_exc
-
+import sqlalchemy.orm as so
 
 def save_location(location: t.Union[domain_location.LocationIn, dict, str], engine: sa.Engine | None = None, echo: bool = False) -> domain_location.LocationOut:
     """Save a Location to the database.

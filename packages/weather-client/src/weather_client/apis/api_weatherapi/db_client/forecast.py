@@ -1,21 +1,18 @@
 from __future__ import annotations
 
-from loguru import logger as log
-
-import typing as t
 import json
+import typing as t
 
 import db
 from depends import db_depends
-
 from domain.weatherapi.weather import forecast as domain_forecast
+from loguru import logger as log
+
 # from domain.weatherapi import location as domain_location
 # from weather_client.apis.api_weatherapi.db_client.location import save_location
-
 import sqlalchemy as sa
-import sqlalchemy.orm as so
 import sqlalchemy.exc as sa_exc
-
+import sqlalchemy.orm as so
 
 def save_forecast(
     forecast_schema: t.Union[domain_forecast.ForecastJSONIn, dict, str], engine: sa.Engine | None = None, echo: bool = False
