@@ -1,0 +1,11 @@
+provision/*
+
+!*.example
+!*.example.*
+!example.*
+!.example.*
+!example.*
+!example.*.*
+
+data/
+logs/
