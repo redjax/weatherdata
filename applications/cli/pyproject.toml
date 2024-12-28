@@ -20,7 +20,7 @@ dependencies = [
 ]
 
 [project.scripts]
-cli = "cli:main"
+weather_cli = "weather_cli:main"
 
 [build-system]
 requires = ["hatchling"]
