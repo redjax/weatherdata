@@ -3,8 +3,6 @@
 ![GitHub Created At](https://img.shields.io/github/created-at/redjax/weatherdata)
 ![GitHub last commit](https://img.shields.io/github/last-commit/redjax/weatherdata)
 ![GitHub commits this year](https://img.shields.io/github/commit-activity/y/redjax/weatherdata)
-![GitHub Latest Release](https://img.shields.io/github/release-date/redjax/weatherdata)
-![GitHub commits since latest release](https://img.shields.io/github/commits-since/redjax/weatherdata/latest)
 ![GitHub repo size](https://img.shields.io/github/repo-size/redjax/weatherdata)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/redjax/weatherdata)
 
