@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import db
 from core_utils import time_utils
 from domain.exc import FileProcessingError
 from domain.weatherapi import location, weather
@@ -16,15 +17,13 @@ import settings
 import setup
 from weather_client.apis import api_weatherapi
 
-if __name__ == "__main__":
-    setup.setup_loguru_logging(log_level=settings.LOGGING_SETTINGS.get("LOG_LEVEL", default="INFO"))
 
-    log.debug("Test debug log")
-    log.debug(f"WeatherAPI API key: {settings.WEATHERAPI_SETTINGS.get('WEATHERAPI_API_KEY', default=None)}")
-    
+def demo_ts():
     ts = time_utils.get_ts(as_str=True, safe_str=True)
     log.debug(f"Example timestamp: {ts}")
-    
+
+
+def demo_request():
     req = build_request(url="https://www.google.com")
     
     log.info("Making test request to google.com")
@@ -59,3 +58,13 @@ if __name__ == "__main__":
     log.info(f"Weather forecast: {weather_forecast}")
     weather_forecast_schema = weather.forecast.ForecastJSONIn(forecast_json=weather_forecast["forecast"])
     log.debug(f"Weather forecast schema: {weather_forecast_schema}")
+
+if __name__ == "__main__":
+    setup.setup_loguru_logging(log_level=settings.LOGGING_SETTINGS.get("LOG_LEVEL", default="INFO"))
+
+    log.debug("Test debug log")
+    log.debug(f"WeatherAPI API key: {settings.WEATHERAPI_SETTINGS.get('WEATHERAPI_API_KEY', default=None)}")
+    log.debug(f"Database settings: {settings.DB_SETTINGS.as_dict()}")
+    
+    # demo_ts()
+    # demo_request()

@@ -6,6 +6,8 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "core-utils",
+    "database",
+    "depends",
     "domain",
     "http-lib",
     "settings",
@@ -21,6 +23,8 @@ setup = { workspace = true }
 core-utils = { workspace = true }
 settings = { workspace = true }
 weather-client = { workspace = true }
+database = { workspace = true }
+depends = { workspace = true }
 
 [tool.uv.workspace]
 members = ["packages/*", "applications/*"]
