@@ -7,7 +7,17 @@ authors = [
     { name = "redjax", email = "no@none.com" }
 ]
 requires-python = ">=3.11"
-dependencies = []
+dependencies = [
+    "core-utils",
+    "cyclopts>=3.1.2",
+    "database",
+    "depends",
+    "domain",
+    "dynaconf>=3.2.6",
+    "pydantic>=2.10.4",
+    "settings",
+    "setup",
+]
 
 [project.scripts]
 cli = "cli:main"
@@ -15,3 +25,11 @@ cli = "cli:main"
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.uv.sources]
+settings = { workspace = true }
+database = { workspace = true }
+core-utils = { workspace = true }
+setup = { workspace = true }
+domain = { workspace = true }
+depends = { workspace = true }
