@@ -1,5 +1,7 @@
-from loguru import logger as log
+from __future__ import annotations
+
 from dynaconf import Dynaconf
+from loguru import logger as log
 
 ## Database settings loaded with dynaconf
 DB_SETTINGS: Dynaconf = Dynaconf(

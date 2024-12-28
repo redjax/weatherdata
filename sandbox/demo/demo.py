@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import db
 from core_utils import time_utils
+import db
 from domain.exc import FileProcessingError
 from domain.weatherapi import location, weather
 from http_lib import (
@@ -16,7 +16,6 @@ from loguru import logger as log
 import settings
 import setup
 from weather_client.apis import api_weatherapi
-
 
 def demo_ts():
     ts = time_utils.get_ts(as_str=True, safe_str=True)
