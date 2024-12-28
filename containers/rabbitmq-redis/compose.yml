@@ -1,0 +1,54 @@
+---
+services:
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: ${RABBITMQ_CONTAINER_NAME:-rabbitmq}
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-rabbitmq}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS:-rabbitmq}
+      # RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_VHOST:-rabbitmq}
+      # RABBITMQ_ENABLED_PLUGINS_FILE: /etc/rabbitmq/enabled_plugins
+    ports:
+      ## AMQP protocol
+      - ${RABBITMQ_AMPQ_PORT:-5672}:5672
+      - ${RABBITMQ_HTTP_PORT:-15672}:15672
+    volumes:
+      - ${RABBITMQ_DATA_DIR:-./data/rabbitmq}:/var/lib/rabbitmq
+      - ${RABBITMQ_LOGS_DIR:-./logs/rabbitmq}:/var/log/rabbitmq
+      - ${RABBITMQ_CONFIG_FILE:-./provision/rabbitmq.config}:/etc/rabbitmq/rabbitmq.config
+      - ${RABBITMQ_ENABLED_PLUGINS_FILE:-./provision/rabbitmq.enabled_plugins}:/etc/rabbitmq/enabled_plugins
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 30s
+      retries: 3
+
+  redis:
+    ## Fix "overcommit memory" warning
+    #  https://ourcodeworld.com/articles/read/2083/how-to-remove-redis-warning-on-docker-memory-overcommit-must-be-enabled
+    #  https://r-future.github.io/post/how-to-fix-redis-warnings-with-docker/
+    image: redis
+    container_name: ${REDIS_CONTAINER_NAME:-redis}
+    restart: unless-stopped
+    command: redis-server --save 20 1 --loglevel verbose
+    volumes:
+      - ${REDIS_CACHE_DIR:-./data/redis}:/data
+    expose:
+      - 6379
+    ports:
+      - ${REDIS_PORT:-6379}:6379
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 1s
+      timeout: 3s
+      retries: 5
+
+  # redis-commander:
+  #   image: rediscommander/redis-commander:latest
+  #   container_name: ${REDIS_COMMANDER_CONTAINER_NAME:-redis-commander}
+  #   hostname: redis-commander
+  #   restart: unless-stopped
+  #   environment:
+  #     - REDIS_HOSTS=local:redis:${REDIS_PORT:-6379}
+  #   ports:
+  #     - ${REDIS_COMMANDER_PORT:-8081}:8081
