@@ -765,7 +765,7 @@ wheels = [
 [[package]]
 name = "weather-client"
 version = "0.1.0"
-source = { editable = "applications/weather-client" }
+source = { editable = "packages/weather-client" }
 dependencies = [
     { name = "core-utils" },
     { name = "domain" },
@@ -826,7 +826,7 @@ requires-dist = [
     { name = "http-lib", editable = "packages/http-lib" },
     { name = "settings", editable = "packages/settings" },
     { name = "setup", editable = "packages/setup" },
-    { name = "weather-client", editable = "applications/weather-client" },
+    { name = "weather-client", editable = "packages/weather-client" },
 ]
 
 [package.metadata.requires-dev]

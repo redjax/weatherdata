@@ -65,5 +65,5 @@ if __name__ == "__main__":
     log.debug(f"WeatherAPI API key: {settings.WEATHERAPI_SETTINGS.get('WEATHERAPI_API_KEY', default=None)}")
     log.debug(f"Database settings: {settings.DB_SETTINGS.as_dict()}")
     
-    # demo_ts()
-    # demo_request()
+    demo_ts()
+    demo_request()
