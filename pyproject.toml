@@ -10,7 +10,10 @@ dependencies = [
     "database",
     "depends",
     "domain",
+    "fastparquet>=2024.11.0",
     "http-lib",
+    "pandas>=2.2.3",
+    "pyarrow>=18.1.0",
     "settings",
     "setup",
     "weather-client",
@@ -120,10 +123,17 @@ max-complexity = 10
 combine-as-imports = true
 force-sort-within-sections = true
 force-wrap-aliases = true
+## Use a single line after each import block.
 lines-after-imports = 1
+## Use a single line between direct and from import
+# lines-between-types = 1
+## Order imports by type, which is determined by case,
+#  in addition to alphabetically.
 order-by-type = true
 relative-imports-order = "closest-to-furthest"
+## Automatically add imports below to top of files
 required-imports = ["from __future__ import annotations"]
+## Define isort section priority
 section-order = [
     "future",
     "standard-library",

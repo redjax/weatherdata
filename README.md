@@ -67,7 +67,9 @@ Each type of repository has its purpose and place; I am choosing to structure th
 
 ### Adding packages
 
-To add new packages to the app, create a path in [`packages/`](./packages) and initialize it with `uv init --package`. For example, to add a package named `nb_functions`, you might run the following commands:
+To add new packages to the app, create a path in [`packages/`](./packages) and initialize it with `uv init --package`. Note that if you're using VSCode and want type completion to work, you also need to edit the [`settings.json` file in the `.vscode/` directory](./.vscode/settings.json), adding the path to `"python.analysis.extraPaths": []`.
+
+For example, to add a package named `nb_functions`, you might run the following commands:
 
 ```shell
 ## Create the directory where the package will live
@@ -107,14 +109,28 @@ The fix for this is details in that last part of the error message. We need to a
 ```toml
 ## packages/notebook-functions/src/nb_functions/pyproject.toml
 
-# Other pyproject.toml code
+...
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/nb_functions"]
 
+...
+
 ```
 
 This fixes the build error. Remember this when you are naming package and application parent directories.
+
+Finally, if you're using VSCode, add the new path to your `settings.json` file:
+
+```json
+{
+    ...,
+    "python.analysis.extraPaths": [
+        ...,
+        "./packages/notebook-functions/src",
+    ]
+}
+```
 
 ### Adding applications
 

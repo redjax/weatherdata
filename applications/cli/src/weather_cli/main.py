@@ -10,12 +10,14 @@ from cyclopts import App, Group, Parameter
 
 from loguru import logger as log
 
+from .weather import weather_app
+
 app = App(name="weathercli", help="CLI for WeatherData app.")
 
 app.meta.group_parameters = Group("Session Parameters", sort_key=0)
 
 ## Mount apps
-# app.command(<app-name>)
+app.command(weather_app)
 
 @app.meta.default
 def cli_launcher(*tokens: t.Annotated[str, Parameter(show=False, allow_leading_hyphen=True)], debug: bool = False):

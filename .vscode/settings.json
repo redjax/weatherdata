@@ -4,13 +4,13 @@
     ],
     "python.analysis.extraPaths": [
         "./applications/cli/src",
-        "./applications/weather-client/src",
         "./packages/database/src",
         "./packages/depends/src",
         "./packages/domain/src",
         "./packages/http-lib/src",
         "./packages/setup/src",
         "./packages/core-utils/src",
-        "./packages/settings/src"
+        "./packages/settings/src",
+        "./packages/weather-client/src"
     ]
 }
