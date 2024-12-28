@@ -63,7 +63,8 @@ def demo_request(use_http_cache: bool = True):
 if __name__ == "__main__":
     setup.setup_loguru_logging(log_level=settings.LOGGING_SETTINGS.get("LOG_LEVEL", default="INFO"))
     
-    demo_db_uri = depends.get_db_uri(drivername="sqlite+pysqlite", database="demo.sqlite3")
+    ## Create a demo.sqlite3 database separate from app's database
+    demo_db_uri = depends.get_db_uri(drivername="sqlite+pysqlite", database=".db/demo.sqlite3")
     setup.setup_database(engine=depends.get_db_engine(db_uri=demo_db_uri))
 
     log.debug("Test debug log")
