@@ -57,14 +57,24 @@ def demo_request(use_http_cache: bool = True):
     ## Save location to db
     try:
         db_location = api_weatherapi.db_client.location.save_location(location=location_schema, engine=demo_db_engine())
+        log.success("Saved location to database")
+        log.debug(f"Location from database: {db_location}")
     except Exception as exc:
         msg = f"({type(exc)}) Error saving location to database: {exc}"
         log.error(msg)
-    log.debug(f"Location from database: {db_location}")
-    
+
     log.info(f"Current weather: {current_weather}")
     current_weather_schema = weather.current.CurrentWeatherIn.model_validate(current_weather["current"])
     log.debug(f"Current weather schema: {current_weather_schema}")
+    
+    ## Save current weather to db
+    try:
+        db_current_weather = api_weatherapi.db_client.current_weather.save_current_weather(location=location_schema, current_weather=current_weather_schema, engine=demo_db_engine())
+        log.success("Saved current weather to database")
+        log.debug(f"Current weather from database: {db_current_weather}")
+    except Exception as exc:
+        msg = f"({type(exc)}) Error saving current weather to database: {exc}"
+        log.error(msg)
     
     try:
         weather_forecast = api_weatherapi.client.get_weather_forecast(use_cache=use_http_cache)
@@ -77,6 +87,15 @@ def demo_request(use_http_cache: bool = True):
     log.info(f"Weather forecast: <output too large>")
     weather_forecast_schema = weather.forecast.ForecastJSONIn(forecast_json=weather_forecast["forecast"])
     log.debug(f"Weather forecast schema: <output too large>")
+    
+    ## Save weather forecast JSON to database
+    try:
+        db_weather_forecast = api_weatherapi.db_client.forecast.save_forecast(forecast_schema=weather_forecast_schema, engine=demo_db_engine())
+        log.success("Saved weather forecast to database")
+        # log.debug(f"Weather forecast from database: {db_weather_forecast}")
+    except Exception as exc:
+        msg = f"({type(exc)}) Error saving weather forecast to database: {exc}"
+        log.error(msg)
 
 if __name__ == "__main__":
     setup.setup_loguru_logging(log_level=settings.LOGGING_SETTINGS.get("LOG_LEVEL", default="INFO"))
