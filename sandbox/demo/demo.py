@@ -22,7 +22,7 @@ def demo_ts():
     log.debug(f"Example timestamp: {ts}")
 
 
-def demo_request():
+def demo_request(use_http_cache: bool = True):
     req = build_request(url="https://www.google.com")
     
     log.info("Making test request to google.com")
@@ -31,7 +31,7 @@ def demo_request():
         print(f"[{res.status_code}: {res.reason_phrase}]")
         
     try:
-        current_weather = api_weatherapi.client.get_current_weather(use_cache=True)
+        current_weather = api_weatherapi.client.get_current_weather(use_cache=use_http_cache)
     except Exception as exc:
         msg = f"({type(exc)}) Error getting current weather. Details: {exc}"
         log.error(msg)
@@ -47,7 +47,7 @@ def demo_request():
     log.debug(f"Current weather schema: {current_weather_schema}")
     
     try:
-        weather_forecast = api_weatherapi.client.get_weather_forecast()
+        weather_forecast = api_weatherapi.client.get_weather_forecast(use_cache=use_http_cache)
     except Exception as exc:
         msg = f"({type(exc)}) Error getting weather forecast. Details: {exc}"
         log.error(msg)
