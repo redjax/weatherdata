@@ -22,7 +22,7 @@ def get_weather_forecast(
     max_retries: int = 3,
     retry_sleep: int = 5,
     retry_stagger: int = 3,
-    save_to_db: bool = True,
+    save_to_db: bool = False,
 ):
     if days > 10:
         log.warning(
