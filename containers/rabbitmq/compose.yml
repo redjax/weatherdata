@@ -1,8 +1,4 @@
 ---
-##
-# Compose file that spins up a single rabbitmq container
-##
-
 services:
   rabbitmq:
     image: rabbitmq:management
