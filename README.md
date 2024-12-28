@@ -107,23 +107,34 @@ The fix for this is details in that last part of the error message. We need to a
 ```toml
 ## packages/notebook-functions/src/nb_functions/pyproject.toml
 
-...
+# Other pyproject.toml code
 
+[tool.hatch.build.targets.wheel]
+packages = ["src/nb_functions"]
 
 ```
 
+This fixes the build error. Remember this when you are naming package and application parent directories.
 
 ### Adding applications
 
-...
+[Applications](./applications/) import from [`packages/`](./packages/) and other areas of the repository, joining different parts of the code into functional apps meant to be built, distributed, and used.
+
+For example, the [`weather_cli` application](./applications/cli) exposes a CLI written in [`cyclopts`](cyclopts.readthedocs.io/) that a user can run to call different parts of the code, like requesting the current weather.
+
+Building an application is pretty much the same as [a package](#adding-packages). The main difference is when you initialize it, you run:
+
+```shell
+uv init --application --package
+```
 
 ## The 'sandbox'
 
-...
+The [`sandbox/`](./sandbox/) path is a place where I can prototype or test small portions of the repository. The [demo](./sandbox/demo/) application is a constantly evolving file I use put together pre-packaged function calls by importing code from applications, packages, etc, and writing scripts like I might if I were to install these packages outside of this repository.
+
+Sandbox code is just that; it is not packaged, it's not meant to be distributed, and scripts may come and go (I often delete things in the sandbox once I've integrated the code into the app somewhere else).
 
 ## Notes
-
-...
 
 ## Links
 
