@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from core_utils import time_utils
 import db
+import depends
+import depends.db_depends
 from domain.exc import FileProcessingError
 from domain.weatherapi import location, weather
 from http_lib import (
@@ -60,7 +62,9 @@ def demo_request(use_http_cache: bool = True):
 
 if __name__ == "__main__":
     setup.setup_loguru_logging(log_level=settings.LOGGING_SETTINGS.get("LOG_LEVEL", default="INFO"))
-    setup.setup_database()
+    
+    demo_db_uri = depends.get_db_uri(drivername="sqlite+pysqlite", database="demo.sqlite3")
+    setup.setup_database(engine=depends.get_db_engine(db_uri=demo_db_uri))
 
     log.debug("Test debug log")
     log.debug(f"WeatherAPI API key: {settings.WEATHERAPI_SETTINGS.get('WEATHERAPI_API_KEY', default=None)}")
