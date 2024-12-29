@@ -14,6 +14,7 @@ dependencies = [
     "http-lib",
     "pandas>=2.2.3",
     "pyarrow>=18.1.0",
+    "scheduling",
     "settings",
     "setup",
     "weather-client",
@@ -30,6 +31,7 @@ weather-client = { workspace = true }
 database = { workspace = true }
 depends = { workspace = true }
 cli = { workspace = true }
+scheduling = { workspace = true }
 
 [tool.uv.workspace]
 members = ["packages/*", "applications/*"]

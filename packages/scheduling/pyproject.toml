@@ -1,0 +1,19 @@
+[project]
+name = "scheduling"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "redjax", email = "no@none.com" }
+]
+requires-python = ">=3.11"
+dependencies = [
+    "dramatiq[all]>=1.17.1",
+]
+
+[project.scripts]
+scheduling = "scheduling:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

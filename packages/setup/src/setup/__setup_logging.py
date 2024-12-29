@@ -24,12 +24,14 @@ def setup_loguru_logging(
     enable_loggers: list[str] = ["auto_weather"],
     add_file_logger: bool = False,
     add_error_file_logger: bool = False,
+    colorize: bool = False
 ):
     logger.remove(0)
     logger.add(
         sys.stderr,
         format="{time:YYYY-MM-DD HH:mm:ss} | [{level}] | ({module}.{function}:{line}) | > {message}",
         level=log_level,
+        colorize=colorize
     )
 
     if enable_loggers:
