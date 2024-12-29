@@ -1,11 +1,11 @@
 [default]
 
-dramatiq_rabbitmq_host="localhost"
-dramatiq_rabbitmq_port=5672
-dramatiq_rabbitmq_username="guest"
+dramatiq_rabbitmq_host = "localhost"
+dramatiq_rabbitmq_port = 5672
+dramatiq_rabbitmq_username = "guest"
 
 [dramatiq]
 
-# dramatiq_rabbitmq_host="localhost"
-# dramatiq_rabbitmq_port=5672
-# dramatiq_rabbitmq_username="guest"
+# dramatiq_rabbitmq_host = "localhost"
+# dramatiq_rabbitmq_port = 5672
+# dramatiq_rabbitmq_username = "guest"
