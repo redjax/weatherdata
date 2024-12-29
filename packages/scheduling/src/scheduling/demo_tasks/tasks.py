@@ -1,9 +1,9 @@
-from loguru import logger as log
+from __future__ import annotations
 
+import dramatiq
 import http_lib
 import httpx
-import dramatiq
-
+from loguru import logger as log
 
 @dramatiq.actor
 def count_words(url):

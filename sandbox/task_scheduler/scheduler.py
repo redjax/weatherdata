@@ -1,13 +1,17 @@
-from scheduling.demo_tasks.tasks import count_words
-from loguru import logger as log
+from __future__ import annotations
 
 import depends
-import setup
-from settings.logging_settings import LOGGING_SETTINGS
-from settings.dramatiq_settings import DRAMATIQ_SETTINGS, return_dramatiq_rabbitmq_url, return_dramatiq_rabbitmq_credentials
 from dramatiq.brokers.rabbitmq import RabbitmqBroker
-
+from loguru import logger as log
 import pika
+from scheduling.demo_tasks.tasks import count_words
+from settings.dramatiq_settings import (
+    DRAMATIQ_SETTINGS,
+    return_dramatiq_rabbitmq_credentials,
+    return_dramatiq_rabbitmq_url,
+)
+from settings.logging_settings import LOGGING_SETTINGS
+import setup
 
 dramatiq_rabbitmq_settings = {
     "host": DRAMATIQ_SETTINGS.get("DRAMATIQ_RABBITMQ_HOST", default="localhost"),

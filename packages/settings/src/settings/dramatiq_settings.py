@@ -1,9 +1,8 @@
 from __future__ import annotations
 
 from dynaconf import Dynaconf
-import pika
-
 from loguru import logger as log
+import pika
 
 ## Dramatiq settings loaded with dynaconf
 DRAMATIQ_SETTINGS: Dynaconf = Dynaconf(
@@ -58,5 +57,6 @@ def return_dramatiq_rabbitmq_credentials(username: str = DRAMATIQ_SETTINGS.get("
         
     Returns:
         pika.PlainCredentials
+
     """
     return pika.PlainCredentials(username, password)
