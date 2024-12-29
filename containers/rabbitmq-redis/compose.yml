@@ -35,9 +35,11 @@ services:
     image: redis
     container_name: ${REDIS_CONTAINER_NAME:-redis}
     restart: unless-stopped
-    command: redis-server --save 20 1 --loglevel verbose
+    # command: redis-server --save 20 1 --loglevel verbose
+    command: redis-server --include /usr/local/etc/redis/redis.conf
     volumes:
       - ${REDIS_CACHE_DIR:-./data/redis}:/data
+      - ${REDIS_CONFIG_FILE:-./provision/redis.conf}:/usr/local/etc/redis/redis.conf
     expose:
       - 6379
     ports:
