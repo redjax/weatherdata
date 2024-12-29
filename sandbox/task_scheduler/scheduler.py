@@ -23,7 +23,7 @@ dramatiq_rabbitmq_settings = {
 demo_db_dict = {"drivername": "sqlite+pysqlite", "username": None, "password": None, "host": None, "port": None, "database": ".db/demo.sqlite3"}
 
 
-def test_rabbitmq_connection(username: str = "rabbitmq", password: str = "rabbitmq", host: str = "localhost", port: int = 5672, vhost: str = "rabbitmq"):
+def test_rabbitmq_connection(username: str = "rabbitmq", password: str = "rabbitmq", host: str = "localhost", port: int = 5672, vhost: str = "rabbitmq") -> bool:
     ## Test connection with pika
     credentials = pika.PlainCredentials(username, password)
     parameters = pika.ConnectionParameters(host, port, vhost, credentials)
@@ -38,8 +38,12 @@ VHOST: {vhost}
     try:
         connection = pika.BlockingConnection(parameters)
         log.success("Connection successful!")
+        
+        return True
     except Exception as e:
         log.error(f"Connection failed: {e}")
+        
+        return False
 
 if __name__ == "__main__":
     setup.setup_loguru_logging(log_level=LOGGING_SETTINGS.get("LOG_LEVEL", default="INFO"), colorize=True)
@@ -48,7 +52,8 @@ if __name__ == "__main__":
     demo_db_uri = depends.get_db_uri(**demo_db_dict)
     setup.setup_database(engine=depends.get_db_engine(db_uri=demo_db_uri))
     
-    test_rabbitmq_connection(username=DRAMATIQ_SETTINGS.DRAMATIQ_RABBITMQ_USERNAME, password=DRAMATIQ_SETTINGS.DRAMATIQ_RABBITMQ_PASSWORD, vhost=DRAMATIQ_SETTINGS.DRAMATIQ_RABBITMQ_VHOST)
+    if not test_rabbitmq_connection(username=DRAMATIQ_SETTINGS.DRAMATIQ_RABBITMQ_USERNAME, password=DRAMATIQ_SETTINGS.DRAMATIQ_RABBITMQ_PASSWORD, vhost=DRAMATIQ_SETTINGS.DRAMATIQ_RABBITMQ_VHOST):
+        raise Exception("RabbitMQ connection test failed")
     
     # log.debug(f"Username: {DRAMATIQ_SETTINGS.DRAMATIQ_RABBITMQ_USERNAME}")
     # log.debug(f"Password: {DRAMATIQ_SETTINGS.DRAMATIQ_RABBITMQ_PASSWORD}")
