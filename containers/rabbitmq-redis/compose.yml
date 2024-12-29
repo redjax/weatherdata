@@ -19,7 +19,8 @@ services:
     volumes:
       - ${RABBITMQ_DATA_DIR:-./data/rabbitmq}:/var/lib/rabbitmq
       - ${RABBITMQ_LOGS_DIR:-./logs/rabbitmq}:/var/log/rabbitmq
-      - ${RABBITMQ_CONFIG_FILE:-./provision/rabbitmq.config}:/etc/rabbitmq/rabbitmq.config
+      # - ${RABBITMQ_CONFIG_FILE:-./provision/rabbitmq.config}:/etc/rabbitmq/rabbitmq.config
+      - ${RABBITMQ_CONFIG_FILE:-./provision/rabbitmq.conf}:/etc/rabbitmq/rabbitmq.conf
       - ${RABBITMQ_ENABLED_PLUGINS_FILE:-./provision/rabbitmq.enabled_plugins}:/etc/rabbitmq/enabled_plugins
     healthcheck:
       test: rabbitmq-diagnostics -q ping

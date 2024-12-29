@@ -59,6 +59,7 @@ if __name__ == "__main__":
     if not test_rabbitmq_connection(username=DRAMATIQ_SETTINGS.DRAMATIQ_RABBITMQ_USERNAME, password=DRAMATIQ_SETTINGS.DRAMATIQ_RABBITMQ_PASSWORD, vhost=DRAMATIQ_SETTINGS.DRAMATIQ_RABBITMQ_VHOST):
         raise Exception("RabbitMQ connection test failed")
     
+    log.debug(f"Dramtiq Settings: {DRAMATIQ_SETTINGS.as_dict()}")
     # log.debug(f"Username: {DRAMATIQ_SETTINGS.DRAMATIQ_RABBITMQ_USERNAME}")
     # log.debug(f"Password: {DRAMATIQ_SETTINGS.DRAMATIQ_RABBITMQ_PASSWORD}")
     # log.debug(f"VHOST: {DRAMATIQ_SETTINGS.DRAMATIQ_RABBITMQ_VHOST}")
@@ -72,7 +73,7 @@ if __name__ == "__main__":
     log.debug(f"Dramatiq broker URL: {dramatiq_broker_url}")
     
     # rabbitmq_broker = RabbitmqBroker(**dramatiq_rabbitmq_settings)
-    rabbitmq_broker = RabbitmqBroker(url=dramatiq_broker_url)
+    rabbitmq_broker = RabbitmqBroker(host=DRAMATIQ_SETTINGS.DRAMATIQ_RABBITMQ_HOST, port=DRAMATIQ_SETTINGS.DRAMATIQ_RABBITMQ_PORT, credentials=return_dramatiq_rabbitmq_credentials())
     
     try:
         count_words.send("https://www.xkcd.com")
