@@ -4,17 +4,23 @@ from loguru import logger as log
 import depends
 import setup
 from settings.logging_settings import LOGGING_SETTINGS
-from settings.dramatiq_settings import DRAMATIQ_SETTINGS
+from settings.dramatiq_settings import DRAMATIQ_SETTINGS, return_dramatiq_rabbitmq_url, return_dramatiq_rabbitmq_credentials
 from dramatiq.brokers.rabbitmq import RabbitmqBroker
+
+import pika
 
 dramatiq_rabbitmq_settings = {
     "host": DRAMATIQ_SETTINGS.get("DRAMATIQ_RABBITMQ_HOST", default="localhost"),
     "port": DRAMATIQ_SETTINGS.get("DRAMATIQ_RABBITMQ_PORT", default=5672),
-    "user": DRAMATIQ_SETTINGS.get("DRAMATIQ_RABBITMQ_USERNAME", default="guest"),
-    "password": DRAMATIQ_SETTINGS.get("DRAMATIQ_RABBITMQ_PASSWORD", default=""),
+    # "user": DRAMATIQ_SETTINGS.get("DRAMATIQ_RABBITMQ_USERNAME", default="guest"),
+    # "password": DRAMATIQ_SETTINGS.get("DRAMATIQ_RABBITMQ_PASSWORD", default=""),
+    "credentials": pika.PlainCredentials(
+        DRAMATIQ_SETTINGS.get("DRAMATIQ_RABBITMQ_USERNAME", default="guest"),
+        DRAMATIQ_SETTINGS.get("DRAMATIQ_RABBITMQ_PASSWORD", default="")
+)
 }
 
-dramatiq_broker_url = f"amqp://{dramatiq_rabbitmq_settings['user']}:{dramatiq_rabbitmq_settings['password']}@{dramatiq_rabbitmq_settings['host']}:{dramatiq_rabbitmq_settings['port']}"
+# dramatiq_broker_url = f"amqp://{dramatiq_rabbitmq_settings['user']}:{dramatiq_rabbitmq_settings['password']}@{dramatiq_rabbitmq_settings['host']}:{dramatiq_rabbitmq_settings['port']}"
 
 demo_db_dict = {"drivername": "sqlite+pysqlite", "username": None, "password": None, "host": None, "port": None, "database": ".db/demo.sqlite3"}
 
@@ -25,9 +31,13 @@ if __name__ == "__main__":
     demo_db_uri = depends.get_db_uri(**demo_db_dict)
     setup.setup_database(engine=depends.get_db_engine(db_uri=demo_db_uri))
     
-    rabbitmq_broker = RabbitmqBroker(url=dramatiq_broker_url)
+    log.debug(f"Test dramatiq rabbitmq URL: {return_dramatiq_rabbitmq_url()}")
+    log.debug(f"Test dramatiq rabbitmq pika credentials: {return_dramatiq_rabbitmq_credentials()}")
+    
+    # rabbitmq_broker = RabbitmqBroker(**dramatiq_rabbitmq_settings)
+    # rabbitmq_broker = RabbitmqBroker(url=dramatiq_broker_url)
     
     log.debug(f"Dramatiq RabbitMQ settings: {dramatiq_rabbitmq_settings}")
-    log.debug(f"Dramatiq broker URL: {dramatiq_broker_url}")
+    # log.debug(f"Dramatiq broker URL: {dramatiq_broker_url}")
     
-    count_words.send("https://www.xkcd.com")
+    # count_words.send("https://www.xkcd.com")
