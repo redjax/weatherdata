@@ -1,0 +1,1 @@
+from .tasks import task_current_weather
