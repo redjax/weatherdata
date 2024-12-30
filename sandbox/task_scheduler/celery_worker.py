@@ -10,8 +10,9 @@ if __name__ == "__main__":
     setup.setup_loguru_logging(log_level=LOGGING_SETTINGS.get("LOG_LEVEL", default="INFO"), colorize=True)
     setup.setup_database()
     
-    log.info(f"Celery settings: {CELERY_SETTINGS.as_dict()}")
+    log.debug(f"Celery settings: {CELERY_SETTINGS.as_dict()}")
     
+    log.info("Starting Celery worker.")
     try:
         start_celery_worker.run()
     except Exception as exc:
