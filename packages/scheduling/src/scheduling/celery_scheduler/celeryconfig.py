@@ -46,9 +46,13 @@ def return_rabbitmq_url(
 
 def return_redis_url(
     host: str = CELERY_SETTINGS.get('CELERY_BACKEND_HOST', default='localhost'),
-    port: int | str = CELERY_SETTINGS.get('CELERY_BACKEND_PORT', default=6379)
+    port: int | str = CELERY_SETTINGS.get('CELERY_BACKEND_PORT', default=6379),
+    password: str | None = CELERY_SETTINGS.get("CELERY_BACKEND_PASSWORD", default="")
 ):
-    redis_url: str = f"redis://{host}:{port}"
+    if password:
+        redis_url: str = f"redis://:{password}@{host}:{port}/0"
+    else:
+        redis_url: str = f"redis://{host}:{port}/0"
     
     log.debug(f"Redis backend URL: {redis_url}")
     

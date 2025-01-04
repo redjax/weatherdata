@@ -13,13 +13,14 @@ from celery.schedules import crontab
 from scheduling.celery_scheduler.celeryconfig import CelerySettings, celery_settings, return_rabbitmq_url, return_redis_url
 from settings.celery_settings import CELERY_SETTINGS
 from settings.app_settings import APP_SETTINGS
-from scheduling.celery_scheduler.celery_tasks.weatherapi_tasks.scheduled_tasks import SCHEDULED_TASK_15m_weatherapi_current_weather
+from scheduling.celery_scheduler.celery_tasks.weatherapi_tasks import scheduled_tasks as celery_scheduled_tasks
 
 from loguru import logger as log
 
 
 INCLUDE_TASK_PATHS: list[str] = [
     "scheduling.celery_scheduler.celery_tasks.weatherapi_tasks.scheduled_tasks",
+    "scheduling.celery_scheduler.celery_tasks.weatherapi_tasks.tasks",
 ]
 
 app: Celery = Celery(
@@ -64,7 +65,10 @@ def scheduled_tasks(sender, **kwargs):
 
     ## Configure celery beat schedule
     app.conf.beat_schedule = {
-        **SCHEDULED_TASK_15m_weatherapi_current_weather
+        **celery_scheduled_tasks.SCHEDULED_TASK_15m_weatherapi_current_weather,
+        **celery_scheduled_tasks.SCHEDULED_TASK_30m_weatherapi_weather_forecast,
+        ## Uncomment to test every minute
+        **celery_scheduled_tasks.SCHEDULED_TASK_test_minutely_weatherapi_current_weather
     }
     
 

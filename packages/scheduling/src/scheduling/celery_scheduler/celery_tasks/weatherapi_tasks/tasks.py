@@ -35,3 +35,23 @@ def task_current_weather(location: str) -> dict:
         raise exc
     
     return current_weather_dict
+
+
+@current_app.task(name="request_weather_forecast")
+def task_weather_forecast(location: str) -> dict:
+    log.info("Requesting weather forecast from WeatherAPI")
+    
+    try:
+        weather_forecast_dict = api_weatherapi.client.get_weather_forecast(location=location, save_to_db=True, use_cache=True)
+        if weather_forecast_dict is None:
+            log.error("Failed to retrieve weather forecast from weatherapi.")
+            return None
+        
+        log.success(f"Retrieved weather forecast for location '{location}'.")
+    except Exception as exc:
+        msg = f"({type(exc)}) Error requesting weather forecast from weatherapi. Details: {exc}"
+        log.error(msg)
+        
+        raise exc
+    
+    return weather_forecast_dict
