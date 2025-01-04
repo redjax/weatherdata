@@ -1,15 +1,32 @@
-from loguru import logger as log
+from __future__ import annotations
 
-from celery import shared_task, current_app
-
-from domain.weatherapi import location as domain_location, weather as domain_weather
-from domain.weatherapi.location import LocationIn, LocationModel, LocationOut, LocationRepository
-from domain.weatherapi.weather.current import CurrentWeatherIn, CurrentWeatherModel, CurrentWeatherOut, CurrentWeatherRepository
-from domain.weatherapi.weather.forecast import ForecastJSONIn, ForecastJSONOut, ForecastJSONModel, ForecastJSONRepository
-from weather_client.apis import api_weatherapi
-from depends import db_depends
+from celery import current_app, shared_task
 import db
-
+from depends import db_depends
+from domain.weatherapi import (
+    location as domain_location,
+    weather as domain_weather,
+)
+from domain.weatherapi.location import (
+    LocationIn,
+    LocationModel,
+    LocationOut,
+    LocationRepository,
+)
+from domain.weatherapi.weather.current import (
+    CurrentWeatherIn,
+    CurrentWeatherModel,
+    CurrentWeatherOut,
+    CurrentWeatherRepository,
+)
+from domain.weatherapi.weather.forecast import (
+    ForecastJSONIn,
+    ForecastJSONModel,
+    ForecastJSONOut,
+    ForecastJSONRepository,
+)
+from loguru import logger as log
+from weather_client.apis import api_weatherapi
 
 @log.catch
 @current_app.task(name="weatherapi-current-weather")

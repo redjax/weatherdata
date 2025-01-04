@@ -1,12 +1,12 @@
-from settings.celery_settings import CELERY_SETTINGS
-from settings.logging_settings import LOGGING_SETTINGS
-from loguru import logger as log
+from __future__ import annotations
 
 import db
 import depends
-import setup
-
+from loguru import logger as log
 from scheduling import start_celery_beat
+from settings.celery_settings import CELERY_SETTINGS
+from settings.logging_settings import LOGGING_SETTINGS
+import setup
 
 demo_db_dict = {"drivername": "sqlite+pysqlite", "username": None, "password": None, "host": None, "port": None, "database": ".db/demo.sqlite3"}
 

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from celery.schedules import crontab
 from weather_client.apis import api_weatherapi
 

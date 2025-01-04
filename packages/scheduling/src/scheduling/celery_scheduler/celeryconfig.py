@@ -1,13 +1,18 @@
 from __future__ import annotations
 
 import typing as t
-from settings.celery_settings import CELERY_SETTINGS
 
 from dynaconf import Dynaconf
 from loguru import logger as log
-
-from pydantic import BaseModel, Field, field_validator, ValidationError, ConfigDict, computed_field
-
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    ValidationError,
+    computed_field,
+    field_validator,
+)
+from settings.celery_settings import CELERY_SETTINGS
 
 def return_rabbitmq_url(
     username: str = CELERY_SETTINGS.get("CELERY_BROKER_USERNAME", default="guest"),

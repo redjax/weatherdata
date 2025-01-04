@@ -2,11 +2,12 @@ from __future__ import annotations
 
 import subprocess
 
-from celery import Celery
 from .celery_scheduler import celeryapp
-from settings.logging_settings import LOGGING_SETTINGS
-from settings.celery_settings import CELERY_SETTINGS
+
+from celery import Celery
 from loguru import logger as log
+from settings.celery_settings import CELERY_SETTINGS
+from settings.logging_settings import LOGGING_SETTINGS
 import setup
 
 def run():

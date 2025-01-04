@@ -8,14 +8,20 @@ from celery import current_app
 from celery.result import AsyncResult
 import db
 import depends
-from domain.weatherapi.location import LocationIn, LocationModel, LocationOut, LocationRepository
-from domain.weatherapi.weather import current as domain_current_weather, forecast as domain_forecast_weather, weather_alerts as domain_weather_alerts
-from weather_client.apis import api_weatherapi
-
+from domain.weatherapi.location import (
+    LocationIn,
+    LocationModel,
+    LocationOut,
+    LocationRepository,
+)
+from domain.weatherapi.weather import (
+    current as domain_current_weather,
+    forecast as domain_forecast_weather,
+    weather_alerts as domain_weather_alerts,
+)
 import httpx
-
 from loguru import logger as log
-
+from weather_client.apis import api_weatherapi
 
 @current_app.task(name="request_current_weather")
 def task_current_weather(location: str) -> dict:

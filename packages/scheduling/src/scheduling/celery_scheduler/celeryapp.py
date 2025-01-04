@@ -3,20 +3,25 @@ from __future__ import annotations
 from functools import lru_cache
 import typing as t
 
+from scheduling.celery_scheduler.celery_tasks.weatherapi_tasks import (
+    scheduled_tasks as celery_scheduled_tasks,
+)
+from scheduling.celery_scheduler.celeryconfig import (
+    CelerySettings,
+    celery_settings,
+    return_rabbitmq_url,
+    return_redis_url,
+)
+
 ## Import celery tasks
 # from .celery_tasks import ...
-
 import celery
 from celery import Celery
 from celery.result import AsyncResult
 from celery.schedules import crontab
-from scheduling.celery_scheduler.celeryconfig import CelerySettings, celery_settings, return_rabbitmq_url, return_redis_url
-from settings.celery_settings import CELERY_SETTINGS
-from settings.app_settings import APP_SETTINGS
-from scheduling.celery_scheduler.celery_tasks.weatherapi_tasks import scheduled_tasks as celery_scheduled_tasks
-
 from loguru import logger as log
-
+from settings.app_settings import APP_SETTINGS
+from settings.celery_settings import CELERY_SETTINGS
 
 INCLUDE_TASK_PATHS: list[str] = [
     "scheduling.celery_scheduler.celery_tasks.weatherapi_tasks.scheduled_tasks",

@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from .app_settings import APP_SETTINGS
-from .db_settings import DB_SETTINGS
 from .celery_settings import CELERY_SETTINGS
+from .db_settings import DB_SETTINGS
 from .dramatiq_settings import (
     DRAMATIQ_SETTINGS,
     return_dramatiq_rabbitmq_credentials,

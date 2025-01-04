@@ -1,16 +1,15 @@
+from __future__ import annotations
+
 import time
-from settings.celery_settings import CELERY_SETTINGS
-
-from settings.logging_settings import LOGGING_SETTINGS
-from loguru import logger as log
-
-import db
-import depends
-import setup
-
-from scheduling.celery_scheduler import celeryapp,  check_task
 
 from celery.result import AsyncResult
+import db
+import depends
+from loguru import logger as log
+from scheduling.celery_scheduler import celeryapp, check_task
+from settings.celery_settings import CELERY_SETTINGS
+from settings.logging_settings import LOGGING_SETTINGS
+import setup
 
 demo_db_dict = {"drivername": "sqlite+pysqlite", "username": None, "password": None, "host": None, "port": None, "database": ".db/demo.sqlite3"}
 
