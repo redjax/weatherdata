@@ -1,6 +1,8 @@
 [default]
 
 log_level = "INFO"
+tz = "Etc/UTC"
 
 [logging]
 # log_level = "DEBUG"
+# tz = ""

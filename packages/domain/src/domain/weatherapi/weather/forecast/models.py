@@ -4,7 +4,6 @@ import datetime as dt
 import typing as t
 
 from db import Base, annotated
-
 from loguru import logger as log
 import sqlalchemy as sa
 import sqlalchemy.exc as sa_exc

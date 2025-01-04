@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 import time
+
 import db
 import depends
 import depends.db_depends

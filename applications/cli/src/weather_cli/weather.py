@@ -1,17 +1,16 @@
 from __future__ import annotations
 
-import typing as t
 from datetime import timedelta
+import typing as t
 
 from core_utils import time_utils
-from domain.weatherapi import weather as weather_domain
-from domain.weatherapi import location as location_domain
-from weather_client.apis import api_weatherapi
-
 from cyclopts import App, Group, Parameter
-
+from domain.weatherapi import (
+    location as location_domain,
+    weather as weather_domain,
+)
 from loguru import logger as log
-
+from weather_client.apis import api_weatherapi
 
 weather_app = App(name="weather", help="CLI for getting weather data")
 

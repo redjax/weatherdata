@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import NoReturn
 
+from domain.weatherapi.location import LocationIn
 from domain.weatherapi.weather.current import (
     CurrentWeatherIn,
     CurrentWeatherModel,
@@ -13,8 +14,6 @@ from domain.weatherapi.weather.forecast import (
     ForecastJSONOut,
     ForecastJSONRepository,
 )
-from domain.weatherapi.location import LocationIn
-
 from loguru import logger as log
 
 @log.catch

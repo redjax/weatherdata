@@ -3,20 +3,25 @@ from __future__ import annotations
 import time
 
 from weather_client.apis.api_weatherapi.constants import WEATHERAPI_BASE_URL
+from weather_client.apis.api_weatherapi.convert.methods import (
+    current_weather_dict_to_schema,
+    location_dict_to_schema,
+)
+from weather_client.apis.api_weatherapi.db_client.current_weather import (
+    save_current_weather,
+)
 from weather_client.apis.api_weatherapi.settings import api_key, location_name
-from weather_client.apis.api_weatherapi.db_client.current_weather import save_current_weather
-from weather_client.apis.api_weatherapi.convert.methods import current_weather_dict_to_schema, location_dict_to_schema
-from depends import db_depends
+
 from . import requests
 
+from depends import db_depends
 import hishel
 import http_lib
 import httpx
 from loguru import logger as log
-
 import sqlalchemy as sa
-import sqlalchemy.orm as so
 import sqlalchemy.exc as sa_exc
+import sqlalchemy.orm as so
 
 def get_current_weather(
     location: str = location_name,

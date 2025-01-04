@@ -4,7 +4,7 @@ from decimal import Decimal
 import typing as t
 
 from db import Base, annotated
-
+from domain.weatherapi.location import LocationModel
 from loguru import logger as log
 import sqlalchemy as sa
 import sqlalchemy.exc as sa_exc
@@ -74,8 +74,8 @@ class CurrentWeatherModel(Base):
     )
 
     # Relationship back to LocationModel using a string reference
-    location: so.Mapped["LocationModel"] = so.relationship(
-        "LocationModel", back_populates="current_weather_entries"
+    location: so.Mapped[LocationModel] = so.relationship(
+        LocationModel, back_populates="current_weather_entries"
     )
 
 
