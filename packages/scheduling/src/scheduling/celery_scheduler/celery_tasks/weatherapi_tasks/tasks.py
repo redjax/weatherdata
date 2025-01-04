@@ -1,9 +1,11 @@
+from __future__ import annotations
+
 from pathlib import Path
 import time
 import typing as t
 
+from celery import current_app
 from celery.result import AsyncResult
-from scheduling.celery_scheduler.celeryapp import app
 import db
 import depends
 from domain.weatherapi.location import LocationIn, LocationModel, LocationOut, LocationRepository
@@ -15,7 +17,7 @@ import httpx
 from loguru import logger as log
 
 
-@app.task(name="request_current_weather")
+@current_app.task(name="request_current_weather")
 def task_current_weather(location: str) -> dict:
     log.info("Requesting current weather from WeatherAPI")
     

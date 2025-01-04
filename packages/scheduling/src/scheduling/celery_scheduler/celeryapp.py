@@ -12,9 +12,15 @@ from celery.result import AsyncResult
 from celery.schedules import crontab
 from scheduling.celery_scheduler.celeryconfig import CelerySettings, celery_settings, return_rabbitmq_url, return_redis_url
 from settings.celery_settings import CELERY_SETTINGS
+from settings.app_settings import APP_SETTINGS
+from scheduling.celery_scheduler.celery_tasks.weatherapi_tasks.scheduled_tasks import SCHEDULED_TASK_15m_weatherapi_current_weather
 
 from loguru import logger as log
 
+
+INCLUDE_TASK_PATHS: list[str] = [
+    "scheduling.celery_scheduler.celery_tasks.weatherapi_tasks.scheduled_tasks",
+]
 
 app: Celery = Celery(
     "celery_tasks",
@@ -22,24 +28,48 @@ app: Celery = Celery(
     broker=return_rabbitmq_url(),
     # backend=celery_settings.backend_url,
     backend=return_redis_url(),
-    include=[
-        ## Include paths to celery task modules, i.e.
-        #  "scheduling.celery_scheduler.celery_tasks.scheduled"
-    ]
+    include=INCLUDE_TASK_PATHS
 )
 
 ## Set app config
-app.conf.update(timezonee="America/New_York", enable_utc=True)
+app.conf.update(timezone=APP_SETTINGS.get("TZ", default="Etc/UTC"), enable_utc=True)
+
+## Autodiscover
+app.autodiscover_tasks(INCLUDE_TASK_PATHS)
+
+def print_discovered_tasks() -> list[str]:
+    app.loader.import_default_modules()
+
+    tasks: list[str] = list(
+        sorted(name for name in app.tasks if not name.startswith("celery."))
+    )
+
+    print(f"Discovered [{len(tasks)}] Celery task(s): {[t for t in tasks]}")
+
+    return tasks
+
 
 ## Periodic jobs
 @app.on_after_finalize.connect
 def scheduled_tasks(sender, **kwargs):
     ## Call task_current_comic() every hour. Use imported schedule
     # app.conf.beat_schedule = <scheduled task name
-    pass
+    if not sender:
+        ## This line is so vulture stops warning on unused variable 'sender'
+        pass
 
+    if not kwargs:
+        ## This line is so vulture stops warning on unused variable 'kwargs'
+        pass
 
-log.debug(f"Discovered Celery tasks: {app.tasks}")
+    ## Configure celery beat schedule
+    app.conf.beat_schedule = {
+        **SCHEDULED_TASK_15m_weatherapi_current_weather
+    }
+    
+
+print_discovered_tasks()
+
 
 def check_task(task_id: str = None, app: Celery = app) -> AsyncResult | None:
     """Check a Celery task by its ID.

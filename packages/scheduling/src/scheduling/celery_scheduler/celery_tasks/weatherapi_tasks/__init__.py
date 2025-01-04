@@ -1,1 +1,2 @@
 from .tasks import task_current_weather
+from .scheduled_tasks import SCHEDULED_TASK_15m_weatherapi_current_weather
