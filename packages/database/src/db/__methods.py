@@ -153,8 +153,13 @@ def create_base_metadata(
         raise msg
 
 
-def count_table_rows(table: str, engine: sa.Engine, echo: bool = False):
-    """Count the number of rows in a table."""
+def count_table_rows(table: str, engine: sa.Engine, echo: bool = False) -> int:
+    """Count the number of rows in a table.
+    
+    Params:
+        table (str): The name of the table to count rows in.
+        engine (sqlalchemy.Engine): A SQLAlchemy `Engine` to use for database connections.
+    """
     log.info(f"Counting rows in table: {table}")
     
     session_pool = get_session_pool(engine=engine)
@@ -181,8 +186,13 @@ def count_table_rows(table: str, engine: sa.Engine, echo: bool = False):
         return count
     
 
-def show_table_names(engine: sa.Engine, echo: bool = False):
-    """List all table names in the database."""
+def show_table_names(engine: sa.Engine, echo: bool = False) -> list[str]:
+    """List all table names in the database.
+    
+    Params:
+        engine (sqlalchemy.Engine): A SQLAlchemy `Engine` to use for database connections.
+        echo (bool): Echo the table names to the console.
+    """
     log.info("Showing database tables")
     
     inspector = sa.inspect(engine)

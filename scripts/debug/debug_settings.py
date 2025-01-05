@@ -45,7 +45,7 @@ def main(session: str):
         print("Running all debuggers")
         
         for k, v in debug_sessions.items():
-            print(f"Running '{k}' debugger")
+            print(f"\nRunning '{k}' debugger")
             v()
     
     else:
