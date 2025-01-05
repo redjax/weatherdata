@@ -11,6 +11,12 @@ from settings.logging_settings import LOGGING_SETTINGS
 import setup
 
 def start_celery_worker(app: Celery = celeryapp.app):
+    """Starts the Celery worker.
+    
+    Params:
+        app (Celery): An initialized Celery app
+
+    """
     log.debug(f"Celery app ({type(app)}): {app}")
 
     app.autodiscover_tasks(

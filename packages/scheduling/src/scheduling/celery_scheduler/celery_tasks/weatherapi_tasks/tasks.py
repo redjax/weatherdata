@@ -25,6 +25,16 @@ from weather_client.apis import api_weatherapi
 
 @current_app.task(name="request_current_weather")
 def task_current_weather(location: str) -> dict:
+    """Request the current weather for a location using a Celery task.
+    
+    Params:
+        location (str): The location to get the current weather for.
+        
+    Returns:
+        (dict): The current weather for the location.
+        (None): None if the request failed.
+
+    """
     log.info("Requesting current weather from WeatherAPI")
     
     try:
@@ -45,6 +55,16 @@ def task_current_weather(location: str) -> dict:
 
 @current_app.task(name="request_weather_forecast")
 def task_weather_forecast(location: str) -> dict:
+    """Request the weather forecast for a location using a Celery task.
+    
+    Params:
+        location (str): The location to get the weather forecast for.
+        
+    Returns:
+        (dict): The weather forecast for the location.
+        (None): None if the request failed.
+
+    """
     log.info("Requesting weather forecast from WeatherAPI")
     
     try:

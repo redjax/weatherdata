@@ -9,6 +9,12 @@ from settings.logging_settings import LOGGING_SETTINGS
 import setup
 
 def start_celery_beat(app: Celery = celeryapp.app):
+    """Starts the Celery beat schedule.
+    
+    Params:
+        app (Celery): An initialized Celery app
+
+    """
     log.debug(f"Celery app ({type(app)}): {app}")
 
     log.debug(f"Celery Beat schedule: {app.Beat().schedule}")

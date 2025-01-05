@@ -55,6 +55,7 @@ app.autodiscover_tasks(INCLUDE_TASK_PATHS)
 
 
 def print_discovered_tasks() -> list[str]:
+    """Prints the list of discovered Celery tasks."""
     app.loader.import_default_modules()
 
     tasks: list[str] = list(
@@ -69,6 +70,7 @@ def print_discovered_tasks() -> list[str]:
 ## Periodic jobs
 @app.on_after_finalize.connect
 def scheduled_tasks(sender, **kwargs):
+    """Configure the Celery beat schedule."""
     ## Call task_current_comic() every hour. Use imported schedule
     # app.conf.beat_schedule = <scheduled task name
     if not sender:
