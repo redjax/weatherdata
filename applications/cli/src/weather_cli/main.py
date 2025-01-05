@@ -23,6 +23,11 @@ for sub_cli in MOUNT_SUB_CLIS:
 
 @app.meta.default
 def cli_launcher(*tokens: t.Annotated[str, Parameter(show=False, allow_leading_hyphen=True)], debug: bool = False):
+    """CLI entrypoint.
+    
+    Params:
+        debug (bool): If `True`, enables debug logging.
+    """
     log.remove(0)
     
     if debug:

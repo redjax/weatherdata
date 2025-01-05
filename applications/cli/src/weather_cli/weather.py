@@ -16,11 +16,15 @@ weather_app = App(name="weather", help="CLI for getting weather data")
 
 
 @weather_app.command(name="current")
-def get_current_weather(location: t.Annotated[str, Parameter(name="location", show_default=True)] = "London"):
+def get_current_weather(location: t.Annotated[str, Parameter(name="location", show_default=True)] = "London") -> weather_domain.current.CurrentWeatherIn:
     """Get the current weather for a given location.
     
     Params:
         location: The location to get the current weather for. Can be a city name or postal code.
+    
+    Returns:
+        The current weather for the given location.
+
     """
     log.info(f"Getting current weather for location: {location}")
     
@@ -58,9 +62,11 @@ Wind:
 
     log.info(current_weather_str)
     
+    return current_weather
+    
 
 @weather_app.command(name="forecast")
-def get_weather_forecast(location: t.Annotated[str, Parameter(name="location", show_default=True)] = "London"):
+def get_weather_forecast(location: t.Annotated[str, Parameter(name="location", show_default=True)] = "London") -> weather_domain.forecast.ForecastJSONIn:
     """Get the weather forecast for a given location.
     
     Params:
@@ -92,3 +98,5 @@ def get_weather_forecast(location: t.Annotated[str, Parameter(name="location", s
 """
 
     log.info(weather_forecast_str)
+    
+    return weather_forecast_str

@@ -31,7 +31,12 @@ def _init_db():
 
 @db_app.command(name="show")
 def show_db_info(option: t.Annotated[str, Parameter(name="option", show_default=True, help="Options: ['tables']")]):
-    """Show information about the database."""
+    """Show information about the database.
+    
+    Params:
+        option: The option to show information about. Options: ['tables']
+    
+    """
     log.info(f"Showing database info: {option}")
     
     engine = db_depends.get_db_engine()
@@ -42,15 +47,19 @@ def show_db_info(option: t.Annotated[str, Parameter(name="option", show_default=
             
             try:
                 inspector = sa.inspect(engine)
-                tables = inspector.get_table_names()
+                tables: list[str] = inspector.get_table_names()
+                
                 if tables:
                     log.debug(f"Tables in the database: {tables}")
                     
                     print(f"Tables [{len(tables)}]:")
                     for table in tables:
                         print(f" - {table}")
+                        
+                    return tables
                 else:
                     log.warning("No tables found in the database.")
+                    return
             except sa_exc.SQLAlchemyError as e:
                 print(f"Error inspecting database: {e}")
                 
@@ -61,7 +70,15 @@ def show_db_info(option: t.Annotated[str, Parameter(name="option", show_default=
 
 @db_app.command(name="count")
 def count_db_rows(table: t.Annotated[str, Parameter(name="table", show_default=True)]):
-    """Count the number of rows in a table."""
+    """Count the number of rows in a table.
+    
+    Params:
+        table: The table to count the rows in.
+    
+    Returns:
+        int: The number of rows in the table.
+
+    """
     log.info(f"Counting rows in table: {table}")
     
     engine = db_depends.get_db_engine()
