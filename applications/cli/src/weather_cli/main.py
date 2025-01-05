@@ -4,6 +4,7 @@ import sys
 import typing as t
 
 from .weather import weather_app
+from .celery import celery_app
 
 from cyclopts import App, Group, Parameter
 from loguru import logger as log
@@ -13,8 +14,11 @@ app = App(name="weathercli", help="CLI for WeatherData app.")
 
 app.meta.group_parameters = Group("Session Parameters", sort_key=0)
 
+MOUNT_SUB_CLIS: list = [weather_app, celery_app]
+
 ## Mount apps
-app.command(weather_app)
+for sub_cli in MOUNT_SUB_CLIS:
+    app.command(sub_cli)
 
 @app.meta.default
 def cli_launcher(*tokens: t.Annotated[str, Parameter(show=False, allow_leading_hyphen=True)], debug: bool = False):
