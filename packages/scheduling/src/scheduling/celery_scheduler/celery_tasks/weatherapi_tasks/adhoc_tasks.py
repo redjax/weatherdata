@@ -39,7 +39,7 @@ def task_adhoc_current_weather(location: str = api_weatherapi.settings.location_
         use_cache (bool): Whether to use the cache for the request.
     """
     try:
-        current_weather_res = api_weatherapi.client.get_current_weather(location=location, api_key=api_key, use_cache=use_cache)
+        current_weather_res = api_weatherapi.client.get_current_weather(location=location, api_key=api_key, use_cache=use_cache, save_to_db=True)
     except Exception as exc:
         msg = f"({type(exc)}) Error requesting current weather as a Celery ad-hoc task. Details: {exc}"
         log.error(msg)
@@ -60,7 +60,7 @@ def task_adhoc_weather_forecast(location: str = api_weatherapi.settings.location
         use_cache (bool): Whether to use the cache for the request.
     """
     try:
-        forecast_weather_res = api_weatherapi.client.get_weather_forecast(location=location, api_key=api_key, use_cache=use_cache)
+        forecast_weather_res = api_weatherapi.client.get_weather_forecast(location=location, api_key=api_key, use_cache=use_cache, save_to_db=True)
     except Exception as exc:
         msg = f"({type(exc)}) Error requesting forecast weather as a Celery ad-hoc task. Details: {exc}"
         log.error(msg)

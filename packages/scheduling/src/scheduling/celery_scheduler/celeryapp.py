@@ -73,7 +73,8 @@ def scheduled_tasks(sender, **kwargs):
         **celery_scheduled_tasks.SCHEDULED_TASK_15m_weatherapi_current_weather,
         **celery_scheduled_tasks.SCHEDULED_TASK_30m_weatherapi_weather_forecast,
         ## Uncomment to test every minute
-        **celery_scheduled_tasks.SCHEDULED_TASK_test_minutely_weatherapi_current_weather
+        **celery_scheduled_tasks.SCHEDULED_TASK_test_minutely_weatherapi_current_weather,
+        **celery_scheduled_tasks.SCHEDULED_TASK_test_minutely_weatherapi_weather_forecast
     }
     
 

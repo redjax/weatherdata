@@ -3,7 +3,7 @@ from __future__ import annotations
 import db
 import depends
 from loguru import logger as log
-from scheduling import start_celery_beat
+from scheduling.celery_scheduler import start_celery, celeryapp
 from settings.celery_settings import CELERY_SETTINGS
 from settings.logging_settings import LOGGING_SETTINGS
 import setup
@@ -29,7 +29,7 @@ if __name__ == "__main__":
     
     log.info("Starting Celery Beat.")
     try:
-        start_celery_beat.run()
+        start_celery.beat(app=celeryapp.app)
     except Exception as exc:
         msg = f"({type(exc)}) Error running Celery worker. Details: {exc}"
         log.error(msg)

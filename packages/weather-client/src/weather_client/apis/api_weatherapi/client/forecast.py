@@ -2,13 +2,18 @@ from __future__ import annotations
 
 import time
 
+from weather_client.apis.api_weatherapi.convert import weather_forecast_dict_to_schema
 from weather_client.apis.api_weatherapi.settings import api_key, location_name
-
+from weather_client.apis.api_weatherapi.db_client.forecast import (
+    save_forecast
+)
+from depends import db_depends
 from . import requests
 
 import http_lib
 import httpx
 from loguru import logger as log
+import sqlalchemy as sa
 
 def get_weather_forecast(
     location: str = location_name,
@@ -23,6 +28,8 @@ def get_weather_forecast(
     retry_sleep: int = 5,
     retry_stagger: int = 3,
     save_to_db: bool = False,
+    db_engine: sa.Engine | None = None,
+    db_echo: bool = False
 ):
     if days > 10:
         log.warning(
@@ -77,9 +84,6 @@ def get_weather_forecast(
 
     log.debug(f"Response: [{res.status_code}: {res.reason_phrase}]")
 
-    if save_to_db:
-        log.warning("Saving weather forecast to database is not implemented")
-
     if res.status_code in http_lib.constants.SUCCESS_CODES:
         log.info("Success requesting weather forecast")
         decoded = http_lib.decode_response(response=res)
@@ -93,6 +97,32 @@ def get_weather_forecast(
         )
 
         return None
+    
+    if save_to_db:
+        if not db_engine:
+            db_engine = db_depends.get_db_engine()
+            
+        errored: bool = False
+        
+        try:
+            db_forecast_json = weather_forecast_dict_to_schema(weather_forecast_dict=decoded)
+        except Exception as exc:
+            msg = f"({type(exc)}) Error converting weather forecast to schema. Details: {exc}"
+            log.error(msg)
+            
+            errored = True
+            
+        if not errored:
+            try:
+                save_forecast(forecast_schema=db_forecast_json, engine=db_engine, echo=db_echo)
+            except Exception as exc:
+                msg = f"({type(exc)}) Error saving weather forecast to database. Details: {exc}"
+                log.error(msg)
+                
+                errored = True
+                
+        if errored:
+            log.warning("Errored while saving weather forecast to database.")
 
     # log.debug(f"Decoded: {decoded}")
 

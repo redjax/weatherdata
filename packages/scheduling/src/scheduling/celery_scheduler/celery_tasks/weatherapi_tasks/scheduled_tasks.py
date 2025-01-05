@@ -32,3 +32,13 @@ SCHEDULED_TASK_test_minutely_weatherapi_current_weather = {
         ]
     }
 }
+
+SCHEDULED_TASK_test_minutely_weatherapi_weather_forecast = {
+    "test_minutely_weatherapi_weather_forecast": {
+        "task": "request_weather_forecast",
+        "schedule": crontab(minute="*"),
+        "args": [
+            api_weatherapi.location_name,
+        ]
+    }
+}
