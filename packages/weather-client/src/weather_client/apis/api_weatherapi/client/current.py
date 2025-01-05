@@ -124,7 +124,7 @@ def get_current_weather(
             ## Save current weather to database
             try:
                 db_current_weather_out = save_current_weather(
-                    current_weather=db_current_weather_in, engine=db_engine, echo=db_echo
+                    location=db_location_in, current_weather=db_current_weather_in, engine=db_engine, echo=db_echo
                 )
                 log.success("Saved current weather to database")
                 log.debug(f"Current weather from database: {db_current_weather_out}")
