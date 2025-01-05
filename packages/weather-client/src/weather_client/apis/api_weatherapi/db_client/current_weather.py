@@ -150,3 +150,16 @@ def save_current_weather(
 
                 raise exc
 
+
+def count_current_weather(engine: sa.Engine | None = None, echo: bool = False):
+    """Return a count of the number of rows in the current weather table."""
+    
+    if engine is None:
+        engine = db_depends.get_db_engine(echo=echo)
+    
+    session_pool = db_depends.get_session_pool(engine=engine)
+
+    with session_pool() as session:
+        repo = domain_current_weather.CurrentWeatherRepository(session=session)
+
+        return repo.count()
