@@ -23,9 +23,19 @@ from loguru import logger as log
 from settings.app_settings import APP_SETTINGS
 from settings.celery_settings import CELERY_SETTINGS
 
+## Add paths Celery should look for tasks in
 INCLUDE_TASK_PATHS: list[str] = [
     "scheduling.celery_scheduler.celery_tasks.weatherapi_tasks.scheduled_tasks",
     "scheduling.celery_scheduler.celery_tasks.weatherapi_tasks.tasks",
+]
+
+## List of scheduled task dicts to add to Celery beat's schedule
+BEAT_SCHEDULED_TASKS: list = [
+    celery_scheduled_tasks.SCHEDULED_TASK_15m_weatherapi_current_weather,
+    celery_scheduled_tasks.SCHEDULED_TASK_30m_weatherapi_weather_forecast,
+    ## Uncomment to test every minute
+    # celery_scheduled_tasks.SCHEDULED_TASK_test_minutely_weatherapi_current_weather,
+    # celery_scheduled_tasks.SCHEDULED_TASK_test_minutely_weatherapi_weather_forecast,
 ]
 
 app: Celery = Celery(
@@ -34,7 +44,7 @@ app: Celery = Celery(
     broker=return_rabbitmq_url(),
     # backend=celery_settings.backend_url,
     backend=return_redis_url(),
-    include=INCLUDE_TASK_PATHS
+    include=INCLUDE_TASK_PATHS,
 )
 
 ## Set app config
@@ -42,6 +52,7 @@ app.conf.update(timezone=APP_SETTINGS.get("TZ", default="Etc/UTC"), enable_utc=T
 
 ## Autodiscover
 app.autodiscover_tasks(INCLUDE_TASK_PATHS)
+
 
 def print_discovered_tasks() -> list[str]:
     app.loader.import_default_modules()
@@ -70,13 +81,11 @@ def scheduled_tasks(sender, **kwargs):
 
     ## Configure celery beat schedule
     app.conf.beat_schedule = {
-        **celery_scheduled_tasks.SCHEDULED_TASK_15m_weatherapi_current_weather,
-        **celery_scheduled_tasks.SCHEDULED_TASK_30m_weatherapi_weather_forecast,
-        ## Uncomment to test every minute
-        **celery_scheduled_tasks.SCHEDULED_TASK_test_minutely_weatherapi_current_weather,
-        **celery_scheduled_tasks.SCHEDULED_TASK_test_minutely_weatherapi_weather_forecast
+        task_name: task_config
+        for task in BEAT_SCHEDULED_TASKS
+        for task_name, task_config in task.items()
     }
-    
+
 
 print_discovered_tasks()
 

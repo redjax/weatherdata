@@ -11,7 +11,7 @@ import setup
 
 def main():
     try:
-        async_res: AsyncResult = celeryapp.app.send_task("weatherapi-current-weather")
+        async_res: AsyncResult = celeryapp.app.send_task("adhoc-weatherapi-current-weather")
     except Exception as exc:
         msg = f"({type(exc)}) Error running Celery worker. Details: {exc}"
         log.error(msg)
