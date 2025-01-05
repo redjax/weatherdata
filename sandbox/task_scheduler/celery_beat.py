@@ -3,7 +3,7 @@ from __future__ import annotations
 import db
 import depends
 from loguru import logger as log
-from scheduling.celery_scheduler import start_celery, celeryapp
+from scheduling.celery_scheduler import celeryapp, start_celery
 from settings.celery_settings import CELERY_SETTINGS
 from settings.logging_settings import LOGGING_SETTINGS
 import setup

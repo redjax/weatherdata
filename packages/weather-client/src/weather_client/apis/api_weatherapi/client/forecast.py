@@ -3,13 +3,12 @@ from __future__ import annotations
 import time
 
 from weather_client.apis.api_weatherapi.convert import weather_forecast_dict_to_schema
+from weather_client.apis.api_weatherapi.db_client.forecast import save_forecast
 from weather_client.apis.api_weatherapi.settings import api_key, location_name
-from weather_client.apis.api_weatherapi.db_client.forecast import (
-    save_forecast
-)
-from depends import db_depends
+
 from . import requests
 
+from depends import db_depends
 import http_lib
 import httpx
 from loguru import logger as log

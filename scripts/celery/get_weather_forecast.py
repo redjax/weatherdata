@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from celery.result import AsyncResult
 import db
 import depends
@@ -6,7 +8,6 @@ from scheduling.celery_scheduler import celeryapp, check_task
 from settings.celery_settings import CELERY_SETTINGS
 from settings.logging_settings import LOGGING_SETTINGS
 import setup
-
 
 def main():
     try:

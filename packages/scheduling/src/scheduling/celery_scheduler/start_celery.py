@@ -1,11 +1,18 @@
-from loguru import logger as log
+from __future__ import annotations
 
-import setup
-from settings.logging_settings import LOGGING_SETTINGS
-from . import start_celery_worker, start_celery_beat, CelerySettings, check_task, celery_settings, celeryapp
+from . import (
+    CelerySettings,
+    celery_settings,
+    celeryapp,
+    check_task,
+    start_celery_beat,
+    start_celery_worker,
+)
 
 from celery import Celery
-
+from loguru import logger as log
+from settings.logging_settings import LOGGING_SETTINGS
+import setup
 
 def worker(app: Celery):
     log.info("Starting Celery worker.")

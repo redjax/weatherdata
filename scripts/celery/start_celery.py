@@ -1,13 +1,20 @@
+from __future__ import annotations
+
 import argparse
 
-from loguru import logger as log
-
-import setup
-from settings.logging_settings import LOGGING_SETTINGS
-from scheduling.celery_scheduler import start_celery, start_celery_worker, start_celery_beat, CelerySettings, check_task, celery_settings, celeryapp
-
 from celery import Celery
-
+from loguru import logger as log
+from scheduling.celery_scheduler import (
+    CelerySettings,
+    celery_settings,
+    celeryapp,
+    check_task,
+    start_celery,
+    start_celery_beat,
+    start_celery_worker,
+)
+from settings.logging_settings import LOGGING_SETTINGS
+import setup
 
 def parse_args():
     parser = argparse.ArgumentParser(
