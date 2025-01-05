@@ -82,8 +82,19 @@ def save_forecast(
 
 
 def count_weather_forecast(engine: sa.Engine | None = None, echo: bool = False):
-    """Return a count of the number of rows in the weather forecast table."""
+    """Return a count of the number of rows in the weather forecast table.
     
+    Params:
+        engine (Engine | None, optional): The database engine to use. If None, the default engine is used. Defaults to None.
+        echo (bool, optional): Whether to echo SQL statements to the console. Defaults to False.
+    
+    Returns:
+        int: The count of the number of rows in the weather forecast table.
+    
+    Raises:
+        Exception: If there is an error counting the number of rows in the weather forecast table, an `Exception` is raised.
+
+    """    
     if engine is None:
         engine = db_depends.get_db_engine(echo=echo)
     

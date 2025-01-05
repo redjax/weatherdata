@@ -17,6 +17,19 @@ import sqlalchemy.orm as so
 def save_current_weather(
     location: t.Union[domain_location.LocationIn, dict, str], current_weather: t.Union[domain_current_weather.CurrentWeatherIn, dict, str], engine: sa.Engine | None = None, echo: bool = False
 ) -> domain_current_weather.CurrentWeatherOut | None:
+    """Save a CurrentWeather to the database.
+    
+    Params:
+        location (LocationIn | dict | str): The location to save the current weather for. Can be a LocationIn domain object, dict, or JSON string.
+        current_weather (CurrentWeatherIn | dict | str): The current weather to save. Can be a CurrentWeatherIn domain object, dict, or JSON string.
+
+    Returns:
+        CurrentWeatherOut: The saved current weather.
+
+    Raises:
+        Exception: If current weather cannot be saved, an `Exception` is raised.
+    
+    """
     if not current_weather:
         raise ValueError("Missing current weather to save")
 
@@ -152,8 +165,19 @@ def save_current_weather(
 
 
 def count_current_weather(engine: sa.Engine | None = None, echo: bool = False):
-    """Return a count of the number of rows in the current weather table."""
+    """Return a count of the number of rows in the current weather table.
     
+    Params:
+        engine (Engine | None, optional): The database engine to use. If None, the default engine is used. Defaults to None.
+        echo (bool, optional): Whether to echo SQL statements to the console. Defaults to False.
+    
+    Returns:
+        int: The count of the number of rows in the current weather table.
+    
+    Raises:
+        Exception: If there is an error counting the number of rows in the current weather table, an `Exception` is raised.
+
+    """    
     if engine is None:
         engine = db_depends.get_db_engine(echo=echo)
     

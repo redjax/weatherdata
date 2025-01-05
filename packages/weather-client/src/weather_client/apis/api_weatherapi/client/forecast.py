@@ -30,6 +30,31 @@ def get_weather_forecast(
     db_engine: sa.Engine | None = None,
     db_echo: bool = False
 ):
+    """Get the weather forecast for a location.
+    
+    Params:
+        location (str, optional): The location to get the weather forecast for. Defaults to location_name.
+        days (int, optional): The number of days to get the weather forecast for. Defaults to 1.
+        api_key (str, optional): The API key to use. Defaults to api_key.
+        include_aqi (bool, optional): Whether to include the air quality index. Defaults to True.
+        include_alerts (bool, optional): Whether to include the alerts. Defaults to True.
+        headers (dict | None, optional): The headers to use. Defaults to None.
+        use_cache (bool, optional): Whether to use the cache. Defaults to False.
+        retry (bool, optional): Whether to retry the request. Defaults to True.
+        max_retries (int, optional): The maximum number of retries to make. Defaults to 3.
+        retry_sleep (int, optional): The number of seconds to sleep between retries. Defaults to 5.
+        retry_stagger (int, optional): The number of seconds to stagger the retries. Defaults to 3.
+        save_to_db (bool, optional): Whether to save the forecast to the database. Defaults to False.
+        db_engine (Engine | None, optional): The database engine to use. If None, the default engine is used. Defaults to None.
+        db_echo (bool, optional): Whether to echo SQL statements to the console. Defaults to False.
+
+    Returns:
+        dict: The weather forecast for the location.
+    
+    Raises:
+        Exception: If there is an error getting the weather forecast, an `Exception` is raised.
+
+    """
     if days > 10:
         log.warning(
             f"WeatherAPI only allows 10-day forecasts. {days} is too many, setting to 10."
