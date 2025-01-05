@@ -37,6 +37,29 @@ def get_current_weather(
     db_engine: sa.Engine | None = None,
     db_echo: bool = False
 ) -> dict | None:
+    """Get the current weather for a location.
+    
+    Params:
+        location (str, optional): The location to get the current weather for. Defaults to location_name.
+        api_key (str, optional): The API key to use. Defaults to api_key.
+        include_aqi (bool, optional): Whether to include the air quality index. Defaults to True.
+        headers (dict | None, optional): The headers to use. Defaults to None.
+        use_cache (bool, optional): Whether to use the cache. Defaults to False.
+        retry (bool, optional): Whether to retry the request. Defaults to True.
+        max_retries (int, optional): The maximum number of retries to make. Defaults to 3.
+        retry_sleep (int, optional): The number of seconds to sleep between retries. Defaults to 5.
+        retry_stagger (int, optional): The number of seconds to stagger the retries. Defaults to 3.
+        save_to_db (bool, optional): Whether to save the current weather to the database. Defaults to False.
+        db_engine (Engine | None, optional): The database engine to use. If None, the default engine is used. Defaults to None.
+        db_echo (bool, optional): Whether to echo SQL statements to the console. Defaults to False.
+
+    Returns:
+        dict | None: The current weather for the location.
+        
+    Raises:
+        Exception: If there is an error getting the current weather, an `Exception` is raised.
+
+    """
     current_weather_request: httpx.Request = requests.return_current_weather_request(
         api_key=api_key, location=location, include_aqi=include_aqi, headers=headers
     )
@@ -124,7 +147,7 @@ def get_current_weather(
             ## Save current weather to database
             try:
                 db_current_weather_out = save_current_weather(
-                    current_weather=db_current_weather_in, engine=db_engine, echo=db_echo
+                    location=db_location_in, current_weather=db_current_weather_in, engine=db_engine, echo=db_echo
                 )
                 log.success("Saved current weather to database")
                 log.debug(f"Current weather from database: {db_current_weather_out}")

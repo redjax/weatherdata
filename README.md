@@ -51,7 +51,11 @@ I use weather APIs frequently to help me learn programming things. I'm continuin
 
 ## Usage
 
-Once you have installed the project (read the [setup instructions](#setup)), you can run different entrypoints with `uv run`. For example, to launch the [`weather_cli` app](./applications/cli/), you can run:
+Once you have installed the project (read the [setup instructions](#setup)), you can run different entrypoints with `uv run`.
+
+You can also run the project's [`cli`](./applications/cli/) with: `uv run cli --help`.
+
+For example, to launch the [`weather_cli` app](./applications/cli/), you can run:
 
 ```shell
 uv run python -m weather_cli

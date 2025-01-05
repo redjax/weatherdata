@@ -21,6 +21,9 @@ dependencies = [
     "weather-client",
 ]
 
+[project.scripts]
+cli = "weather_cli.main:app"
+
 [tool.uv.sources]
 weatherdata = { workspace = true }
 domain = { workspace = true }

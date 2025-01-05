@@ -14,6 +14,20 @@ from pydantic import (
 )
 
 class LocationIn(BaseModel):
+    """Location schema.
+    
+    Attributes:
+        name (str): The name of the location.
+        region (str): The region of the location.
+        country (str): The country of the location.
+        lat (Decimal): The latitude of the location.
+        lon (Decimal): The longitude of the location.
+        tz_id (str): The time zone ID of the location.
+        localtime_epoch (int): The local time epoch of the location.
+        localtime (str): The local time of the location.
+
+    """
+    
     name: str
     region: str
     country: str
@@ -25,4 +39,11 @@ class LocationIn(BaseModel):
 
 
 class LocationOut(LocationIn):
+    """Location schema from the database.
+    
+    Attributes:
+        id (int): The ID of the location.
+
+    """
+
     id: int

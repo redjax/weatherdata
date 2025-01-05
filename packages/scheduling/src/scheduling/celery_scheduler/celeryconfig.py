@@ -75,6 +75,9 @@ class CelerySettings(BaseModel):
     
     @field_validator("broker_port", "backend_port")
     def validate_port(cls, v) -> int:
+        ## This line is so vulture stops complaining about cls not being used
+        if not cls:
+            pass
         if isinstance(v, str):
             try:
                 return int(v)

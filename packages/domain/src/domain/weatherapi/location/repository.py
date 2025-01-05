@@ -11,10 +11,27 @@ import sqlalchemy.exc as sa_exc
 import sqlalchemy.orm as so
 
 class LocationRepository(BaseRepository[LocationModel]):
+    """Repository for LocationModel objects.
+    
+    Attributes:
+        session (so.Session): The database session.
+
+    """
+    
     def __init__(self, session: so.Session):
         super().__init__(session, LocationModel)
 
     def get_by_id(self, id: int) -> LocationModel | None:
+        """Get a location by its ID.
+        
+        Params:
+            id (int): The ID of the location to retrieve.
+        
+        Returns:
+            (LocationModel): A LocationModel object.
+            (None): None if no location is found matching criteria.
+        
+        """
         return (
             self.session.query(LocationModel)
             .filter(LocationModel.id == id)
@@ -22,6 +39,16 @@ class LocationRepository(BaseRepository[LocationModel]):
         )
 
     def get_by_country(self, country: str) -> list[LocationModel] | None:
+        """Get a location by its country.
+        
+        Params:
+            country (str): The country of the location.
+        
+        Returns:
+            (LocationModel): A LocationModel object.
+            (None): None if no location is found matching criteria.
+        
+        """
         return (
             self.session.query(LocationModel)
             .filter(LocationModel.country == country)

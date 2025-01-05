@@ -89,3 +89,28 @@ def save_location(location: t.Union[domain_location.LocationIn, dict, str], engi
         log.error(msg)
         
         raise exc
+
+
+def count_locations(engine: sa.Engine | None = None, echo: bool = False) -> int:
+    """Return a count of the number of rows in the location table.
+    
+    Params:
+        engine (Engine | None, optional): The database engine to use. If None, the default engine is used. Defaults to None.
+        echo (bool, optional): Whether to echo SQL statements to the console. Defaults to False.
+    
+    Returns:
+        int: The count of the number of rows in the location table.
+    
+    Raises:
+        Exception: If there is an error counting the number of rows in the location table, an `Exception` is raised.
+
+    """   
+    if engine is None:
+        engine = db_depends.get_db_engine(echo=echo)
+    
+    session_pool = db_depends.get_session_pool(engine=engine)
+
+    with session_pool() as session:
+        repo = domain_location.LocationRepository(session=session)
+
+        return repo.count()

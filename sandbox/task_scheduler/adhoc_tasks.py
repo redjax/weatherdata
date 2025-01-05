@@ -22,7 +22,7 @@ def demo_db_engine(db_conf: dict = demo_db_dict, echo: bool = False):
 
 def adhoc_current_weather():
     try:
-        async_res: AsyncResult = celeryapp.app.send_task("weatherapi-current-weather")
+        async_res: AsyncResult = celeryapp.app.send_task("adhoc-weatherapi-current-weather")
     except Exception as exc:
         msg = f"({type(exc)}) Error running Celery worker. Details: {exc}"
         log.error(msg)
@@ -35,7 +35,7 @@ def adhoc_current_weather():
 
 def adhoc_weather_forecast():
     try:
-        async_res: AsyncResult = celeryapp.app.send_task("weatherapi-weather-forecast")
+        async_res: AsyncResult = celeryapp.app.send_task("adhoc-weatherapi-weather-forecast")
     except Exception as exc:
         msg = f"({type(exc)}) Error running Celery worker. Details: {exc}"
         log.error(msg)
