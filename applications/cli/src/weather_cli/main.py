@@ -3,9 +3,9 @@ from __future__ import annotations
 import sys
 import typing as t
 
-from .weather import weather_app
 from .celery import celery_app
 from .db import db_app
+from .weather import weather_app
 
 from cyclopts import App, Group, Parameter
 from loguru import logger as log

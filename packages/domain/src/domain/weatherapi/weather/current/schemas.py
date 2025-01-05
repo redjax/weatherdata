@@ -156,6 +156,7 @@ class CurrentWeatherOut(CurrentWeatherIn):
     
     Attributes:
         id (int): The unique identifier for the current weather.
+
     """
     
     id: int

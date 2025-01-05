@@ -1,9 +1,11 @@
+from __future__ import annotations
+
 from settings.app_settings import APP_SETTINGS
 from settings.celery_settings import CELERY_SETTINGS
 from settings.db_settings import DB_SETTINGS
-from settings.logging_settings import LOGGING_SETTINGS
 from settings.dramatiq_settings import DRAMATIQ_SETTINGS
-from settings.weatherapi_settings import  WEATHERAPI_SETTINGS
+from settings.logging_settings import LOGGING_SETTINGS
+from settings.weatherapi_settings import WEATHERAPI_SETTINGS
 
 ## Set the name of a settings object to debug it, or 'all' to debug all settings objects.
 #  i.e. "app" = APP_SETTINGS

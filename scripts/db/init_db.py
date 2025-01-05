@@ -1,8 +1,10 @@
-from loguru import logger as log
-import setup
+from __future__ import annotations
+
 import db
 import depends
+from loguru import logger as log
 import settings
+import setup
 
 if __name__ == "__main__":
     setup.setup_loguru_logging(log_level=settings.LOGGING_SETTINGS.get("LOG_LEVEL", default="INFO"))

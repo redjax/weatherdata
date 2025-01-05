@@ -43,6 +43,7 @@ class LocationOut(LocationIn):
     
     Attributes:
         id (int): The ID of the location.
+
     """
 
     id: int

@@ -1,15 +1,16 @@
+from __future__ import annotations
+
 import typing as t
+
 from cyclopts import App, Group, Parameter
-from loguru import logger as log
-
-import setup
 from depends import db_depends
-from weather_client.apis import api_weatherapi
+from loguru import logger as log
 import settings
-
+import setup
 import sqlalchemy as sa
 import sqlalchemy.exc as sa_exc
 import sqlalchemy.sql as sa_sql
+from weather_client.apis import api_weatherapi
 
 db_app = App(name="db", help="CLI for managing the database.")
 

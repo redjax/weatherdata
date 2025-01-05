@@ -1,11 +1,21 @@
+from __future__ import annotations
+
 import typing as t
-from cyclopts import App, Group, Parameter
-from domain.weatherapi import location as location_domain, weather as weather_domain
-from loguru import logger as log
 
-from scheduling.celery_scheduler import celeryapp, celery_settings, CelerySettings, check_task, start_celery
 from celery import Celery
-
+from cyclopts import App, Group, Parameter
+from domain.weatherapi import (
+    location as location_domain,
+    weather as weather_domain,
+)
+from loguru import logger as log
+from scheduling.celery_scheduler import (
+    CelerySettings,
+    celery_settings,
+    celeryapp,
+    check_task,
+    start_celery,
+)
 
 celery_app = App(name="celery", help="CLI for managing Celery scheduler.")
 

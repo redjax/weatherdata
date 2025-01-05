@@ -1,11 +1,12 @@
-from loguru import logger as log
+from __future__ import annotations
 
 import argparse
-import depends
+
 import db
+import depends
+from loguru import logger as log
 import settings
 import setup
-
 
 def parse_args():
     parser = argparse.ArgumentParser(

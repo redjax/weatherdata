@@ -1,12 +1,13 @@
+from __future__ import annotations
+
 from celery.result import AsyncResult
 import db
 import depends
 from loguru import logger as log
-from weather_client.apis import api_weatherapi
 from settings.logging_settings import LOGGING_SETTINGS
 import setup
-
 import sqlalchemy as sa
+from weather_client.apis import api_weatherapi
 
 demo_db_dict = {"drivername": "sqlite+pysqlite", "username": None, "password": None, "host": None, "port": None, "database": ".db/demo.sqlite3"}
 
