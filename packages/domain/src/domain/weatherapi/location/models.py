@@ -10,6 +10,27 @@ import sqlalchemy.exc as sa_exc
 import sqlalchemy.orm as so
 
 class LocationModel(Base):
+    """Location Model.
+    
+    Attributes:
+        id (int): The ID of the location record.
+        name (str): The name of the location.
+        region (str): The region of the location.
+        country (str): The country of the location.
+        lat (Decimal): The latitude of the location.
+        lon (Decimal): The longitude of the location.
+        tz_id (str): The time zone ID of the location.
+        localtime_epoch (int): The local time epoch of the location.
+        localtime (str): The local time of the location.
+        current_weather_entries (list[CurrentWeatherModel]): The current weather entries for the location.
+        forecast_weather_entries (list[ForecastDayModel]): The forecast weather entries for the location.
+    
+    Relationships:
+        current_weather_entries (list[CurrentWeatherModel]): The current weather entries for the location.
+        forecast_weather_entries (list[ForecastDayModel]): The forecast weather entries for the location.
+
+    """
+    
     __tablename__ = "weatherapi_location"
     __table_args__ = (sa.UniqueConstraint("name", "country", name="_name_country_uc"),)
 
