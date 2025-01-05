@@ -44,9 +44,11 @@ def show_db_info(option: t.Annotated[str, Parameter(name="option", show_default=
                 inspector = sa.inspect(engine)
                 tables = inspector.get_table_names()
                 if tables:
-                    log.info(f"Tables in the database: {tables}")
-                    # for table in tables:
-                    #     print(f" - {table}")
+                    log.debug(f"Tables in the database: {tables}")
+                    
+                    print(f"Tables [{len(tables)}]:")
+                    for table in tables:
+                        print(f" - {table}")
                 else:
                     log.warning("No tables found in the database.")
             except sa_exc.SQLAlchemyError as e:
