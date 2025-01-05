@@ -6,10 +6,11 @@ from . import start_celery_worker, start_celery_beat, CelerySettings, check_task
 
 from celery import Celery
 
+
 def worker(app: Celery):
     log.info("Starting Celery worker.")
     try:
-        start_celery_worker()
+        start_celery_worker(app=app)
     except Exception as exc:
         msg = f"({type(exc)}) Error running Celery worker. Details: {exc}"
         log.error(msg)
@@ -21,7 +22,7 @@ def worker(app: Celery):
 def beat(app: Celery):
     log.info("Starting Celery beat.")
     try:
-        start_celery_beat()
+        start_celery_beat(app=app)
     except Exception as exc:
         msg = f"({type(exc)}) Error running Celery beat. Details: {exc}"
         log.error(msg)
@@ -31,6 +32,11 @@ def beat(app: Celery):
     log.info("Celery beat stopped.")
 
 def start(app: Celery, mode: str):
+    if mode not in ["worker", "beat"]:
+        log.error(f"Unknown mode: {mode}")
+        
+        raise ValueError(f"Invalid mode: {mode}. Must be one of ['worker', 'beat']")
+
     match mode.lower():
         case "worker":
             worker(app=app)
@@ -39,10 +45,4 @@ def start(app: Celery, mode: str):
         case _:
             log.error(f"Unknown mode: {mode}")
             
-            raise ValueError(f"Invalid mode: {mode}. Must be one of ['worker', 'beat']")
-        
-
-if __name__ == "__main__":
-    setup.setup_loguru_logging(log_level=LOGGING_SETTINGS.get("LOG_LEVEL", default="INFO"), colorize=True)
-    log.add("logs/celery_worker.log", retention=3, rotation="15 MB", level="DEBUG")
-    log.add("logs/celery_worker_error.log", retention=3, rotation="15 MB", level="ERROR")
+            raise ValueError(f"Invalid mode: {mode}.")
