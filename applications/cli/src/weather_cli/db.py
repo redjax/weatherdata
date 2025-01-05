@@ -7,6 +7,10 @@ from depends import db_depends
 from weather_client.apis import api_weatherapi
 import settings
 
+import sqlalchemy as sa
+import sqlalchemy.exc as sa_exc
+import sqlalchemy.sql as sa_sql
+
 db_app = App(name="db", help="CLI for managing the database.")
 
 
@@ -23,3 +27,59 @@ def _init_db():
         log.error(msg)
         
         raise exc
+
+
+@db_app.command(name="show")
+def show_db_info(option: t.Annotated[str, Parameter(name="option", show_default=True, help="Options: ['tables']")]):
+    """Show information about the database."""
+    log.info(f"Showing database info: {option}")
+    
+    engine = db_depends.get_db_engine()
+    
+    match option.lower():
+        case "table" | "tables":
+            log.info("Showing database tables")
+            
+            try:
+                inspector = sa.inspect(engine)
+                tables = inspector.get_table_names()
+                if tables:
+                    log.info(f"Tables in the database: {tables}")
+                    # for table in tables:
+                    #     print(f" - {table}")
+                else:
+                    log.warning("No tables found in the database.")
+            except sa_exc.SQLAlchemyError as e:
+                print(f"Error inspecting database: {e}")
+                
+        case _:
+            log.error(f"Unknown option: {option}")
+            exit(1)
+
+
+@db_app.command(name="count")
+def count_db_rows(table: t.Annotated[str, Parameter(name="table", show_default=True)]):
+    """Count the number of rows in a table."""
+    log.info(f"Counting rows in table: {table}")
+    
+    engine = db_depends.get_db_engine()
+    session_pool = db_depends.get_session_pool(engine=engine)
+    
+    ## Count number of rows in given table name
+    with session_pool() as session:
+        if not sa.inspect(engine).has_table(table):
+            log.error(f"Table '{table}' does not exist.")
+            return
+        
+        query = sa_sql.text(f"SELECT COUNT(*) FROM {table}")
+        try:
+            count = session.execute(query).scalar()
+        except Exception as exc:
+            msg= f"({type(exc)}) Error counting rows in table '{table}'. Details: {exc}"
+            log.error(msg)
+            
+            raise exc
+        except sa_exc.SQLAlchemyError as exc:
+            log.error(f"Error querying table '{table}': {exc}")
+        
+        log.success(f"[{count}] row(s) in table '{table}'.")
