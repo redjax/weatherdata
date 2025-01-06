@@ -23,6 +23,8 @@ from loguru import logger as log
 from settings.app_settings import APP_SETTINGS
 from settings.celery_settings import CELERY_SETTINGS
 
+log.debug(f"Celery settings: {CELERY_SETTINGS.as_dict()}")
+
 ## Add paths Celery should look for tasks in
 INCLUDE_TASK_PATHS: list[str] = [
     "scheduling.celery_scheduler.celery_tasks.weatherapi_tasks.scheduled_tasks",
