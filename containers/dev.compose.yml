@@ -17,18 +17,31 @@ services:
     working_dir: /project
     user: appuser
     env_file:
-      - ./envs/dev.celery.env
+      - ./envs/dev.app.env
     environment:
       CELERY_LOG_LEVEL: ${CELERY_LOG_LEVEL:-INFO}
+
+      ## Broker
       CELERY_BROKER_HOST: ${CELERY_BROKER_HOST:-rabbitmq}
       CELERY_BROKER_PORT: ${CELERY_BROKER_PORT:-5672}
       CELERY_BROKER_USERNAME: ${CELERY_BROKER_USERNAME:-rabbitmq}
       CELERY_BROKER_PASSWORD: ${CELERY_BROKER_PASSWORD:-rabbitmq}
       CELERY_BROKER_VHOST: ${CELERY_BROKER_VHOST:-/}
 
+      ## Backend
       CELERY_BACKEND_HOST: ${CELERY_BACKEND_HOST:-redis}
       CELERY_BACKEND_PORT: ${CELERY_BACKEND_PORT:-6379}
       CELERY_BACKEND_PASSWORD: ${CELERY_BACKEND_PASSWORD}
+
+      ## Database
+      WEATHERDATA_DB_TYPE: ${WEATHERDATA_DB_TYPE:-sqlite}
+      WEATHERDATA_DB_DRIVERNAME: ${WEATHERDATA_DB_DRIVERNAME:-"sqlite+pysqlite"}
+      WEATHERDATA_DB_USERNAME: ${WEATHERDATA_DB_USERNAME}
+      WEATHERDATA_DB_PASSWORD: ${WEATHERDATA_DB_PASSWORD}
+      WEATHERDATA_DB_HOST: ${WEATHERDATA_DB_HOST}
+      WEATHERDATA_DB_PORT: ${WEATHERDATA_DB_PORT}
+      WEATHERDATA_DB_DATABASE: ${WEATHERDATA_DB_DATABASE:-db.sqlite3}
+      WEATHERDATA_DB_ECHO: ${WEATHERDATA_DB_ECHO:-false}
     volumes:
       - ./applications:/project/applications
       - ./packages:/project/packages
@@ -47,18 +60,31 @@ services:
     working_dir: /project
     user: appuser
     env_file:
-      - ./envs/dev.celery.env
+      - ./envs/dev.app.env
     environment:
       CELERY_LOG_LEVEL: ${CELERY_LOG_LEVEL:-INFO}
+
+      ## Broker
       CELERY_BROKER_HOST: ${CELERY_BROKER_HOST:-rabbitmq}
       CELERY_BROKER_PORT: ${CELERY_BROKER_PORT:-5672}
       CELERY_BROKER_USERNAME: ${CELERY_BROKER_USERNAME:-rabbitmq}
       CELERY_BROKER_PASSWORD: ${CELERY_BROKER_PASSWORD:-rabbitmq}
       CELERY_BROKER_VHOST: ${CELERY_BROKER_VHOST:-/}
 
+      ## Backend
       CELERY_BACKEND_HOST: ${CELERY_BACKEND_HOST:-redis}
       CELERY_BACKEND_PORT: ${CELERY_BACKEND_PORT:-6379}
-      CELERY_BACKEND_PASSWORD: ${CELERY_BACKEND_PASSWORD:-redis}
+      CELERY_BACKEND_PASSWORD: ${CELERY_BACKEND_PASSWORD}
+
+      ## Database
+      WEATHERDATA_DB_TYPE: ${WEATHERDATA_DB_TYPE:-sqlite}
+      WEATHERDATA_DB_DRIVERNAME: ${WEATHERDATA_DB_DRIVERNAME:-"sqlite+pysqlite"}
+      WEATHERDATA_DB_USERNAME: ${WEATHERDATA_DB_USERNAME}
+      WEATHERDATA_DB_PASSWORD: ${WEATHERDATA_DB_PASSWORD}
+      WEATHERDATA_DB_HOST: ${WEATHERDATA_DB_HOST}
+      WEATHERDATA_DB_PORT: ${WEATHERDATA_DB_PORT}
+      WEATHERDATA_DB_DATABASE: ${WEATHERDATA_DB_DATABASE:-db.sqlite3}
+      WEATHERDATA_DB_ECHO: ${WEATHERDATA_DB_ECHO:-false}
     volumes:
       - ./applications:/project/applications
       - ./packages:/project/packages
