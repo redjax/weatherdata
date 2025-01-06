@@ -1,0 +1,48 @@
+---
+services:
+  celery_beat:
+    container_name: ${CELERY_BEAT_CONTAINER_NAME:-weatherdata_celery_beat}
+    restart: unless-stopped
+    build:
+      context: ..
+      dockerfile: ./containers/dockerfiles/celery.Dockerfile
+      target: celery_beat
+    working_dir: /project
+    user: appuser
+    env_file:
+      - ./envs/dev.env
+    environment:
+      CELERY_LOG_LEVEL: ${CELERY_LOG_LEVEL:-INFO}
+      CELERY_BROKER_HOST: ${CELERY_BROKER_HOST:-rabbitmq}
+      CELERY_BROKER_PORT: ${CELERY_BROKER_PORT:-5672}
+      CELERY_BROKER_USERNAME: ${CELERY_BROKER_USERNAME:-rabbitmq}
+      CELERY_BROKER_PASSWORD: ${CELERY_BROKER_PASSWORD:-rabbitmq}
+      CELERY_BROKER_VHOST: ${CELERY_BROKER_VHOST:-/}
+
+      CELERY_BACKEND_HOST: ${CELERY_BACKEND_HOST:-redis}
+      CELERY_BACKEND_PORT: ${CELERY_BACKEND_PORT:-6379}
+      CELERY_BACKEND_PASSWORD: ${CELERY_BACKEND_PASSWORD:-redis}
+
+  celery_worker:
+    container_name: ${CELERY_WORKER_CONTAINER_NAME:-weatherdata_celery_WORKER}
+    restart: unless-stopped
+    build:
+      context: ..
+      dockerfile: ./containers/dockerfiles/celery.Dockerfile
+      target: celery_worker
+    working_dir: /project
+    user: appuser
+    env_file:
+      - ./envs/dev.env
+    environment:
+      CELERY_LOG_LEVEL: ${CELERY_LOG_LEVEL:-INFO}
+      CELERY_BROKER_HOST: ${CELERY_BROKER_HOST:-rabbitmq}
+      CELERY_BROKER_PORT: ${CELERY_BROKER_PORT:-5672}
+      CELERY_BROKER_USERNAME: ${CELERY_BROKER_USERNAME:-rabbitmq}
+      CELERY_BROKER_PASSWORD: ${CELERY_BROKER_PASSWORD:-rabbitmq}
+      CELERY_BROKER_VHOST: ${CELERY_BROKER_VHOST:-/}
+
+      CELERY_BACKEND_HOST: ${CELERY_BACKEND_HOST:-redis}
+      CELERY_BACKEND_PORT: ${CELERY_BACKEND_PORT:-6379}
+      CELERY_BACKEND_PASSWORD: ${CELERY_BACKEND_PASSWORD:-redis}
+
