@@ -19,6 +19,11 @@ services:
     env_file:
       - ./envs/dev.app.env
     environment:
+      TZ: ${TZ:-Etc/UTC}
+
+      ## Python app logging level
+      LOG_LEVEL: ${APP_LOG_LEVEL:-INFO}
+      ## Celery logging level
       CELERY_LOG_LEVEL: ${CELERY_LOG_LEVEL:-INFO}
 
       ## Broker
@@ -34,14 +39,18 @@ services:
       CELERY_BACKEND_PASSWORD: ${CELERY_BACKEND_PASSWORD}
 
       ## Database
-      WEATHERDATA_DB_TYPE: ${WEATHERDATA_DB_TYPE:-sqlite}
-      WEATHERDATA_DB_DRIVERNAME: ${WEATHERDATA_DB_DRIVERNAME:-"sqlite+pysqlite"}
-      WEATHERDATA_DB_USERNAME: ${WEATHERDATA_DB_USERNAME}
-      WEATHERDATA_DB_PASSWORD: ${WEATHERDATA_DB_PASSWORD}
-      WEATHERDATA_DB_HOST: ${WEATHERDATA_DB_HOST}
-      WEATHERDATA_DB_PORT: ${WEATHERDATA_DB_PORT}
-      WEATHERDATA_DB_DATABASE: ${WEATHERDATA_DB_DATABASE:-db.sqlite3}
-      WEATHERDATA_DB_ECHO: ${WEATHERDATA_DB_ECHO:-false}
+      DB_TYPE: ${WEATHERDATA_DB_TYPE:-sqlite}
+      DB_DRIVERNAME: ${WEATHERDATA_DB_DRIVERNAME:-"sqlite+pysqlite"}
+      DB_USERNAME: ${WEATHERDATA_DB_USERNAME}
+      DB_PASSWORD: ${WEATHERDATA_DB_PASSWORD}
+      DB_HOST: ${WEATHERDATA_DB_HOST}
+      DB_PORT: ${WEATHERDATA_DB_PORT}
+      DB_DATABASE: ${WEATHERDATA_DB_DATABASE:-db.sqlite3}
+      DB_ECHO: ${WEATHERDATA_DB_ECHO:-false}
+
+      ## WeatherAPI
+      WEATHERAPI_LOCATION_NAME: ${WEATHERDATA_WEATHERAPI_LOCATION_NAME:-London}
+      WEATHERAPI_API_KEY: ${WEATHERDATA_WEATHERAPI_API_KEY}
     volumes:
       - ./applications:/project/applications
       - ./packages:/project/packages
@@ -62,6 +71,11 @@ services:
     env_file:
       - ./envs/dev.app.env
     environment:
+      TZ: ${TZ:-Etc/UTC}
+
+      ## Python app logging level
+      LOG_LEVEL: ${APP_LOG_LEVEL:-INFO}
+      ## Celery logging level
       CELERY_LOG_LEVEL: ${CELERY_LOG_LEVEL:-INFO}
 
       ## Broker
