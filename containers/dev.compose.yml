@@ -1,0 +1,122 @@
+---
+volumes:
+  redis_data:
+  rabbitmq_data:
+
+networks:
+  weatherdata_devnet:
+
+services:
+  celery_beat:
+    container_name: ${CELERY_BEAT_CONTAINER_NAME:-weatherdata_celery_beat}
+    restart: unless-stopped
+    build:
+      context: ..
+      dockerfile: ./containers/dockerfiles/celery.Dockerfile
+      target: celery_beat
+    working_dir: /project
+    user: appuser
+    env_file:
+      - ./envs/dev.celery.env
+    environment:
+      CELERY_LOG_LEVEL: ${CELERY_LOG_LEVEL:-INFO}
+      CELERY_BROKER_HOST: ${CELERY_BROKER_HOST:-rabbitmq}
+      CELERY_BROKER_PORT: ${CELERY_BROKER_PORT:-5672}
+      CELERY_BROKER_USERNAME: ${CELERY_BROKER_USERNAME:-rabbitmq}
+      CELERY_BROKER_PASSWORD: ${CELERY_BROKER_PASSWORD:-rabbitmq}
+      CELERY_BROKER_VHOST: ${CELERY_BROKER_VHOST:-/}
+
+      CELERY_BACKEND_HOST: ${CELERY_BACKEND_HOST:-redis}
+      CELERY_BACKEND_PORT: ${CELERY_BACKEND_PORT:-6379}
+      CELERY_BACKEND_PASSWORD: ${CELERY_BACKEND_PASSWORD}
+    volumes:
+      - ./applications:/project/applications
+      - ./packages:/project/packages
+      - ./scripts:/project/scripts
+      - ./src:/project/src
+    networks:
+      - weatherdata_devnet
+
+  celery_worker:
+    container_name: ${CELERY_WORKER_CONTAINER_NAME:-weatherdata_celery_worker}
+    restart: unless-stopped
+    build:
+      context: ..
+      dockerfile: ./containers/dockerfiles/celery.Dockerfile
+      target: celery_worker
+    working_dir: /project
+    user: appuser
+    env_file:
+      - ./envs/dev.celery.env
+    environment:
+      CELERY_LOG_LEVEL: ${CELERY_LOG_LEVEL:-INFO}
+      CELERY_BROKER_HOST: ${CELERY_BROKER_HOST:-rabbitmq}
+      CELERY_BROKER_PORT: ${CELERY_BROKER_PORT:-5672}
+      CELERY_BROKER_USERNAME: ${CELERY_BROKER_USERNAME:-rabbitmq}
+      CELERY_BROKER_PASSWORD: ${CELERY_BROKER_PASSWORD:-rabbitmq}
+      CELERY_BROKER_VHOST: ${CELERY_BROKER_VHOST:-/}
+
+      CELERY_BACKEND_HOST: ${CELERY_BACKEND_HOST:-redis}
+      CELERY_BACKEND_PORT: ${CELERY_BACKEND_PORT:-6379}
+      CELERY_BACKEND_PASSWORD: ${CELERY_BACKEND_PASSWORD:-redis}
+    volumes:
+      - ./applications:/project/applications
+      - ./packages:/project/packages
+      - ./scripts:/project/scripts
+      - ./src:/project/src
+    networks:
+      - weatherdata_devnet
+
+  redis:
+    image: redis:alpine
+    container_name: weatherdata_redis
+    restart: unless-stopped
+    command: ["redis-server", "--requirepass", "${REDIS_PASSWORD:-redis}"]
+    env_file:
+      - ./envs/dev.env
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-redis}
+    volumes:
+      - ${REDIS_DATA_DIR:-redis_data}:/data
+    ports:
+      - ${REDIS_PORT:-6379}:6379
+    networks:
+      - weatherdata_devnet
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: weatherdata_redis-commander
+    restart: unless-stopped
+    env_file:
+      - ./envs/dev.env
+    environment:
+      REDIS_HOSTS: redis
+      REDIS_HOST: redis
+      REDIS_PORT: redis:6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-redis}
+      HTTP_USER: ${REDIS_COMMANDER_HTTP_USER:-admin}
+      HTTP_PASSWORD: ${REDIS_COMMANDER_HTTP_PASSWORD:-admin}
+    ports:
+      - ${REDIS_COMMANDER_PORT:-8081}:8081
+    depends_on:
+      - redis
+    networks:
+      - weatherdata_devnet
+
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: weatherdata_rabbitmq
+    restart: unless-stopped
+    env_file:
+      - ./envs/dev.env
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-rabbitmq}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS:-rabbitmq}
+      RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_VHOST:-rabbitmq}
+    volumes:
+      - ${RABBITMQ_DATA_DIR:-rabbitmq_data}:/var/lib/rabbitmq
+    ports:
+      - ${RABBITMQ_AMPQ_PORT:-5672}:5672
+      - ${RABBITMQ_HTTP_PORT:-15672}:15672
+    networks:
+      - weatherdata_devnet
