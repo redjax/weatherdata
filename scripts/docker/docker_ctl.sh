@@ -57,7 +57,7 @@ function run_compose() {
         echo "Compose file found at path: ${COMPOSE_FILE_PATH}"
     fi
 
-    echo "[INFO] Running: docker compose -f ${COMPOSE_FILE_PATH} $*"
+    debug "Running Docker Compose command: $*"
     docker compose -f "${COMPOSE_FILE_PATH}" "$@"
 }
 
@@ -89,8 +89,36 @@ case "$1" in
         echo "Bring down Compose stack"
         run_compose down
         ;;
+    logs)
+        ## Capture everything after "logs" as container name
+        CONTAINER_NAME="${ARGS[@]:1}" # Get all arguments after "logs"
+        if [[ -z "$CONTAINER_NAME" ]]; then
+            echo "Usage: $0 logs <container_name> [--debug]"
+            exit 1
+        fi
+        debug "Fetching logs for container: $CONTAINER_NAME"
+        run_compose logs -f "$CONTAINER_NAME"
+        ;;
+    restart)
+        ## Capture all arguments after "restart"
+        CONTAINERS=("${ARGS[@]:1}") 
+        if [[ -z "${CONTAINERS[*]}" ]]; then
+            echo "Usage: $0 restart {all|<container_name> ...} [--debug]"
+            exit 1
+        fi
+
+        if [[ "${CONTAINERS[0]}" == "all" ]]; then
+            debug "Restarting all containers"
+            run_compose restart
+        else
+            for container in "${CONTAINERS[@]}"; do
+                debug "Restarting container: $container"
+                run_compose restart "$container"
+            done
+        fi
+        ;;
     *)
-        echo "Usage: $0 {build|up [build]|down}"
+        echo "Usage: $0 {logs|build|up [build]|down}"
         exit 1
         ;;
 esac
