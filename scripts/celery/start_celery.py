@@ -13,7 +13,7 @@ from scheduling.celery_scheduler import (
     start_celery_beat,
     start_celery_worker,
 )
-from settings import APP_SETTINGS, LOGGING_SETTINGS, DB_SETTINGS
+from settings import APP_SETTINGS, LOGGING_SETTINGS, DB_SETTINGS, CELERY_SETTINGS
 import setup
 
 def parse_args():
@@ -40,12 +40,13 @@ def run(app: Celery, mode: str):
         return False
 
 if __name__ == "__main__":
-    setup.setup_loguru_logging(log_level=LOGGING_SETTINGS.get("LOG_LEVEL", default="INFO"), colorize=True, add_file_logger=True, add_error_file_logger=True)
+    setup.setup_loguru_logging(log_level=LOGGING_SETTINGS.get("LOG_LEVEL", default="INFO"), colorize=True)
     setup.setup_database()
     
     log.debug(f"App settings: {APP_SETTINGS.as_dict()}")
     log.debug(f"Logging settings: {LOGGING_SETTINGS.as_dict()}")
     log.debug(f"Database settings: {DB_SETTINGS.as_dict()}")
+    log.debug(f"Celery settings: {CELERY_SETTINGS.as_dict()}")
     
     args = parse_args()
     

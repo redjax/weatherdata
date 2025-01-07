@@ -14,6 +14,7 @@ from pydantic import (
 )
 from settings.celery_settings import CELERY_SETTINGS
 
+
 def return_rabbitmq_url(
     username: str = CELERY_SETTINGS.get("CELERY_BROKER_USERNAME", default="guest"),
     password: str | None = CELERY_SETTINGS.get("CELERY_BROKER_PASSWORD", default=""),
@@ -116,3 +117,4 @@ class CelerySettings(BaseModel):
 
 
 celery_settings: CelerySettings = CelerySettings()
+log.debug(f"celery_settings class object: {celery_settings}")

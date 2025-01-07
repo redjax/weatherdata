@@ -17,12 +17,16 @@ RUN apt-get update -y \
 RUN groupadd -g 1001 appuser \
     && useradd -m -u 1001 -g appuser appuser
 
-RUN mkdir -p /project &&chown -R appuser:appuser /project
+RUN mkdir -p /project /weatherdata \
+    && chown -R appuser:appuser /project \
+    && chown -R appuser:appuser /weatherdata
 
 FROM base AS stage
 
 WORKDIR /project
 USER appuser
+
+COPY --from=base /weatherdata /weatherdata
 
 COPY pyproject.toml uv.lock README.md ./
 
@@ -35,6 +39,7 @@ COPY src/ src/
 FROM stage AS build
 
 COPY --from=stage /project /project
+COPY --from=stage /weatherdata /weatherdata
 COPY --from=uv /uv /usr/bin/uv
 
 WORKDIR /project
@@ -47,6 +52,7 @@ RUN uv sync --all-extras \
 FROM build AS celery_beat
 
 COPY --from=build /project /project
+COPY --from=build /weatherdata /weatherdata
 COPY --from=uv /uv /usr/bin/uv
 
 WORKDIR /project

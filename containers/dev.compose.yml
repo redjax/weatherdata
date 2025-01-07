@@ -19,12 +19,13 @@ services:
     depends_on:
       - rabbitmq
       - redis
-    # env_file:
-    #   - ./envs/dev.app.env
+    env_file:
+      - ./envs/dev.app.env
     command: ["uv", "run", "scripts/celery/start_celery.py", "-m", "beat"]
     # ## Uncomment for debugging
     # # command: ["/bin/bash"]
     # environment:
+    #   ENVVAR_PREFX_FOR_DYNACONF: "DYNACONF"
     #   DYNACONF_TZ: ${TZ:-Etc/UTC}
 
     #   ## Python app logging level
@@ -62,7 +63,7 @@ services:
       - ../packages:/project/packages
       - ../scripts:/project/scripts
       - ../src:/project/src
-      - ./container_data/weatherdata/celery_beat/logs:/project/logs
+      - ./container_data/weatherdata/db:/weatherdata/db
     networks:
       - weatherdata_devnet
 
