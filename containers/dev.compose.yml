@@ -62,6 +62,7 @@ services:
       - ../packages:/project/packages
       - ../scripts:/project/scripts
       - ../src:/project/src
+      - ./container_data/weatherdata/celery_beat/logs:/project/logs
     networks:
       - weatherdata_devnet
 
@@ -120,6 +121,7 @@ services:
       - ../packages:/project/packages
       - ../scripts:/project/scripts
       - ../src:/project/src
+      - ./container_data/weatherdata/celery_worker/logs:/project/logs
     networks:
       - weatherdata_devnet
 

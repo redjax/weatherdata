@@ -40,7 +40,7 @@ def run(app: Celery, mode: str):
         return False
 
 if __name__ == "__main__":
-    setup.setup_loguru_logging(log_level=LOGGING_SETTINGS.get("LOG_LEVEL", default="INFO"), colorize=True)
+    setup.setup_loguru_logging(log_level=LOGGING_SETTINGS.get("LOG_LEVEL", default="INFO"), colorize=True, add_file_logger=True, add_error_file_logger=True)
     setup.setup_database()
     
     log.debug(f"App settings: {APP_SETTINGS.as_dict()}")

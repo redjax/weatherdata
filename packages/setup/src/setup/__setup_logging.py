@@ -68,8 +68,12 @@ def setup_loguru_logging(
     log_level: str = "INFO",
     enable_loggers: list[str] = ["auto_weather"],
     add_file_logger: bool = False,
+    app_log_file: str = "logs/app.log",
     add_error_file_logger: bool = False,
-    colorize: bool = False
+    error_log_file: str = "logs/error.log",
+    colorize: bool = False,
+    retention: int = 3,
+    rotation: str = "15 MB",
 ):
     """Setup loguru logging.
 
@@ -93,7 +97,7 @@ def setup_loguru_logging(
             logger.enable(_logger)
 
     if add_file_logger:
-        logger.add("logs/app.log", retention=3, rotation="15 MB", level="DEBUG")
+        logger.add(app_log_file, retention=retention, rotation=rotation, level="DEBUG")
 
     if add_error_file_logger:
-        logger.add("logs/error.log", retention=3, rotation="15 MB", level="ERROR")
+        logger.add(error_log_file, retention=retention, rotation=rotation, level="ERROR")
