@@ -8,7 +8,27 @@ dramtiq_rabbitmq_vhost = "/"
 dramatiq_redis_host = "localhost"
 dramatiq_redis_port = 6379
 
-[dramatiq]
+[dev]
+
+dramatiq_rabbitmq_host = "localhost"
+dramatiq_rabbitmq_port = 5672
+dramatiq_rabbitmq_username = "guest"
+dramtiq_rabbitmq_vhost = "/"
+
+dramatiq_redis_host = "localhost"
+dramatiq_redis_port = 6379
+
+[rc]
+
+dramatiq_rabbitmq_host = "localhost"
+dramatiq_rabbitmq_port = 5672
+dramatiq_rabbitmq_username = "guest"
+dramtiq_rabbitmq_vhost = "/"
+
+dramatiq_redis_host = "localhost"
+dramatiq_redis_port = 6379
+
+[prod]
 
 dramatiq_rabbitmq_host = "localhost"
 dramatiq_rabbitmq_port = 5672

@@ -3,6 +3,12 @@
 log_level = "INFO"
 tz = "Etc/UTC"
 
-[logging]
-# log_level = "DEBUG"
+[dev]
+log_level = "DEBUG"
 # tz = ""
+
+[rc]
+log_level = "DEBUG"
+
+[prod]
+log_level = "INFO"
