@@ -10,16 +10,22 @@ RUN apt-get update -y \
         iputils-ping \
         libmemcached-dev \
         zlib1g-dev \
+        curl \
+        ca-certificates \
+        software-properties-common \
+        apt-transport-https \
+        sudo \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
 ## Create container user
 RUN groupadd -g 1001 appuser \
-    && useradd -m -u 1001 -g appuser appuser
+    && useradd -m -u 1001 -g appuser appuser \
+    && echo "appuser ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
-RUN mkdir -p /project /weatherdata/db /logs
+RUN mkdir -p /project /weatherdata/db /weatherdata/logs
 
-RUN chown -R appuser:appuser /project /weatherdata /logs \
+RUN chown -R appuser:appuser /project /weatherdata \
     && chmod -R 777 /weatherdata/db
 
 FROM base AS stage
@@ -30,6 +36,7 @@ USER appuser
 COPY --from=base /weatherdata /weatherdata
 
 COPY pyproject.toml uv.lock README.md ./
+COPY containers/entrypoints/dev.entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 
 ## Copy monorepo domains
 COPY applications/ applications/
@@ -53,9 +60,15 @@ RUN uv sync --all-extras \
 FROM build AS celery_beat
 
 COPY --from=build /project /project
-COPY --from=build /logs /logs
 COPY --from=build /weatherdata /weatherdata
 COPY --from=uv /uv /usr/bin/uv
+COPY --from=stage /usr/local/bin/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+
+USER root
+RUN chown -R appuser:appuser /project /weatherdata \
+    && chmod -R 777 /weatherdata/db
+
+ENTRYPOINT [ "sudo", "/usr/local/bin/docker-entrypoint.sh" ]
 
 WORKDIR /project
 USER appuser
@@ -65,8 +78,14 @@ CMD ["uv", "run", "scripts/celery/start_celery.py", "-m", "beat"]
 FROM build AS celery_worker
 
 COPY --from=build /project /project
-COPY --from=build /logs /logs
 COPY --from=build /weatherdata /weatherdata
+COPY --from=stage /usr/local/bin/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+
+USER root
+# RUN chown appuser:appuser /usr/local/bin/docker-entrypoint.sh \
+#     && chmod u+x /usr/local/bin/docker-entrypoint.sh
+
+ENTRYPOINT [ "sudo", "/usr/local/bin/docker-entrypoint.sh" ]
 
 WORKDIR /project
 USER appuser

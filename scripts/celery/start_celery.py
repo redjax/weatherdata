@@ -41,7 +41,13 @@ def run(app: Celery, mode: str):
 
 if __name__ == "__main__":
     setup.setup_loguru_logging(log_level=LOGGING_SETTINGS.get("LOG_LEVEL", default="INFO"), colorize=True)
-    setup.setup_database()
+    try:
+        setup.setup_database()
+    except Exception as exc:
+        msg = f"({type(exc)}) Error setting up database. Details: {exc}"
+        log.error(msg)
+        
+        raise
     
     log.debug(f"App settings: {APP_SETTINGS.as_dict()}")
     log.debug(f"Logging settings: {LOGGING_SETTINGS.as_dict()}")
