@@ -203,4 +203,5 @@ site/
 
 ## Ignore direnv environment files
 .direnv/.*
+.direnv/**/ */.secrets
 !.direnv/*.*example*
