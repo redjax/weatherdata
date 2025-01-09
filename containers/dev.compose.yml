@@ -24,40 +24,6 @@ services:
     command: ["uv", "run", "scripts/celery/start_celery.py", "-m", "beat"]
     # ## Uncomment for debugging
     # # command: ["/bin/bash"]
-    # environment:
-    #   ENVVAR_PREFX_FOR_DYNACONF: "DYNACONF"
-    #   DYNACONF_TZ: ${TZ:-Etc/UTC}
-
-    #   ## Python app logging level
-    #   DYNACONF_LOG_LEVEL: ${APP_LOG_LEVEL:-INFO}
-    #   ## Celery logging level
-    #   DYNACONF_CELERY_LOG_LEVEL: ${CELERY_LOG_LEVEL:-INFO}
-
-    #   ## Broker
-    #   DYNACONF_CELERY_BROKER_HOST: ${CELERY_BROKER_HOST:-rabbitmq}
-    #   DYNACONF_CELERY_BROKER_PORT: ${CELERY_BROKER_PORT:-5672}
-    #   DYNACONF_CELERY_BROKER_USERNAME: ${CELERY_BROKER_USERNAME:-rabbitmq}
-    #   DYNACONF_CELERY_BROKER_PASSWORD: ${CELERY_BROKER_PASSWORD:-rabbitmq}
-    #   DYNACONF_CELERY_BROKER_VHOST: ${CELERY_BROKER_VHOST:-/}
-
-    #   ## Backend
-    #   DYNACONF_CELERY_BACKEND_HOST: ${CELERY_BACKEND_HOST:-redis}
-    #   DYNACONF_CELERY_BACKEND_PORT: ${CELERY_BACKEND_PORT:-6379}
-    #   DYNACONF_CELERY_BACKEND_PASSWORD: ${CELERY_BACKEND_PASSWORD}
-
-    #   ## Database
-    #   DYNACONF_DB_TYPE: ${WEATHERDATA_DB_TYPE:-sqlite}
-    #   DYNACONF_DB_DRIVERNAME: ${WEATHERDATA_DB_DRIVERNAME:-"sqlite+pysqlite"}
-    #   DYNACONF_DB_USERNAME: ${WEATHERDATA_DB_USERNAME}
-    #   DYNACONF_DB_PASSWORD: ${WEATHERDATA_DB_PASSWORD}
-    #   DYNACONF_DB_HOST: ${WEATHERDATA_DB_HOST}
-    #   DYNACONF_DB_PORT: ${WEATHERDATA_DB_PORT}
-    #   DYNACONF_DB_DATABASE: ${WEATHERDATA_DB_DATABASE:-db.sqlite3}
-    #   DYNACONF_DB_ECHO: ${WEATHERDATA_DB_ECHO:-false}
-
-    #   ## WeatherAPI
-    #   DYNACONF_WEATHERAPI_LOCATION_NAME: ${WEATHERDATA_WEATHERAPI_LOCATION_NAME:-London}
-    #   DYNACONF_WEATHERAPI_API_KEY: ${WEATHERDATA_WEATHERAPI_API_KEY}
     volumes:
       - ../applications:/project/applications
       - ../packages:/project/packages
@@ -82,41 +48,6 @@ services:
     env_file:
       - ./envs/dev.app.env
     command: ["uv", "run", "scripts/celery/start_celery.py", "-m", "worker"]
-    ## Uncomment for debugging
-    # command: ["/bin/bash"]
-    # environment:
-    #   DYNACONF_TZ: ${TZ:-Etc/UTC}
-
-    #   ## Python app logging level
-    #   DYNACONF_LOG_LEVEL: ${APP_LOG_LEVEL:-INFO}
-    #   ## Celery logging level
-    #   DYNACONF_CELERY_LOG_LEVEL: ${CELERY_LOG_LEVEL:-INFO}
-
-    #   ## Broker
-    #   DYNACONF_CELERY_BROKER_HOST: ${CELERY_BROKER_HOST:-rabbitmq}
-    #   DYNACONF_CELERY_BROKER_PORT: ${CELERY_BROKER_PORT:-5672}
-    #   DYNACONF_CELERY_BROKER_USERNAME: ${CELERY_BROKER_USERNAME:-rabbitmq}
-    #   DYNACONF_CELERY_BROKER_PASSWORD: ${CELERY_BROKER_PASSWORD:-rabbitmq}
-    #   DYNACONF_CELERY_BROKER_VHOST: ${CELERY_BROKER_VHOST:-/}
-
-    #   ## Backend
-    #   DYNACONF_CELERY_BACKEND_HOST: ${CELERY_BACKEND_HOST:-redis}
-    #   DYNACONF_CELERY_BACKEND_PORT: ${CELERY_BACKEND_PORT:-6379}
-    #   DYNACONF_CELERY_BACKEND_PASSWORD: ${CELERY_BACKEND_PASSWORD}
-
-    #   ## Database
-    #   DYNACONF_DB_TYPE: ${WEATHERDATA_DB_TYPE:-sqlite}
-    #   DYNACONF_DB_DRIVERNAME: ${WEATHERDATA_DB_DRIVERNAME:-"sqlite+pysqlite"}
-    #   DYNACONF_DB_USERNAME: ${WEATHERDATA_DB_USERNAME}
-    #   DYNACONF_DB_PASSWORD: ${WEATHERDATA_DB_PASSWORD}
-    #   DYNACONF_DB_HOST: ${WEATHERDATA_DB_HOST}
-    #   DYNACONF_DB_PORT: ${WEATHERDATA_DB_PORT}
-    #   DYNACONF_DB_DATABASE: ${WEATHERDATA_DB_DATABASE:-db.sqlite3}
-    #   DYNACONF_DB_ECHO: ${WEATHERDATA_DB_ECHO:-false}
-
-    #   ## WeatherAPI
-    #   DYNACONF_WEATHERAPI_LOCATION_NAME: ${WEATHERDATA_WEATHERAPI_LOCATION_NAME:-London}
-    #   DYNACONF_WEATHERAPI_API_KEY: ${WEATHERDATA_WEATHERAPI_API_KEY}
     volumes:
       - ../applications:/project/applications
       - ../packages:/project/packages

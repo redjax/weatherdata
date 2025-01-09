@@ -17,9 +17,10 @@ RUN apt-get update -y \
 RUN groupadd -g 1001 appuser \
     && useradd -m -u 1001 -g appuser appuser
 
-RUN mkdir -p /project /weatherdata \
-    && chown -R appuser:appuser /project \
-    && chown -R appuser:appuser /weatherdata
+RUN mkdir -p /project /weatherdata/db /logs
+
+RUN chown -R appuser:appuser /project /weatherdata /logs \
+    && chmod -R 777 /weatherdata/db
 
 FROM base AS stage
 
@@ -52,6 +53,7 @@ RUN uv sync --all-extras \
 FROM build AS celery_beat
 
 COPY --from=build /project /project
+COPY --from=build /logs /logs
 COPY --from=build /weatherdata /weatherdata
 COPY --from=uv /uv /usr/bin/uv
 
@@ -63,7 +65,8 @@ CMD ["uv", "run", "scripts/celery/start_celery.py", "-m", "beat"]
 FROM build AS celery_worker
 
 COPY --from=build /project /project
-COPY --from=uv /uv /usr/bin/uv
+COPY --from=build /logs /logs
+COPY --from=build /weatherdata /weatherdata
 
 WORKDIR /project
 USER appuser
