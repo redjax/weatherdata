@@ -9,7 +9,6 @@ from .weather import weather_app
 
 from cyclopts import App, Group, Parameter
 from loguru import logger as log
-from setup import setup_loguru_logging
 
 app = App(name="weathercli", help="CLI for WeatherData app.")
 
@@ -28,7 +27,7 @@ def cli_launcher(*tokens: t.Annotated[str, Parameter(show=False, allow_leading_h
     Params:
         debug (bool): If `True`, enables debug logging.
     """
-    log.remove(0)
+    # log.remove(0)
     
     if debug:
         log.add(sys.stderr, format="{time:YYYY-MM-DD HH:mm:ss} | [{level}] | {name}.{function}:{line} |> {message}", level="DEBUG")

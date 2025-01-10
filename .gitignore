@@ -200,3 +200,8 @@ cython_debug/
 site/
 
 .data/*/output
+
+## Ignore direnv environment files
+.direnv/.*
+.direnv/**/.*
+!.direnv/*.*example*

@@ -2,6 +2,14 @@
 
 weatherapi_location_name = "London"
 
-[weatherapi]
+[dev]
+
+# weatherapi_location_name = "<your location>"
+
+[rc]
+
+# weatherapi_location_name = "<your location>"
+
+[prod]
 
 # weatherapi_location_name = "<your location>"

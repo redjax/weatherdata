@@ -13,7 +13,7 @@ from scheduling.celery_scheduler import (
     start_celery_beat,
     start_celery_worker,
 )
-from settings.logging_settings import LOGGING_SETTINGS
+from settings import APP_SETTINGS, LOGGING_SETTINGS, DB_SETTINGS, CELERY_SETTINGS
 import setup
 
 def parse_args():
@@ -40,13 +40,33 @@ def run(app: Celery, mode: str):
         return False
 
 if __name__ == "__main__":
-    setup.setup_loguru_logging(log_level=LOGGING_SETTINGS.get("LOG_LEVEL", default="INFO"), colorize=True)
-    setup.setup_database()
+    setup.setup_loguru_logging(log_level=LOGGING_SETTINGS.get("LOG_LEVEL", default="INFO"), log_fmt="basic", colorize=True)
+    try:
+        setup.setup_database()
+    except Exception as exc:
+        msg = f"({type(exc)}) Error setting up database. Details: {exc}"
+        log.error(msg)
+        
+        raise
+    
+    log.debug(f"""
+[App settings]
+{APP_SETTINGS.as_dict()}
+
+[Logging settings]
+{LOGGING_SETTINGS.as_dict()}
+
+Database settings]
+{DB_SETTINGS.as_dict()}
+
+[Celery settings]
+{CELERY_SETTINGS.as_dict()}
+""")
     
     args = parse_args()
     
     if not args.mode:
-        print(f"[WARNING] Missing a --mode (-m). Please re-run with -m ['beat', 'worker'] (choose 1).")
+        log.error(f"[WARNING] Missing a --mode (-m). Please re-run with -m ['beat', 'worker'] (choose 1).")
         exit(1)
         
     try:

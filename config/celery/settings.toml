@@ -7,7 +7,7 @@ celery_broker_vhost = "/"
 celery_backend_host = "localhost"
 celery_backend_port = 6379
 
-[celery]
+[dev]
 
 # celery_broker_host = "localhost"
 # celery_broker_port = 5672
@@ -15,3 +15,7 @@ celery_backend_port = 6379
 # celery_broker_vhost = "/"
 # celery_backend_host = "localhost"
 # celery_backend_port = 6379
+
+[rc]
+
+[prod]

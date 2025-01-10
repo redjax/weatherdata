@@ -14,6 +14,7 @@ from pydantic import (
 )
 from settings.celery_settings import CELERY_SETTINGS
 
+
 def return_rabbitmq_url(
     username: str = CELERY_SETTINGS.get("CELERY_BROKER_USERNAME", default="guest"),
     password: str | None = CELERY_SETTINGS.get("CELERY_BROKER_PASSWORD", default=""),
@@ -44,7 +45,7 @@ def return_rabbitmq_url(
     else:
         broker_url += "/"
 
-    log.debug(f"Celery broker URL: {broker_url}")
+    # log.debug(f"Celery broker URL: {broker_url}")
     
     return broker_url
 
@@ -59,7 +60,7 @@ def return_redis_url(
     else:
         redis_url: str = f"redis://{host}:{port}/0"
     
-    log.debug(f"Redis backend URL: {redis_url}")
+    # log.debug(f"Redis backend URL: {redis_url}")
     
     return redis_url
 
@@ -116,3 +117,4 @@ class CelerySettings(BaseModel):
 
 
 celery_settings: CelerySettings = CelerySettings()
+# log.debug(f"celery_settings class object: {celery_settings}")

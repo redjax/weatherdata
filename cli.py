@@ -3,8 +3,10 @@ from __future__ import annotations
 from cyclopts import App
 from loguru import logger as log
 from weather_cli.main import app as cli_app
+from settings.logging_settings import LOGGING_SETTINGS
+import setup
 
-def start_cli():
+def start_cli(app: App):
     try:
         cli_app.meta()
     except Exception as exc:
@@ -14,4 +16,5 @@ def start_cli():
         raise exc
     
 if __name__ == "__main__":
-    start_cli()
+    setup.setup_loguru_logging(log_level="ERROR", log_fmt="basic")
+    start_cli(app=cli_app)

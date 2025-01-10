@@ -30,6 +30,9 @@ def _start_celery(mode: t.Annotated[str, Parameter(name="mode", show_default=Tru
     if not mode:
         log.error("Missing a --mode (-m). Please re-run with -m ['beat', 'worker'] (choose 1).")
         exit(1)
+        
+    if mode not in ["beat", "worker"]:
+        raise ValueError(f"Invalid mode: {mode}. Must be one of ['beat', 'worker']")
 
     log.info(f"Starting Celery in '{mode}' mode.")
     

@@ -13,7 +13,7 @@ services:
     restart: unless-stopped
     command: ["redis-server", "--requirepass", "${REDIS_PASSWORD:-redis}"]
     env_file:
-      - ./envs/dev.messaging.env
+      - ./envs/dev.env
     environment:
       REDIS_PASSWORD: ${REDIS_PASSWORD:-redis}
     volumes:
@@ -23,32 +23,32 @@ services:
     networks:
       - weatherdata_devnet
 
-  redis-commander:
-    image: rediscommander/redis-commander:latest
-    container_name: weatherdata_redis-commander
-    restart: unless-stopped
-    env_file:
-      - ./envs/dev.messaging.env
-    environment:
-      REDIS_HOSTS: redis
-      REDIS_HOST: redis
-      REDIS_PORT: redis:6379
-      REDIS_PASSWORD: ${REDIS_PASSWORD:-redis}
-      HTTP_USER: ${REDIS_COMMANDER_HTTP_USER:-admin}
-      HTTP_PASSWORD: ${REDIS_COMMANDER_HTTP_PASSWORD:-admin}
-    ports:
-      - ${REDIS_COMMANDER_PORT:-8081}:8081
-    depends_on:
-      - redis
-    networks:
-      - weatherdata_devnet
+  # redis-commander:
+  #   image: rediscommander/redis-commander:latest
+  #   container_name: weatherdata_redis-commander
+  #   restart: unless-stopped
+  #   env_file:
+  #     - ./envs/dev.env
+  #   environment:
+  #     REDIS_HOSTS: redis
+  #     REDIS_HOST: redis
+  #     REDIS_PORT: redis:6379
+  #     REDIS_PASSWORD: ${REDIS_PASSWORD:-redis}
+  #     HTTP_USER: ${REDIS_COMMANDER_HTTP_USER:-admin}
+  #     HTTP_PASSWORD: ${REDIS_COMMANDER_HTTP_PASSWORD:-admin}
+  #   ports:
+  #     - ${REDIS_COMMANDER_PORT:-8081}:8081
+  #   depends_on:
+  #     - redis
+  #   networks:
+  #     - weatherdata_devnet
 
   rabbitmq:
     image: rabbitmq:management
     container_name: weatherdata_rabbitmq
     restart: unless-stopped
     env_file:
-      - ./envs/dev.messaging.env
+      - ./envs/dev.env
     environment:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-rabbitmq}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS:-rabbitmq}

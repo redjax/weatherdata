@@ -7,6 +7,56 @@ networks:
   weatherdata_devnet:
 
 services:
+  celery_beat:
+    container_name: ${CELERY_BEAT_CONTAINER_NAME:-weatherdata_celery_beat}
+    restart: unless-stopped
+    build:
+      context: ..
+      dockerfile: ./containers/dockerfiles/celery.Dockerfile
+      target: celery_beat
+    working_dir: /project
+    # user: appuser
+    depends_on:
+      - rabbitmq
+      - redis
+    env_file:
+      - ./envs/dev.app.env
+    command: ["uv", "run", "scripts/celery/start_celery.py", "-m", "beat"]
+    # ## Uncomment for debugging
+    # # command: ["/bin/bash"]
+    volumes:
+      - ../applications:/project/applications
+      - ../packages:/project/packages
+      - ../scripts:/project/scripts
+      - ../src:/project/src
+      - ./container_data/weatherdata/db:/weatherdata/db
+    networks:
+      - weatherdata_devnet
+
+  celery_worker:
+    container_name: ${CELERY_WORKER_CONTAINER_NAME:-weatherdata_celery_worker}
+    restart: unless-stopped
+    build:
+      context: ..
+      dockerfile: ./containers/dockerfiles/celery.Dockerfile
+      target: celery_worker
+    working_dir: /project
+    # user: appuser
+    depends_on:
+      - rabbitmq
+      - redis
+    env_file:
+      - ./envs/dev.app.env
+    command: ["uv", "run", "scripts/celery/start_celery.py", "-m", "worker"]
+    volumes:
+      - ../applications:/project/applications
+      - ../packages:/project/packages
+      - ../scripts:/project/scripts
+      - ../src:/project/src
+      - ./container_data/weatherdata/celery_worker/logs:/project/logs
+    networks:
+      - weatherdata_devnet
+
   redis:
     image: redis:alpine
     container_name: weatherdata_redis
