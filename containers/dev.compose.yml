@@ -15,7 +15,7 @@ services:
       dockerfile: ./containers/dockerfiles/celery.Dockerfile
       target: celery_beat
     working_dir: /project
-    user: appuser
+    # user: appuser
     depends_on:
       - rabbitmq
       - redis
@@ -41,7 +41,7 @@ services:
       dockerfile: ./containers/dockerfiles/celery.Dockerfile
       target: celery_worker
     working_dir: /project
-    user: appuser
+    # user: appuser
     depends_on:
       - rabbitmq
       - redis
