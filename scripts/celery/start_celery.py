@@ -49,10 +49,19 @@ if __name__ == "__main__":
         
         raise
     
-    log.debug(f"App settings: {APP_SETTINGS.as_dict()}")
-    log.debug(f"Logging settings: {LOGGING_SETTINGS.as_dict()}")
-    log.debug(f"Database settings: {DB_SETTINGS.as_dict()}")
-    log.debug(f"Celery settings: {CELERY_SETTINGS.as_dict()}")
+    log.debug(f"""
+[App settings]
+{APP_SETTINGS.as_dict()}
+
+[Logging settings]
+{LOGGING_SETTINGS.as_dict()}
+
+Database settings]
+{DB_SETTINGS.as_dict()}
+
+[Celery settings]
+{CELERY_SETTINGS.as_dict()}
+""")
     
     args = parse_args()
     
