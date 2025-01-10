@@ -64,7 +64,7 @@ def print_discovered_tasks() -> list[str]:
         sorted(name for name in app.tasks if not name.startswith("celery."))
     )
 
-    log.debug(f"Discovered [{len(tasks)}] Celery task(s): {[t for t in tasks]}")
+    print(f"Discovered [{len(tasks)}] Celery task(s): {[t for t in tasks]}")
 
     return tasks
 
@@ -91,7 +91,7 @@ def scheduled_tasks(sender, **kwargs):
     }
 
 
-print_discovered_tasks()
+# print_discovered_tasks()
 
 
 def check_task(task_id: str = None, app: Celery = app) -> AsyncResult | None:
