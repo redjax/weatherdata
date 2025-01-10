@@ -27,7 +27,7 @@ def cli_launcher(*tokens: t.Annotated[str, Parameter(show=False, allow_leading_h
     Params:
         debug (bool): If `True`, enables debug logging.
     """
-    log.remove(0)
+    # log.remove(0)
     
     if debug:
         log.add(sys.stderr, format="{time:YYYY-MM-DD HH:mm:ss} | [{level}] | {name}.{function}:{line} |> {message}", level="DEBUG")

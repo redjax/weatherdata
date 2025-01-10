@@ -64,7 +64,7 @@ def print_discovered_tasks() -> list[str]:
         sorted(name for name in app.tasks if not name.startswith("celery."))
     )
 
-    print(f"Discovered [{len(tasks)}] Celery task(s): {[t for t in tasks]}")
+    log.debug(f"Discovered [{len(tasks)}] Celery task(s): {[t for t in tasks]}")
 
     return tasks
 
