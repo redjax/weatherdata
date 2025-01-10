@@ -66,7 +66,7 @@ Database settings]
     args = parse_args()
     
     if not args.mode:
-        print(f"[WARNING] Missing a --mode (-m). Please re-run with -m ['beat', 'worker'] (choose 1).")
+        log.error(f"[WARNING] Missing a --mode (-m). Please re-run with -m ['beat', 'worker'] (choose 1).")
         exit(1)
         
     try:

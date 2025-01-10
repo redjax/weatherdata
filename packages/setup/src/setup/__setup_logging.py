@@ -74,6 +74,7 @@ def setup_loguru_logging(
     colorize: bool = False,
     retention: int = 3,
     rotation: str = "15 MB",
+    log_fmt: str = "basic"
 ):
     """Setup loguru logging.
 
@@ -84,10 +85,23 @@ def setup_loguru_logging(
         add_error_file_logger (bool): If `True`, add a file logger to the log for errors.
         colorize (bool): If `True`, colorize the log output.
     """
+    valid_log_fmts: list[str] = ["basic", "detailed"]
+
+    fmt_basic: str = "{time:YY-MM-DD HH:mm:ss} [{level}]: {message}"
+    fmt_detailed: str = "{time:YYYY-MM-DD HH:mm:ss} | [{level}] | ({module}.{function}:{line}) | > {message}"
+    
+    match log_fmt.lower():
+        case "basic":
+            fmt = fmt_basic        
+        case "detailed":
+            fmt = fmt_detailed
+        case _:
+            raise ValueError(f"Unknown log_fmt: '{log_fmt}'. Must be one of {valid_log_fmts}")
+            
     logger.remove(0)
     logger.add(
         sys.stderr,
-        format="{time:YYYY-MM-DD HH:mm:ss} | [{level}] | ({module}.{function}:{line}) | > {message}",
+        format=fmt,
         level=log_level,
         colorize=colorize
     )
@@ -97,7 +111,7 @@ def setup_loguru_logging(
             logger.enable(_logger)
 
     if add_file_logger:
-        logger.add(app_log_file, retention=retention, rotation=rotation, level="DEBUG")
+        logger.add(app_log_file, format=fmt, retention=retention, rotation=rotation, level="DEBUG")
 
     if add_error_file_logger:
-        logger.add(error_log_file, retention=retention, rotation=rotation, level="ERROR")
+        logger.add(error_log_file, format=fmt, retention=retention, rotation=rotation, level="ERROR")
