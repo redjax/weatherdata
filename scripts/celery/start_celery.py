@@ -49,7 +49,7 @@ if __name__ == "__main__":
         
         raise
     
-    log.debug(f"""
+    log.info(f"""
 [App settings]
 {APP_SETTINGS.as_dict()}
 
