@@ -40,7 +40,7 @@ def run(app: Celery, mode: str):
         return False
 
 if __name__ == "__main__":
-    setup.setup_loguru_logging(log_level=LOGGING_SETTINGS.get("LOG_LEVEL", default="INFO"), colorize=True)
+    setup.setup_loguru_logging(log_level=LOGGING_SETTINGS.get("LOG_LEVEL", default="INFO"), log_fmt="basic", colorize=True)
     try:
         setup.setup_database()
     except Exception as exc:

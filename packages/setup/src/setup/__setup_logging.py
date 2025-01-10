@@ -74,7 +74,7 @@ def setup_loguru_logging(
     colorize: bool = False,
     retention: int = 3,
     rotation: str = "15 MB",
-    log_fmt: str = "basic"
+    log_fmt: str = "detailed"
 ):
     """Setup loguru logging.
 
