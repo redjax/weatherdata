@@ -9,7 +9,6 @@ from .weather import weather_app
 
 from cyclopts import App, Group, Parameter
 from loguru import logger as log
-from setup import setup_loguru_logging
 
 app = App(name="weathercli", help="CLI for WeatherData app.")
 
