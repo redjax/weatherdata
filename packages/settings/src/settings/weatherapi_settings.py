@@ -5,7 +5,6 @@ from loguru import logger as log
 
 WEATHERAPI_SETTINGS = Dynaconf(
     environments=True,
-    env="weatherapi",
     envvar_prefix="WEATHERAPI",
     settings_files=["weatherapi/settings.toml", "weatherapi/.secrets.toml"]
 )
