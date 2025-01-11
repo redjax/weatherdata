@@ -3,6 +3,8 @@
         "weatherdata"
     ],
     "python.analysis.extraPaths": [
+        "./applications/api/src",
+        "./applications/api",
         "./applications/cli/src",
         "./packages/core-utils/src",
         "./packages/database/src",
