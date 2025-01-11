@@ -1,17 +1,17 @@
+from __future__ import annotations
+
 import typing as t
+
+from . import current_weather_router, weather_forecast_router
 
 from api import helpers as api_helpers
 from api.responses import API_RESPONSE_DICT, img_response
 from celery.result import AsyncResult
-
-from scheduling.celery_scheduler import celeryapp
 from fastapi import APIRouter, Depends, Request, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import FileResponse, JSONResponse, Response, StreamingResponse
-
-from . import current_weather_router, weather_forecast_router
-
 from loguru import logger as log
+from scheduling.celery_scheduler import celeryapp
 
 prefix: str = "/weather"
 tags: list[str] = ["weather", "weatherapi"]

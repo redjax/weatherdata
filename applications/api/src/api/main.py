@@ -1,10 +1,13 @@
+from __future__ import annotations
+
 import typing as t
 
-from fastapi import FastAPI, APIRouter
-
 from api import utils as api_utils
-from settings.api_settings import FASTAPI_SETTINGS
+
 from .routers import api_router
+
+from fastapi import APIRouter, FastAPI
+from settings.api_settings import FASTAPI_SETTINGS
 
 INCLUDE_ROUTERS: list[APIRouter] = [api_router.router]
 

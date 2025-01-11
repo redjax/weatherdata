@@ -1,11 +1,12 @@
-from loguru import logger as log
-
-from api.responses import API_RESPONSE_DICT
-from settings.api_settings import FASTAPI_SETTINGS
-from fastapi import APIRouter
+from __future__ import annotations
 
 from .healthcheck import router as healthcheck_router
 from .weather.weather_router import router as weather_router
+
+from api.responses import API_RESPONSE_DICT
+from fastapi import APIRouter
+from loguru import logger as log
+from settings.api_settings import FASTAPI_SETTINGS
 
 prefix: str = "/api/v1"
 

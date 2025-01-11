@@ -1,17 +1,17 @@
+from __future__ import annotations
+
 import typing as t
 
 from api import helpers as api_helpers
 from api.responses import API_RESPONSE_DICT, img_response
 from celery.result import AsyncResult
-
-from scheduling.celery_scheduler import celeryapp
+from domain.weatherapi.location import LocationIn, LocationOut
+from domain.weatherapi.weather.forecast import ForecastJSONIn, ForecastJSONOut
 from fastapi import APIRouter, Depends, Request, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import FileResponse, JSONResponse, Response, StreamingResponse
-from domain.weatherapi.location import LocationIn, LocationOut
-from domain.weatherapi.weather.forecast import ForecastJSONIn, ForecastJSONOut
 from loguru import logger as log
-
+from scheduling.celery_scheduler import celeryapp
 from weather_client.apis import api_weatherapi
 
 prefix: str = "/forecast"

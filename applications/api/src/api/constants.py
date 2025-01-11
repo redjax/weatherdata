@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from api.tag_definitions import tags_metadata
 
 default_allow_credentials: bool = True

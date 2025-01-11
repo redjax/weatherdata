@@ -1,11 +1,9 @@
 from __future__ import annotations
 
-from loguru import logger as log
-
 from typing import Optional, Type, Union
 
 from fastapi import APIRouter
-
+from loguru import logger as log
 
 def is_str(input: str = None) -> str:
     if not input:

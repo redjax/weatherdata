@@ -13,7 +13,7 @@ from scheduling.celery_scheduler import (
     start_celery_beat,
     start_celery_worker,
 )
-from settings import APP_SETTINGS, LOGGING_SETTINGS, DB_SETTINGS, CELERY_SETTINGS
+from settings import APP_SETTINGS, CELERY_SETTINGS, DB_SETTINGS, LOGGING_SETTINGS
 import setup
 
 def parse_args():

@@ -1,12 +1,13 @@
-from loguru import logger as log
-import typing as t
+from __future__ import annotations
+
 import logging
-import setup
-import settings
+import typing as t
 
+from loguru import logger as log
 from pydantic import BaseModel, Field
+import settings
+import setup
 import uvicorn
-
 
 class UvicornCustomServer(BaseModel):
     """Customize a Uvicorn server by passing a dict to UvicornCustomServer.parse_obj(dict).

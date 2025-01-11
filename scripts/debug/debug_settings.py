@@ -1,6 +1,15 @@
 from __future__ import annotations
 
-from settings import APP_SETTINGS, CELERY_SETTINGS, DB_SETTINGS, DRAMATIQ_SETTINGS, LOGGING_SETTINGS, WEATHERAPI_SETTINGS, FASTAPI_SETTINGS, UVICORN_SETTINGS
+from settings import (
+    APP_SETTINGS,
+    CELERY_SETTINGS,
+    DB_SETTINGS,
+    DRAMATIQ_SETTINGS,
+    FASTAPI_SETTINGS,
+    LOGGING_SETTINGS,
+    UVICORN_SETTINGS,
+    WEATHERAPI_SETTINGS,
+)
 
 ## Set the name of a settings object to debug it, or 'all' to debug all settings objects.
 #  i.e. "app" = APP_SETTINGS

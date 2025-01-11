@@ -1,7 +1,10 @@
+from __future__ import annotations
+
+import logging
+
 from fastapi import APIRouter, HTTPException, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
-import logging
 from loguru import logger as log
 
 router = APIRouter(tags=["util"], responses={404: {"description": "Not found"}})

@@ -1,10 +1,9 @@
+from __future__ import annotations
+
+from api import UvicornCustomServer, UvicornSettings, initialize_custom_server
 from loguru import logger as log
-
-import setup
 import settings
-
-from api import initialize_custom_server, UvicornCustomServer, UvicornSettings
-
+import setup
 
 def main():
     log.debug(f"FastAPI settings: {settings.FASTAPI_SETTINGS.as_dict()}")
