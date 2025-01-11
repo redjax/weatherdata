@@ -3,17 +3,16 @@
         "weatherdata"
     ],
     "python.analysis.extraPaths": [
-        "./applications/api/src"
-    ],
-    // "python.analysis.extraPaths": [
-    //     "./applications/cli/src",
-    //     "./packages/core-utils/src",
-    //     "./packages/database/src",
-    //     "./packages/depends/src",
-    //     "./packages/domain/src",
-    //     "./packages/http-lib/src",
-    //     "./packages/setup/src",
-    //     "./packages/settings/src",
-    //     "./packages/weather-client/src"
-    // ]
+        "./applications/api/src",
+        "./applications/api",
+        "./applications/cli/src",
+        "./packages/core-utils/src",
+        "./packages/database/src",
+        "./packages/depends/src",
+        "./packages/domain/src",
+        "./packages/http-lib/src",
+        "./packages/setup/src",
+        "./packages/settings/src",
+        "./packages/weather-client/src"
+    ]
 }
