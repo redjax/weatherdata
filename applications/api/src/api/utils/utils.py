@@ -145,7 +145,10 @@ def get_app(
 ) -> FastAPI:
     """Generate a FastAPI app and return."""
     for _var in [root_path, title, description, version, openapi_url]:
-        is_str(input=_var)
+        if _var:
+            is_str(input=_var)
+        else:
+            continue
 
     validate_openapi_tags(openapi_tags)
 
