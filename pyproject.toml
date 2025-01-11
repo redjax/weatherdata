@@ -5,6 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    "api",
     "celery>=5.4.0",
     "cli",
     "core-utils",
@@ -36,6 +37,7 @@ database = { workspace = true }
 depends = { workspace = true }
 cli = { workspace = true }
 scheduling = { workspace = true }
+api = { workspace = true }
 
 [tool.uv.workspace]
 members = ["packages/*", "applications/*"]
