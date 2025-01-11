@@ -3,7 +3,7 @@ from loguru import logger as log
 import setup
 import settings
 
-from api import fastapi_app, initialize_custom_server, UvicornCustomServer, UvicornSettings
+from api import initialize_custom_server, UvicornCustomServer, UvicornSettings
 
 
 def main():
