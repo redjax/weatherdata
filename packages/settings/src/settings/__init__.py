@@ -10,3 +10,4 @@ from .dramatiq_settings import (
 )
 from .logging_settings import LOGGING_SETTINGS
 from .weatherapi_settings import WEATHERAPI_SETTINGS
+from .api_settings import FASTAPI_SETTINGS, UVICORN_SETTINGS
