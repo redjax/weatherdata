@@ -2,15 +2,15 @@
     "cSpell.words": [
         "weatherdata"
     ],
-    "python.analysis.extraPaths": [
-        "./applications/cli/src",
-        "./packages/core-utils/src",
-        "./packages/database/src",
-        "./packages/depends/src",
-        "./packages/domain/src",
-        "./packages/http-lib/src",
-        "./packages/setup/src",
-        "./packages/settings/src",
-        "./packages/weather-client/src"
-    ]
+    // "python.analysis.extraPaths": [
+    //     "./applications/cli/src",
+    //     "./packages/core-utils/src",
+    //     "./packages/database/src",
+    //     "./packages/depends/src",
+    //     "./packages/domain/src",
+    //     "./packages/http-lib/src",
+    //     "./packages/setup/src",
+    //     "./packages/settings/src",
+    //     "./packages/weather-client/src"
+    // ]
 }

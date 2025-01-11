@@ -1,0 +1,12 @@
+[project]
+name = "api"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "dynaconf>=3.2.6",
+    "fastapi[standard]>=0.115.6",
+    "pydantic>=2.10.4",
+    "uvicorn>=0.34.0",
+]

@@ -1,16 +1,11 @@
 from __future__ import annotations
 
-from settings.app_settings import APP_SETTINGS
-from settings.celery_settings import CELERY_SETTINGS
-from settings.db_settings import DB_SETTINGS
-from settings.dramatiq_settings import DRAMATIQ_SETTINGS
-from settings.logging_settings import LOGGING_SETTINGS
-from settings.weatherapi_settings import WEATHERAPI_SETTINGS
+from settings import APP_SETTINGS, CELERY_SETTINGS, DB_SETTINGS, DRAMATIQ_SETTINGS, LOGGING_SETTINGS, WEATHERAPI_SETTINGS, FASTAPI_SETTINGS, UVICORN_SETTINGS
 
 ## Set the name of a settings object to debug it, or 'all' to debug all settings objects.
 #  i.e. "app" = APP_SETTINGS
 DEBUG_SESSION = "all"
-VALID_SESSIONS: list[str] = ["all", "app", "celery", "db", "logging", "dramatiq", "weatherapi", "dramatiq"]
+VALID_SESSIONS: list[str] = ["all", "app", "celery", "db", "logging", "dramatiq", "weatherapi", "dramatiq", "api"]
 
 def debug_app_settings(app_settings=APP_SETTINGS):
     print(f"app_settings: {app_settings.as_dict()}")
@@ -36,8 +31,13 @@ def debug_weatherapi_settings(weatherapi_settings=WEATHERAPI_SETTINGS):
     print(f"weatherapi_settings: {weatherapi_settings.as_dict()}")
     return
 
+def debug_api_settings(fastapi_settings=FASTAPI_SETTINGS, uvicorn_settings=UVICORN_SETTINGS):
+    print(f"FastAPI settings: {fastapi_settings.as_dict()}")
+    print(f"\nUvicorn settings: {uvicorn_settings.as_dict()}")
+
+
 def main(session: str):
-    debug_sessions = {"app": debug_app_settings, "celery": debug_celery_settings, "db": debug_db_settings, "logging": debug_logging_settings, "dramatiq": debug_dramatiq_settings, "weatherapi": debug_weatherapi_settings}
+    debug_sessions = {"app": debug_app_settings, "celery": debug_celery_settings, "db": debug_db_settings, "logging": debug_logging_settings, "dramatiq": debug_dramatiq_settings, "weatherapi": debug_weatherapi_settings, "api": debug_api_settings}
     
     if session.lower()  not in VALID_SESSIONS:
         print(f"Invalid debug session: {session}")
