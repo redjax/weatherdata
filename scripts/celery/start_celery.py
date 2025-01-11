@@ -33,8 +33,18 @@ def parse_args():
 def run(app: Celery, mode: str):
     log.debug(f"Celery mode: {mode}")
     
+    log.debug(f"""
+Database settings]
+{DB_SETTINGS.as_dict()}
+
+[Celery settings]
+{CELERY_SETTINGS.as_dict()}
+""")
+    
+    log.debug(f"Celery settings class: {celery_settings}")
+    
     try:
-        start_celery.start(app=celeryapp.app, mode=mode)
+        start_celery.start(app=app, mode=mode)
     except Exception as e:
         log.error(f"Failed to start application: {e}")
         return False
@@ -48,20 +58,6 @@ if __name__ == "__main__":
         log.error(msg)
         
         raise
-    
-    log.info(f"""
-[App settings]
-{APP_SETTINGS.as_dict()}
-
-[Logging settings]
-{LOGGING_SETTINGS.as_dict()}
-
-Database settings]
-{DB_SETTINGS.as_dict()}
-
-[Celery settings]
-{CELERY_SETTINGS.as_dict()}
-""")
     
     args = parse_args()
     
