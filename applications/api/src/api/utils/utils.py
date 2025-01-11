@@ -2,7 +2,7 @@ import typing as t
 from loguru import logger as log
 
 from api.tag_definitions import tags_metadata
-from api.validators import validate_tag_definition, validate_openapi_tags, validate_router, is_str
+from api.validators import validate_openapi_tags, validate_router, is_str
 from api.constants import default_openapi_url, default_allow_credentials, default_allowed_headers, default_allowed_methods,  default_allowed_origins
 
 from fastapi import APIRouter, FastAPI

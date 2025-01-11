@@ -73,7 +73,7 @@ wheels = [
 [[package]]
 name = "api"
 version = "0.1.0"
-source = { virtual = "applications/api" }
+source = { editable = "applications/api" }
 dependencies = [
     { name = "dynaconf" },
     { name = "fastapi", extra = ["standard"] },
@@ -1796,7 +1796,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "api", virtual = "applications/api" },
+    { name = "api", editable = "applications/api" },
     { name = "celery", specifier = ">=5.4.0" },
     { name = "cli", editable = "applications/cli" },
     { name = "core-utils", editable = "packages/core-utils" },

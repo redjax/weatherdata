@@ -2,6 +2,9 @@
     "cSpell.words": [
         "weatherdata"
     ],
+    "python.analysis.extraPaths": [
+        "./applications/api/src"
+    ],
     // "python.analysis.extraPaths": [
     //     "./applications/cli/src",
     //     "./packages/core-utils/src",
