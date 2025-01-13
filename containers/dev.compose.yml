@@ -48,6 +48,7 @@ services:
     env_file:
       - ./envs/dev.app.env
     command: ["uv", "run", "scripts/celery/start_celery.py", "-m", "worker"]
+    # command: ["uv", "run", "scripts/debug/debug_settings.py"]
     volumes:
       - ../applications:/project/applications
       - ../packages:/project/packages

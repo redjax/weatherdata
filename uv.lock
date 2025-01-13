@@ -1413,11 +1413,21 @@ name = "scheduling"
 version = "0.1.0"
 source = { editable = "packages/scheduling" }
 dependencies = [
+    { name = "celery" },
     { name = "dramatiq", extra = ["all"] },
+    { name = "psycopg2-binary" },
+    { name = "redis" },
+    { name = "sqlalchemy" },
 ]
 
 [package.metadata]
-requires-dist = [{ name = "dramatiq", extras = ["all"], specifier = ">=1.17.1" }]
+requires-dist = [
+    { name = "celery", specifier = ">=5.4.0" },
+    { name = "dramatiq", extras = ["all"], specifier = ">=1.17.1" },
+    { name = "psycopg2-binary", specifier = ">=2.9.10" },
+    { name = "redis", specifier = ">=5.2.1" },
+    { name = "sqlalchemy", specifier = ">=2.0.36" },
+]
 
 [[package]]
 name = "settings"
@@ -1780,6 +1790,7 @@ dependencies = [
     { name = "fastparquet" },
     { name = "http-lib" },
     { name = "pandas" },
+    { name = "psycopg2-binary" },
     { name = "pyarrow" },
     { name = "scheduling" },
     { name = "settings" },
@@ -1806,6 +1817,7 @@ requires-dist = [
     { name = "fastparquet", specifier = ">=2024.11.0" },
     { name = "http-lib", editable = "packages/http-lib" },
     { name = "pandas", specifier = ">=2.2.3" },
+    { name = "psycopg2-binary", specifier = ">=2.9.10" },
     { name = "pyarrow", specifier = ">=18.1.0" },
     { name = "scheduling", editable = "packages/scheduling" },
     { name = "settings", editable = "packages/settings" },
