@@ -78,7 +78,7 @@ services:
       DYNACONF_DB_PASSWORD: ${POSTGRES_PASSWORD:-postgres}  
       DYNACONF_DB_DATABASE: ${POSTGRES_DATABASE:-auto_weather}  
     networks:
-      - weatherdata_net
+      - weatherdata_devnet
 
   redis:
     image: redis:alpine
