@@ -50,6 +50,7 @@ build-backend = "hatchling.build"
 
 [dependency-groups]
 dev = [
+    "alembic>=1.14.0",
     "nox>=2024.10.9",
     "pytest-xdist>=3.6.1",
     "ruff>=0.8.4",

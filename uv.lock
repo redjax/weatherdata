@@ -1825,6 +1825,7 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "alembic" },
     { name = "nox" },
     { name = "pytest-xdist" },
     { name = "ruff" },
@@ -1853,6 +1854,7 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "alembic", specifier = ">=1.14.0" },
     { name = "nox", specifier = ">=2024.10.9" },
     { name = "pytest-xdist", specifier = ">=3.6.1" },
     { name = "ruff", specifier = ">=0.8.4" },
