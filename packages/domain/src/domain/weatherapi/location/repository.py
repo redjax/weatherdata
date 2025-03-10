@@ -10,6 +10,10 @@ import sqlalchemy as sa
 import sqlalchemy.exc as sa_exc
 import sqlalchemy.orm as so
 
+__all__ = [
+    "LocationRepository",
+]
+
 class LocationRepository(BaseRepository[LocationModel]):
     """Repository for LocationModel objects.
     

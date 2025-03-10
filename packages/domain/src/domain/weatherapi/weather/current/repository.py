@@ -14,6 +14,12 @@ import sqlalchemy as sa
 import sqlalchemy.exc as sa_exc
 import sqlalchemy.orm as so
 
+__all__ = [
+    "CurrentWeatherRepository",
+    "CurrentWeatherConditionRepository",
+    "CurrentWeatherAirQualityRepository",
+]
+
 class CurrentWeatherRepository(BaseRepository[CurrentWeatherModel]):
     """Repository for CurrentWeatherModel.
     

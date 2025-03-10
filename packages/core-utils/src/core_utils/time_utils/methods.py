@@ -17,9 +17,6 @@ __all__ = [
     "datetime_as_dt",
     "datetime_as_str",
     "get_ts",
-    "get_ts_from_str",
-    "str_to_timedelta",
-    "timedelta_to_str",
     "wait",
 ]
 
