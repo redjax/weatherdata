@@ -1245,6 +1245,15 @@ wheels = [
 ]
 
 [[package]]
+name = "pymysql"
+version = "1.1.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/b3/8f/ce59b5e5ed4ce8512f879ff1fa5ab699d211ae2495f1adaa5fbba2a1eada/pymysql-1.1.1.tar.gz", hash = "sha256:e127611aaf2b417403c60bf4dc570124aeb4a57f5f37b8e95ae399a42f904cd0", size = 47678 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/0c/94/e4181a1f6286f545507528c78016e00065ea913276888db2262507693ce5/PyMySQL-1.1.1-py3-none-any.whl", hash = "sha256:4de15da4c61dc132f4fb9ab763063e693d521a80fd0e87943b9a453dd4c19d6c", size = 44972 },
+]
+
+[[package]]
 name = "pytest"
 version = "8.3.5"
 source = { registry = "https://pypi.org/simple" }
@@ -1807,6 +1816,7 @@ dependencies = [
     { name = "pandas" },
     { name = "psycopg2-binary" },
     { name = "pyarrow" },
+    { name = "pymysql" },
     { name = "scheduling" },
     { name = "settings" },
     { name = "setup" },
@@ -1834,6 +1844,7 @@ requires-dist = [
     { name = "pandas", specifier = ">=2.2.3" },
     { name = "psycopg2-binary", specifier = ">=2.9.10" },
     { name = "pyarrow", specifier = ">=18.1.0" },
+    { name = "pymysql", specifier = ">=1.1.1" },
     { name = "scheduling", editable = "packages/scheduling" },
     { name = "settings", editable = "packages/settings" },
     { name = "setup", editable = "packages/setup" },
