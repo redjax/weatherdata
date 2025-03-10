@@ -14,6 +14,13 @@ from dynaconf import Dynaconf
 import hishel
 import httpx
 
+__all__ = [
+    "get_http_controller",
+    "HttpxController",
+    "merge_headers",
+]
+
+
 ## Load HTTP settings from environment
 HTTP_SETTINGS = Dynaconf(
     environments=True,

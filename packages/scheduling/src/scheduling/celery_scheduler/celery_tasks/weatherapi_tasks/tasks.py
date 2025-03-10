@@ -23,6 +23,11 @@ import httpx
 from loguru import logger as log
 from weather_client.apis import api_weatherapi
 
+__all__ = [
+    "task_current_weather",
+    "task_weather_forecast",
+]
+
 @current_app.task(name="request_current_weather")
 def task_current_weather(location: str) -> dict:
     """Request the current weather for a location using a Celery task.

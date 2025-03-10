@@ -10,6 +10,10 @@ from settings.celery_settings import CELERY_SETTINGS
 from settings.logging_settings import LOGGING_SETTINGS
 import setup
 
+__all__ = [
+    "start_celery_worker",
+]
+
 def start_celery_worker(app: Celery = celeryapp.app):
     """Starts the Celery worker.
     

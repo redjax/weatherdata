@@ -3,6 +3,13 @@ from __future__ import annotations
 from celery.schedules import crontab
 from weather_client.apis import api_weatherapi
 
+__all__ = [
+    "SCHEDULED_TASK_15m_weatherapi_current_weather",
+    "SCHEDULED_TASK_30m_weatherapi_weather_forecast",
+    "SCHEDULED_TASK_test_minutely_weatherapi_current_weather",
+    "SCHEDULED_TASK_test_minutely_weatherapi_weather_forecast",
+]
+
 SCHEDULED_TASK_15m_weatherapi_current_weather = {
     "15m_weaterapi_current_weather": {
         "task": "request_current_weather",
