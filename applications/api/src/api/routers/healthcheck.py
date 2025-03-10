@@ -7,8 +7,9 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from loguru import logger as log
 
-router = APIRouter(tags=["util"], responses={404: {"description": "Not found"}})
+__all__ = ["router"]
 
+router = APIRouter(tags=["util"], responses={404: {"description": "Not found"}})
 
 class EndpointFilter(logging.Filter):
     """Filter pings to /health.

@@ -13,6 +13,8 @@ from fastapi.responses import FileResponse, JSONResponse, Response, StreamingRes
 from loguru import logger as log
 from scheduling.celery_scheduler import celeryapp
 
+__all__ = ["router"]
+
 prefix: str = "/weather"
 tags: list[str] = ["weather", "weatherapi"]
 
