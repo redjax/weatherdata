@@ -4,6 +4,10 @@ import sys
 
 from loguru import logger
 
+__all__ = [
+    "setup_loguru_logging"
+]
+
 def filter_info_debug_warning(record):
     """Filter out INFO, DEBUG, and WARNING messages.
     

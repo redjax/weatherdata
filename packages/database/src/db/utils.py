@@ -7,6 +7,10 @@ import typing as t
 
 log = logging.getLogger(__name__)
 
+__all__ = [
+    "backup_sqlite_db",
+    "dump_sqlite_db_schema"
+]
 
 def backup_sqlite_db(source: str, target: str) -> None:
     """Backup an SQLite database.

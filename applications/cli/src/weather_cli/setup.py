@@ -9,8 +9,9 @@ from core_utils import time_utils
 from cyclopts import App, Group, Parameter
 from loguru import logger as log
 
-setup_app = App(name="setup", help="CLI for project setup")
+__all__ = ["setup_app"]
 
+setup_app = App(name="setup", help="CLI for project setup")
 
 @setup_app.command(name="app-config-files")
 def setup_config_files():

@@ -12,6 +12,8 @@ from domain.weatherapi import (
 from loguru import logger as log
 from weather_client.apis import api_weatherapi
 
+__all__ = ["weather_app"]
+
 weather_app = App(name="weather", help="CLI for getting weather data")
 
 

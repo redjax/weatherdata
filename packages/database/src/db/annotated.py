@@ -15,6 +15,8 @@ from typing_extensions import Annotated
 from sqlalchemy.ext.mutable import MutableDict
 from sqlalchemy.dialects.postgresql import JSONB
 
+__all__ = ["INT_PK", "STR_10", "STR_255", "PG_MUT_JSONB"]
+
 ## Annotated auto-incrementing integer primary key column
 INT_PK = Annotated[
     int, so.mapped_column(sa.INTEGER, primary_key=True, autoincrement=True, unique=True)

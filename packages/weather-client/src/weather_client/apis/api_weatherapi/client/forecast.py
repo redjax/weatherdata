@@ -14,6 +14,10 @@ import httpx
 from loguru import logger as log
 import sqlalchemy as sa
 
+__all__ = [
+    "get_weather_forecast"
+]
+
 def get_weather_forecast(
     location: str = location_name,
     days: int = 1,

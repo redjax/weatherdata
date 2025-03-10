@@ -6,6 +6,11 @@ import typing as t
 from loguru import logger as log
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator
 
+__all__ = [
+    "ForecastJSONIn",
+    "ForecastJSONOut",
+]
+
 class ForecastJSONIn(BaseModel):
     """Weather forecast in JSON format.
     

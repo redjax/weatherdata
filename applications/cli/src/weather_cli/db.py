@@ -11,6 +11,8 @@ import sqlalchemy as sa
 import sqlalchemy.exc as sa_exc
 import sqlalchemy.sql as sa_sql
 
+__all__ = ["db_app"]
+
 db_app = App(name="db", help="CLI for managing the database.")
 
 

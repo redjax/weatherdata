@@ -17,6 +17,8 @@ from scheduling.celery_scheduler import (
     start_celery,
 )
 
+__all__ = ["celery_app"]
+
 celery_app = App(name="celery", help="CLI for managing Celery scheduler.")
 
 

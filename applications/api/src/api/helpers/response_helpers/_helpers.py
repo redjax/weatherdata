@@ -6,6 +6,8 @@ import typing as t
 # from helpers import validators
 from loguru import logger as log
 
+__all__ = ["stream_file_contents"]
+
 def stream_file_contents(f_path: t.Union[str, Path] = None, mode: str = "rb"):
     if f_path is None:
         log.warning(ValueError("Missing a file path"))

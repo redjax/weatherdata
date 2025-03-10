@@ -4,6 +4,8 @@ from dynaconf import Dynaconf
 from loguru import logger as log
 import pika
 
+__all__ = ["DRAMATIQ_SETTINGS", "return_dramatiq_rabbitmq_credentials", "return_dramatiq_rabbitmq_url"]
+
 ## Dramatiq settings loaded with dynaconf
 DRAMATIQ_SETTINGS: Dynaconf = Dynaconf(
     environments=True,

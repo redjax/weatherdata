@@ -8,6 +8,8 @@ from fastapi import APIRouter
 from loguru import logger as log
 from settings.api_settings import FASTAPI_SETTINGS
 
+__all__ = ["router"]
+
 prefix: str = "/api/v1"
 
 router: APIRouter = APIRouter(prefix=prefix, responses=API_RESPONSE_DICT)

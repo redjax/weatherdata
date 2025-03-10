@@ -11,6 +11,8 @@ from .setup import setup_app
 from cyclopts import App, Group, Parameter
 from loguru import logger as log
 
+__all__ = ["app"]
+
 app = App(name="weathercli", help="CLI for WeatherData app.")
 
 app.meta.group_parameters = Group("Session Parameters", sort_key=0)

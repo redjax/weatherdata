@@ -4,6 +4,8 @@ import hashlib
 
 from loguru import logger as log
 
+__all__ = ["get_hash_from_str"]
+
 def get_hash_from_str(input_str: str = None, encoding: str = "utf-8") -> str:
     """Return a hashed version of an input string.
 

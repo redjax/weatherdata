@@ -13,6 +13,11 @@ from pydantic import (
     field_validator,
 )
 
+__all__ = [
+    "LocationIn",
+    "LocationOut",
+]
+
 class LocationIn(BaseModel):
     """Location schema.
     

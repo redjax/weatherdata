@@ -3,6 +3,8 @@ from __future__ import annotations
 from dynaconf import Dynaconf
 from loguru import logger as log
 
+__all__ = ["CELERY_SETTINGS"]
+
 ## Celery settings loaded with dynaconf
 CELERY_SETTINGS: Dynaconf = Dynaconf(
     environments=True,
