@@ -1,3 +1,5 @@
 from __future__ import annotations
 
-from . import current_weather, forecast, location
+from .current_weather import *
+from .forecast import *
+from .location import *
