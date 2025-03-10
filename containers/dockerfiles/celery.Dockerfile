@@ -1,5 +1,5 @@
 ARG UV_BASE=${UV_IMAGE_VER:-0.5.9}
-ARG PYTHON_BASE=${PYTHON_IMG_VER:-3.12-slim}
+ARG PYTHON_BASE=${PYTHON_IMG_VER:-3.11-slim}
 
 FROM ghcr.io/astral-sh/uv:${UV_BASE} AS uv
 FROM python:${PYTHON_BASE} AS base
@@ -15,6 +15,8 @@ RUN apt-get update -y \
         software-properties-common \
         apt-transport-https \
         sudo \
+        postgresql \
+        python3-psycopg2 \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 

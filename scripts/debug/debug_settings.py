@@ -1,11 +1,21 @@
 from __future__ import annotations
 
-from settings import APP_SETTINGS, CELERY_SETTINGS, DB_SETTINGS, DRAMATIQ_SETTINGS, LOGGING_SETTINGS, WEATHERAPI_SETTINGS, FASTAPI_SETTINGS, UVICORN_SETTINGS
+from settings import (
+    APP_SETTINGS,
+    CELERY_SETTINGS,
+    DB_SETTINGS,
+    DRAMATIQ_SETTINGS,
+    FASTAPI_SETTINGS,
+    LOGGING_SETTINGS,
+    UVICORN_SETTINGS,
+    WEATHERAPI_SETTINGS,
+)
+from db import get_db_uri
 
 ## Set the name of a settings object to debug it, or 'all' to debug all settings objects.
 #  i.e. "app" = APP_SETTINGS
 DEBUG_SESSION = "all"
-VALID_SESSIONS: list[str] = ["all", "app", "celery", "db", "logging", "dramatiq", "weatherapi", "dramatiq", "api"]
+VALID_SESSIONS: list[str] = ["all", "app", "celery", "db", "db_uri", "logging", "dramatiq", "weatherapi", "dramatiq", "api"]
 
 def debug_app_settings(app_settings=APP_SETTINGS):
     print(f"app_settings: {app_settings.as_dict()}")
@@ -36,8 +46,20 @@ def debug_api_settings(fastapi_settings=FASTAPI_SETTINGS, uvicorn_settings=UVICO
     print(f"\nUvicorn settings: {uvicorn_settings.as_dict()}")
 
 
+def debug_db_uri():
+    db_uri = get_db_uri(
+        drivername=DB_SETTINGS.get("DB_DRIVERNAME"),
+        username=DB_SETTINGS.get("DB_USERNAME"),
+        password=DB_SETTINGS.get("DB_PASSWORD"),
+        host=DB_SETTINGS.get("DB_HOST"),
+        port=DB_SETTINGS.get("DB_PORT"),
+        database=DB_SETTINGS.get("DB_DATABASE")
+    )
+    print(f"Database URI string: {db_uri}")
+    
+
 def main(session: str):
-    debug_sessions = {"app": debug_app_settings, "celery": debug_celery_settings, "db": debug_db_settings, "logging": debug_logging_settings, "dramatiq": debug_dramatiq_settings, "weatherapi": debug_weatherapi_settings, "api": debug_api_settings}
+    debug_sessions = {"app": debug_app_settings, "celery": debug_celery_settings, "db": debug_db_settings, "db_uri": debug_db_uri, "logging": debug_logging_settings, "dramatiq": debug_dramatiq_settings, "weatherapi": debug_weatherapi_settings, "api": debug_api_settings}
     
     if session.lower()  not in VALID_SESSIONS:
         print(f"Invalid debug session: {session}")
@@ -66,6 +88,8 @@ def main(session: str):
                 debug_dramatiq_settings()
             case "weatherapi":
                 debug_weatherapi_settings()
+            case "db_uri":
+                debug_db_uri()
     
 
 if __name__ == "__main__":

@@ -8,7 +8,7 @@ from loguru import logger as log
 import sqlalchemy as sa
 import sqlalchemy.orm as so
 
-def setup_database(sqla_base: so.DeclarativeBase = db.Base,engine: sa.Engine = db_depends.get_db_engine()) -> None:
+def setup_database(sqla_base: so.DeclarativeBase = db.Base, engine: sa.Engine = db_depends.get_db_engine()) -> None:
     """Setup the database tables and metadata.
     
     Params:

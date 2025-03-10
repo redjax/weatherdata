@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 
+import db
 from celery import Celery
 from loguru import logger as log
 from scheduling.celery_scheduler import (
@@ -13,7 +14,7 @@ from scheduling.celery_scheduler import (
     start_celery_beat,
     start_celery_worker,
 )
-from settings import APP_SETTINGS, LOGGING_SETTINGS, DB_SETTINGS, CELERY_SETTINGS
+from settings import APP_SETTINGS, CELERY_SETTINGS, DB_SETTINGS, LOGGING_SETTINGS
 import setup
 
 def parse_args():
@@ -39,6 +40,9 @@ Database settings]
 
 [Celery settings]
 {CELERY_SETTINGS.as_dict()}
+
+[Database connection string]
+{db.get_db_uri(drivername=DB_SETTINGS.get('DB_DRIVERNAME'), username=DB_SETTINGS.get('DB_USERNAME'), password=DB_SETTINGS.get('DB_PASSWORD'), host=DB_SETTINGS.get('DB_HOST'), port=DB_SETTINGS.get('DB_PORT'), database=DB_SETTINGS.get('DB_DATABASE'))}
 """)
     
     log.debug(f"Celery settings class: {celery_settings}")

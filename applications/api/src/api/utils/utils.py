@@ -1,12 +1,20 @@
-import typing as t
-from loguru import logger as log
+from __future__ import annotations
 
+import typing as t
+
+from api.constants import (
+    default_allow_credentials,
+    default_allowed_headers,
+    default_allowed_methods,
+    default_allowed_origins,
+    default_openapi_url,
+)
 from api.tag_definitions import tags_metadata
-from api.validators import validate_openapi_tags, validate_router, is_str
-from api.constants import default_openapi_url, default_allow_credentials, default_allowed_headers, default_allowed_methods,  default_allowed_origins
+from api.validators import is_str, validate_openapi_tags, validate_router
 
 from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from loguru import logger as log
 
 def fix_api_docs(app: FastAPI = None):
     """Fix error loading /docs when a root_path is set.
@@ -145,7 +153,10 @@ def get_app(
 ) -> FastAPI:
     """Generate a FastAPI app and return."""
     for _var in [root_path, title, description, version, openapi_url]:
-        is_str(input=_var)
+        if _var:
+            is_str(input=_var)
+        else:
+            continue
 
     validate_openapi_tags(openapi_tags)
 

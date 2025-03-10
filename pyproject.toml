@@ -15,6 +15,7 @@ dependencies = [
     "fastparquet>=2024.11.0",
     "http-lib",
     "pandas>=2.2.3",
+    "psycopg2-binary>=2.9.10",
     "pyarrow>=18.1.0",
     "scheduling",
     "settings",
