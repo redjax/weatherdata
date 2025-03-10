@@ -15,7 +15,7 @@ import sqlalchemy.exc as sa_exc
 import sqlalchemy.orm as so
 
 __all__ = [
-    "save_forecast", "count_forecast",
+    "save_forecast", "count_weather_forecast",
 ]
 
 def save_forecast(
