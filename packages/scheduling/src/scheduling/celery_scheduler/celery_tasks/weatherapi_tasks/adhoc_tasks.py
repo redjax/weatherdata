@@ -28,6 +28,11 @@ from domain.weatherapi.weather.forecast import (
 from loguru import logger as log
 from weather_client.apis import api_weatherapi
 
+__all__ = [
+    "task_adhoc_current_weather",
+    "task_adhoc_weather_forecast",
+]
+
 @log.catch
 @current_app.task(name="adhoc-weatherapi-current-weather")
 def task_adhoc_current_weather(location: str = api_weatherapi.settings.location_name, api_key: str = api_weatherapi.settings.api_key, use_cache: bool = False):

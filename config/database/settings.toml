@@ -10,6 +10,13 @@ db_port = ""
 db_database = "db.sqlite3"
 db_echo = false
 
+# db_type = "mysql"
+# db_drivername = "mysql+pymysql"
+# db_username = "mysql"
+# db_host = "localhost"
+# db_port = 3306
+# db_database = "weatherdata"
+
 [dev]
 
 ## SQLite

@@ -25,6 +25,10 @@ from settings.celery_settings import CELERY_SETTINGS
 
 # log.debug(f"Celery settings: {CELERY_SETTINGS.as_dict()}")
 
+__all__ = [
+    "check_task",
+]
+
 ## Add paths Celery should look for tasks in
 INCLUDE_TASK_PATHS: list[str] = [
     "scheduling.celery_scheduler.celery_tasks.weatherapi_tasks.scheduled_tasks",

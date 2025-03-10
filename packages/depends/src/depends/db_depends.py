@@ -10,6 +10,12 @@ from settings import DB_SETTINGS
 import sqlalchemy as sa
 import sqlalchemy.orm as so
 
+__all__ = [
+    "get_db_uri",
+    "get_db_engine",
+    "get_session_pool"
+]
+
 def get_db_uri(
     drivername: str = DB_SETTINGS.get("DB_DRIVERNAME", default="sqlite+pysqlite"),
     username: str | None = DB_SETTINGS.get("DB_USERNAME", default=None),

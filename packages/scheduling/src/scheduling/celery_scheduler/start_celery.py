@@ -14,6 +14,11 @@ from loguru import logger as log
 from settings.logging_settings import LOGGING_SETTINGS
 import setup
 
+__all__ = [
+    "worker",
+    "beat",
+]
+
 def worker(app: Celery):
     """Starts the Celery worker.
     

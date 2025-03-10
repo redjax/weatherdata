@@ -4,6 +4,9 @@ import typing as t
 
 from fastapi.responses import Response
 
+
+__all__ = ["API_RESPONSE_DICT", "img_response"]
+
 API_RESPONSE_DICT: dict[int, dict[str, t.Any]] = {404: {"description": "Not found"}, 500: {"description": "Internal server error"}}
 
 

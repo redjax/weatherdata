@@ -10,6 +10,10 @@ import sqlalchemy.exc as sa_exc
 import sqlalchemy.orm as so
 from sqlalchemy.types import JSON
 
+__all__ = [
+    "ForecastJSONModel",
+]
+
 class ForecastJSONModel(Base):
     __tablename__ = "weatherapi_forecast_json"
 

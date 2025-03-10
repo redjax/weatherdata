@@ -6,6 +6,8 @@ import sqlalchemy as sa
 import sqlalchemy.exc as sa_exc
 import sqlalchemy.orm as so
 
+__all__ = ["Base", "BaseRepository"]
+
 ## Generic type representing an instance of a class
 T = t.TypeVar("T")
 

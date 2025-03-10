@@ -24,6 +24,8 @@ once the server is already running makes them unusable in the /docs site.
 
 from __future__ import annotations
 
+__all__ = ["tags_metadata"]
+
 ## Default tags_metadata object.
 tags_metadata = [
     {

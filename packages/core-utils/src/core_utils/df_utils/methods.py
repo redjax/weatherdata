@@ -8,6 +8,25 @@ import pandas as pd
 
 log = logging.getLogger(__name__)
 
+__all__ = [
+    "hide_df_index",
+    "set_pandas_display_opts",
+    "rename_df_cols",
+    "count_df_rows",
+    "load_pqs_to_df",
+    "convert_csv_to_pq",
+    "convert_pq_to_csv",
+    "load_pq",
+    "save_pq",
+    "load_csv",
+    "save_csv",
+    "save_json",
+    "load_json",
+    "sort_df_by_col",
+    "get_oldest_newest",
+    "convert_df_col_dtypes",
+    "convert_df_datetimes_to_timestamp",
+]
 
 def hide_df_index(df: pd.DataFrame) -> pd.DataFrame:
     """Hide the Pandas index when previewing, i.e. with .head().

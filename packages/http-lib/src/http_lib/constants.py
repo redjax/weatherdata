@@ -4,6 +4,9 @@ from __future__ import annotations
 
 Docs: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
 """
+
+__all__ = ["SUCCESS_CODES", "REDIRECT_CODES", "CLIENT_ERROR_CODES", "SERVER_ERROR_CODES", "ALL_ERROR_CODES"]
+
 ## Common HTTP success response codes
 SUCCESS_CODES: list[int] = [200, 201, 202, 204]
 ## Common HTTP redirect responsee codes
@@ -13,4 +16,4 @@ CLIENT_ERROR_CODES: list[int] = [400, 401, 402, 403, 404, 405, 406, 407, 408, 40
 ## Common HTTP server error response codes
 SERVER_ERROR_CODES: list[int] = [500, 501, 502, 503, 504, 505]
 ## Joined list of all server/client side error response codes
-ALL_ERROR_CODES: list[int] = [CLIENT_ERROR_CODES, SERVER_ERROR_CODES]
+ALL_ERROR_CODES: list[int] = CLIENT_ERROR_CODES + SERVER_ERROR_CODES

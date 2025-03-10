@@ -11,6 +11,10 @@ import sqlalchemy as sa
 import sqlalchemy.exc as sa_exc
 import sqlalchemy.orm as so
 
+__all__ = [
+    "save_location", "count_locations",
+]
+
 def save_location(location: t.Union[domain_location.LocationIn, dict, str], engine: sa.Engine | None = None, echo: bool = False) -> domain_location.LocationOut:
     """Save a Location to the database.
 

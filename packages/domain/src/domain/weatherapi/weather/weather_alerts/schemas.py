@@ -2,6 +2,13 @@ from __future__ import annotations
 
 from pydantic import BaseModel
 
+__all__ = [
+    "WeatherAlertIn",
+    "WeatherAlertOut",
+    "WeatherAlertsIn",
+    "WeatherAlertsOut",
+]
+
 class WeatherAlertIn(BaseModel):
     headline: str | None = None
     msgtype: str | None = None

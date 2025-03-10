@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+__all__ = ["VALID_COL_TYPES", "validate_df_col_type"]
+
 VALID_COL_TYPES: list[str] = [
     "object",
     "bool",

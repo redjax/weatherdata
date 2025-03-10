@@ -16,6 +16,8 @@ from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from loguru import logger as log
 
+__all__ = ["fix_api_docs", "update_tags_metadata", "add_cors_middleware", "add_routers" ,"get_app"]
+
 def fix_api_docs(app: FastAPI = None):
     """Fix error loading /docs when a root_path is set.
 

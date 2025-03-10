@@ -6,6 +6,11 @@ import http_lib
 import httpx
 from loguru import logger as log
 
+__all__ = [
+    "return_current_weather_request",
+    "return_weather_forecast_request",
+]
+
 def return_current_weather_request(
     api_key: str, location: str, include_aqi: bool = False, headers: dict | None = None
 ) -> httpx.Request:

@@ -10,6 +10,8 @@ import sqlalchemy as sa
 import sqlalchemy.exc as sa_exc
 import sqlalchemy.orm as so
 
+__all__ = ["ForecastJSONRepository"]
+
 class ForecastJSONRepository(BaseRepository):
     def __init__(self, session: so.Session):
         super().__init__(session, ForecastJSONModel)

@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import re
 
+__all__ = ["sanitize_filename"]
+
 def sanitize_filename(filename: str, space_replacement: str = "_", unsafe_char_replacement: str = "-") -> str:
     """Sanitizes a filename to be safe for all OS paths by replacing unsafe characters.
     

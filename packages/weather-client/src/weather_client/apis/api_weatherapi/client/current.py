@@ -23,6 +23,8 @@ import sqlalchemy as sa
 import sqlalchemy.exc as sa_exc
 import sqlalchemy.orm as so
 
+__all__ = ["get_current_weather"]
+
 def get_current_weather(
     location: str = location_name,
     api_key: str = api_key,

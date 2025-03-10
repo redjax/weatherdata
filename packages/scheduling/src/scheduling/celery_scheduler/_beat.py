@@ -8,6 +8,10 @@ from settings.celery_settings import CELERY_SETTINGS
 from settings.logging_settings import LOGGING_SETTINGS
 import setup
 
+__all__ = [
+    "start_celery_beat",
+]
+
 def start_celery_beat(app: Celery = celeryapp.app):
     """Starts the Celery beat schedule.
     

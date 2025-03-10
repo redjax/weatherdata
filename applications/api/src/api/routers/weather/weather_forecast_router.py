@@ -14,6 +14,8 @@ from loguru import logger as log
 from scheduling.celery_scheduler import celeryapp
 from weather_client.apis import api_weatherapi
 
+__all__ = ["router"]
+
 prefix: str = "/forecast"
 tags: list[str] = ["weather", "weatherapi", "forecast"]
 

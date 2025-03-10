@@ -14,6 +14,10 @@ import sqlalchemy as sa
 import sqlalchemy.exc as sa_exc
 import sqlalchemy.orm as so
 
+__all__ = [
+    "save_forecast", "count_weather_forecast",
+]
+
 def save_forecast(
     forecast_schema: t.Union[domain_forecast.ForecastJSONIn, dict, str], engine: sa.Engine | None = None, echo: bool = False
 ) -> domain_forecast.ForecastJSONOut:
