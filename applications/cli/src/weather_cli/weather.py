@@ -12,13 +12,22 @@ from domain.weatherapi import (
 from loguru import logger as log
 from weather_client.apis import api_weatherapi
 
+from depends import db_depends
+
 __all__ = ["weather_app"]
 
 weather_app = App(name="weather", help="CLI for getting weather data")
 
 
 @weather_app.command(name="current")
-def get_current_weather(location: t.Annotated[str, Parameter(name="location", show_default=True)] = "London") -> weather_domain.current.CurrentWeatherIn:
+def get_current_weather(
+    location: t.Annotated[str, Parameter(
+        name="location",
+        show_default=True,
+        help="The location to get the current weather for. Can be a city name or postal code."
+    )] = "London",
+    save_to_db: t.Annotated[bool, Parameter(name="--save-db", show_default=True)] = False
+) -> weather_domain.current.CurrentWeatherIn:
     """Get the current weather for a given location.
     
     Params:
@@ -61,6 +70,16 @@ Wind:
     Direction: {current_weather.wind_dir}
     Degree: {current_weather.wind_degree} degrees
 """
+
+    if save_to_db:
+        log.info(f"Saving current weather to database")
+        
+        try:
+            saved_current_weather: weather_domain.current.CurrentWeatherOut = api_weatherapi.db_client.save_current_weather(location=location, current_weather=current_weather, engine=db_depends.get_db_engine())
+            log.info(f"Saved current weather to database: {saved_current_weather}")
+        except Exception as exc:
+            msg = f"({type(exc)}) Error saving current weather to database. Details: {exc}"
+            log.error(msg)
 
     log.info(current_weather_str)
     
