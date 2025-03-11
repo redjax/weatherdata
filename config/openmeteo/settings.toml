@@ -1,0 +1,8 @@
+[default]
+openmeteo_location = "cleveland"
+openmeteo_lat = 41.4995
+openmeteo_lon = -81.6944
+
+[dev]
+
+[prod]
