@@ -23,7 +23,7 @@ SCHEDULED_TASK_15m_weatherapi_current_weather = {
 SCHEDULED_TASK_30m_weatherapi_weather_forecast = {
     "30m_weatherapi_weather_forecast": {
         "task": "request_weather_forecast",
-        "schedule": crontab(hour="*/30"),
+        "schedule": crontab(minute=30, hour="*"),
         "args": [
             api_weatherapi.location_name,
         ]
