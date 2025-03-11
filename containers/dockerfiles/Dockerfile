@@ -58,6 +58,10 @@ COPY --from=build /project /project
 COPY --from=build /weatherdata /weatherdata
 COPY --from=uv /uv /usr/bin/uv
 
+WORKDIR /project
+
+CMD ["uv", "run", "alembic", "stamp", "head", ";", "alembic", "upgrade", "head"]
+
 ## Celery Beat
 FROM build AS celery_beat
 
@@ -75,6 +79,7 @@ FROM build AS celery_worker
 
 COPY --from=build /project /project
 COPY --from=build /weatherdata /weatherdata
+COPY --from=uv /uv /usr/bin/uv
 
 WORKDIR /project
 
