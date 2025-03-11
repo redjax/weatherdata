@@ -87,7 +87,7 @@ Wind:
     
 
 @weather_app.command(name="forecast")
-def get_weather_forecast(location: t.Annotated[str, Parameter(name="location", show_default=True)] = "London") -> weather_domain.forecast.ForecastJSONIn:
+def get_weather_forecast(location: t.Annotated[str, Parameter(name="location", show_default=True)] = "London", save_to_db: t.Annotated[bool, Parameter(name="--save-db", show_default=True)] = False) -> weather_domain.forecast.ForecastJSONIn:
     """Get the weather forecast for a given location.
     
     Params:
@@ -119,5 +119,15 @@ def get_weather_forecast(location: t.Annotated[str, Parameter(name="location", s
 """
 
     log.info(weather_forecast_str)
+    
+    if save_to_db:
+        log.info(f"Saving weather forecast to database")
+        
+        try:
+            saved_forecast: weather_domain.forecast.ForecastJSONOut = api_weatherapi.db_client.save_forecast(forecast_schema=forecast_json, engine=db_depends.get_db_engine())
+            log.info(f"Saved weather forecast to database: {saved_forecast}")
+        except Exception as exc:
+            msg = f"({type(exc)}) Error saving weather forecast to database. Details: {exc}"
+            log.error(msg)
     
     return weather_forecast_str
