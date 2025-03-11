@@ -121,7 +121,7 @@ Double check imports in _init_.py files, ruff removes unused imports by default.
     # )
     
     ## Find stray Python files not in src/, .venv/, or .nox/
-    all_python_files = [f for f in Path("./").rglob("*.py") if ".venv" not in f.parts and ".nox" not in f.parts and "src" not in f.parts]
+    all_python_files = [f for f in Path("./").rglob("*.py") if ".venv" not in f.parts and "migrations" not in f.parts and ".nox" not in f.parts and "src" not in f.parts]
     log.info(f"Found [{len(all_python_files)}] Python file(s) to lint")
     for py_file in all_python_files:
         log.info(f"Linting Python file: {py_file}")
