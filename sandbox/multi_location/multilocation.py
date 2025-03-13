@@ -9,6 +9,7 @@ from weather_client.apis import api_weatherapi
 from domain.weatherapi import location as location_domain
 from domain.weatherapi.weather import current as current_weather_domain
 from domain.weatherapi.weather import forecast as forecast_weather_domain
+from domain.weatherdata_api import responses as weatherdata_api_responses_domain
 
 from loguru import logger as log
 from pydantic import BaseModel, Field, field_validator, ValidationError
@@ -68,10 +69,14 @@ def main(locations_file: str):
     log.debug(f"Locations: {locations}")
     log.debug(f"{locations[0].name} lon as Decimal: ({type(locations[0].lon_as_decimal)}) {locations[0].lon_as_decimal}")
     
+    current_weather_response_dicts: list[dict] = []
+    
     for location in locations:
         log.debug(f"REQUEST current weather in {location.name}")
         try:
-            current_weather = api_weatherapi.client.get_current_weather(location=location.name)
+            current_weather: dict | None = api_weatherapi.client.get_current_weather(location=location.name)
+            if current_weather:
+                current_weather_response_dicts.append(current_weather)
         except Exception as exc:
             msg = f"({type(exc)}) Error requesting weather in {location.name}. Details: {exc}"
             log.error(msg)
@@ -79,6 +84,10 @@ def main(locations_file: str):
             continue
         
         log.info(f"Weather in '{location.name}': {current_weather}")
+        
+    log.info(f"Requested weather successfully for [{len(current_weather_response_dicts)}/{len(locations)}] location(s)")
+    
+    current_weather_response_schemas = ...
 
 if __name__ == "__main__":
     setup.setup_loguru_logging(log_level="DEBUG", colorize=True)
