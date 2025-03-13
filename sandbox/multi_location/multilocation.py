@@ -87,7 +87,18 @@ def main(locations_file: str):
         
     log.info(f"Requested weather successfully for [{len(current_weather_response_dicts)}/{len(locations)}] location(s)")
     
-    current_weather_response_schemas = ...
+    current_weather_response_schemas: list[dict[str, t.Union[current_weather_domain.CurrentWeatherIn, location_domain.LocationIn]]] = []
+    for d in current_weather_response_dicts:
+        try:
+            _current_weather_schema = api_weatherapi.convert.current_weather_dict_to_schema(d["current"])
+            _location_schema = api_weatherapi.convert.location_dict_to_schema(d["location"])
+            current_weather_response_schemas.append({"current_weather": _current_weather_schema, "location": _location_schema})
+        except Exception as exc:
+            msg = f"({type(exc)}) error converting dict to schema. Details: {exc}"
+            log.error(msg)
+            
+            continue
+    log.debug(f"Current weather response schema classes: {current_weather_response_schemas}")
 
 if __name__ == "__main__":
     setup.setup_loguru_logging(log_level="DEBUG", colorize=True)
