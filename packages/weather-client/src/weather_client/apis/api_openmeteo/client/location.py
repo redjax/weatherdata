@@ -7,7 +7,7 @@ from domain.openmeteo import location as openmeteo_location_domain
 from loguru import logger as log
 import httpx
 
-_all__ = ["search_location"]
+__all__ = ["search_location"]
 
 
 def search_location(location_name: str, results_limit: int = 1, language: str = "en", headers: dict | None = None, use_cache: bool = False, save_to_db: bool = False) -> t.Union[openmeteo_location_domain.LocationIn, list[openmeteo_location_domain.LocationIn]]:
