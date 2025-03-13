@@ -33,11 +33,13 @@ class MeteoLocationModel(Base):
     admin3_id: so.Mapped[int] = so.mapped_column(sa.NUMERIC, nullable=False)
     timezone: so.Mapped[str] = so.mapped_column(sa.TEXT, nullable=False)
     population: so.Mapped[int] = so.mapped_column(sa.NUMERIC, nullable=False)
-    # postcodes: so.Mapped[list[str]] = so.mapped_column(
-    #     sa.JSON().with_variant(JSONB, "postgresql").with_variant(sa.TEXT, "sqlite"),
-    #     nullable=False,
-    # )
-    postcodes: so.Mapped[list[str]] = so.mapped_column(StrList, nullable=False)
+    postcodes: so.Mapped[list[str]] = so.mapped_column(
+        sa.JSON()
+        .with_variant(JSONB, "postgresql")
+        .with_variant(sa.JSON, "mysql")
+        .with_variant(sa.TEXT, "sqlite"),
+        nullable=False,
+    )
     country_id: so.Mapped[int] = so.mapped_column(sa.NUMERIC, nullable=False)
     country: so.Mapped[str] = so.mapped_column(sa.TEXT, nullable=False)
     admin1: so.Mapped[str] = so.mapped_column(sa.TEXT, nullable=False)
