@@ -70,7 +70,7 @@ def filter_all_errors(record):
 
 def setup_loguru_logging(
     log_level: str = "INFO",
-    enable_loggers: list[str] = ["auto_weather"],
+    enable_loggers: list[str] = ["weatherdata"],
     add_file_logger: bool = False,
     app_log_file: str = "logs/app.log",
     add_error_file_logger: bool = False,
