@@ -69,14 +69,15 @@ def main(locations_file: str):
     log.debug(f"Locations: {locations}")
     log.debug(f"{locations[0].name} lon as Decimal: ({type(locations[0].lon_as_decimal)}) {locations[0].lon_as_decimal}")
     
-    current_weather_response_dicts: list[dict] = []
+    weather_location_schemas: list[dict[str, t.Union[current_weather_domain.CurrentWeatherIn, location_domain.LocationIn]]] = []
     
     for location in locations:
         log.debug(f"REQUEST current weather in {location.name}")
         try:
             current_weather: dict | None = api_weatherapi.client.get_current_weather(location=location.name)
             if current_weather:
-                current_weather_response_dicts.append(current_weather)
+                weather_location_dict = api_weatherapi.convert.current_weather_api_response_dict_to_schemas(current_weather)
+                weather_location_schemas.append(weather_location_dict)
         except Exception as exc:
             msg = f"({type(exc)}) Error requesting weather in {location.name}. Details: {exc}"
             log.error(msg)
@@ -85,20 +86,11 @@ def main(locations_file: str):
         
         log.info(f"Weather in '{location.name}': {current_weather}")
         
-    log.info(f"Requested weather successfully for [{len(current_weather_response_dicts)}/{len(locations)}] location(s)")
+    log.info(f"Requested weather for [{len(weather_location_schemas)}] location(s)")
     
-    current_weather_response_schemas: list[dict[str, t.Union[current_weather_domain.CurrentWeatherIn, location_domain.LocationIn]]] = []
-    for d in current_weather_response_dicts:
-        try:
-            _current_weather_schema = api_weatherapi.convert.current_weather_dict_to_schema(d["current"])
-            _location_schema = api_weatherapi.convert.location_dict_to_schema(d["location"])
-            current_weather_response_schemas.append({"current_weather": _current_weather_schema, "location": _location_schema})
-        except Exception as exc:
-            msg = f"({type(exc)}) error converting dict to schema. Details: {exc}"
-            log.error(msg)
-            
-            continue
-    log.debug(f"Current weather response schema classes: {current_weather_response_schemas}")
+    log.debug(f"Weather location schemas: {weather_location_schemas}")
+    
+    
 
 if __name__ == "__main__":
     setup.setup_loguru_logging(log_level="DEBUG", colorize=True)
