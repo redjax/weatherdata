@@ -13,7 +13,7 @@ __all__ = ["LocationRepository"]
 
 
 class LocationRepository(BaseRepository[MeteoLocationModel]):
-    """Repository for LocationModel objects.
+    """Repository for MeteoLocationModel objects.
 
     Attributes:
         session (so.Session): The database session.
@@ -30,7 +30,7 @@ class LocationRepository(BaseRepository[MeteoLocationModel]):
             id (int): The ID of the location to retrieve.
 
         Returns:
-            (LocationModel): A LocationModel object.
+            (MeteoLocationModel): A MeteoLocationModel object.
             (None): None if no location is found matching criteria.
 
         """
@@ -47,7 +47,7 @@ class LocationRepository(BaseRepository[MeteoLocationModel]):
             id (int): The ID of the location to retrieve.
 
         Returns:
-            (LocationModel): A LocationModel object.
+            (MeteoLocationModel): A MeteoLocationModel object.
             (None): None if no location is found matching criteria.
 
         """

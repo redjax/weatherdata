@@ -4,7 +4,7 @@ from decimal import Decimal
 import typing as t
 
 from db import Base, annotated
-from domain.weatherapi.location import LocationModel
+from domain.weatherapi.location import WeatherAPILocationModel
 from loguru import logger as log
 import sqlalchemy as sa
 import sqlalchemy.exc as sa_exc
@@ -16,9 +16,10 @@ __all__ = [
     "CurrentWeatherAirQualityModel",
 ]
 
+
 class CurrentWeatherModel(Base):
     """Current weather model.
-    
+
     Attributes:
         id (int): The ID of the current weather record.
         last_updated_epoch (int): The last updated epoch time.
@@ -50,13 +51,13 @@ class CurrentWeatherModel(Base):
         gust_kph (Decimal): The gust speed in kilometers per hour.
         air_quality: The air quality model.
         location: The location model.
-    
+
     Relationships:
         air_quality (CurrentWeatherAirQualityModel): The air quality model.
-        location (LocationModel): The location model.
+        location (WeatherAPILocationModel): The location model.
 
     """
-    
+
     __tablename__ = "weatherapi_current_weather"
     __table_args__ = (sa.UniqueConstraint("last_updated_epoch"),)
     # __table_args__ = (sa.UniqueConstraint("last_updated_epoch", name="_last_updated_epoch_uc"),)
@@ -114,23 +115,23 @@ class CurrentWeatherModel(Base):
         back_populates="weather"
     )
 
-    # ForeignKey to LocationModel
+    # ForeignKey to WeatherAPILocationModel
     location_id: so.Mapped[int] = so.mapped_column(
         sa.ForeignKey("weatherapi_location.id")
     )
 
-    # Relationship back to LocationModel using a string reference
-    location: so.Mapped[LocationModel] = so.relationship(
-        LocationModel, back_populates="current_weather_entries"
+    # Relationship back to WeatherAPILocationModel using a string reference
+    location: so.Mapped[WeatherAPILocationModel] = so.relationship(
+        WeatherAPILocationModel, back_populates="current_weather_entries"
     )
 
 
 class CurrentWeatherConditionModel(Base):
     """Current Weather Condition Model.
-    
+
     Description:
         This model is used to represent the current weather condition of a location.
-    
+
     Attributes:
         id (int): The unique identifier for the current weather condition.
         text (str): The text description of the current weather condition.
@@ -138,12 +139,12 @@ class CurrentWeatherConditionModel(Base):
         code (int): The code representing the current weather condition.
         weather_id (int): The unique identifier of the weather entry associated with the current weather condition.
         weather (CurrentWeatherModel): The weather entry associated with the current weather condition.
-    
+
     Relationships:
         weather (CurrentWeatherModel): The weather entry associated with the current weather condition.
 
     """
-    
+
     __tablename__ = "weatherapi_current_condition"
 
     id: so.Mapped[annotated.INT_PK]
@@ -162,10 +163,10 @@ class CurrentWeatherConditionModel(Base):
 
 class CurrentWeatherAirQualityModel(Base):
     """Current Weather Air Quality Model.
-    
+
     Description:
         This model is used to represent the air quality of a location.
-        
+
     Attributes:
         id (int): The unique identifier for the air quality.
         co (Decimal): The carbon monoxide concentration in the air.
@@ -178,7 +179,7 @@ class CurrentWeatherAirQualityModel(Base):
         gb_defra_index (int): The Great Britain Defra index for air quality.
         weather_id (int): The unique identifier of the weather entry associated with the air quality.
         weather (CurrentWeatherModel): The weather entry associated with the air quality.
-    
+
     Relationships:
         weather (CurrentWeatherModel): The weather entry associated with the air quality.
 
