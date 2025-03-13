@@ -1,7 +1,7 @@
 import typing as t
 from decimal import Decimal
 
-from .models import LocationModel
+from .models import MeteoLocationModel
 
 from db.base import BaseRepository
 from loguru import logger as log
@@ -12,7 +12,7 @@ import sqlalchemy.orm as so
 __all__ = ["LocationRepository"]
 
 
-class LocationRepository(BaseRepository[LocationModel]):
+class LocationRepository(BaseRepository[MeteoLocationModel]):
     """Repository for LocationModel objects.
 
     Attributes:
@@ -21,9 +21,9 @@ class LocationRepository(BaseRepository[LocationModel]):
     """
 
     def __init__(self, session: so.Session):
-        super().__init__(session, LocationModel)
+        super().__init__(session, MeteoLocationModel)
 
-    def get_by_id(self, id: int) -> LocationModel | None:
+    def get_by_id(self, id: int) -> MeteoLocationModel | None:
         """Get a location by its ID.
 
         Params:
@@ -35,12 +35,12 @@ class LocationRepository(BaseRepository[LocationModel]):
 
         """
         return (
-            self.session.query(LocationModel)
-            .filter(LocationModel.location_id == id)
+            self.session.query(MeteoLocationModel)
+            .filter(MeteoLocationModel.location_id == id)
             .one_or_none()
         )
 
-    def get_by_openmeteo_id(self, id: int) -> LocationModel | None:
+    def get_by_openmeteo_id(self, id: int) -> MeteoLocationModel | None:
         """Get a location by its ID.
 
         Params:
@@ -52,63 +52,65 @@ class LocationRepository(BaseRepository[LocationModel]):
 
         """
         return (
-            self.session.query(LocationModel)
-            .filter(LocationModel.id == id)
+            self.session.query(MeteoLocationModel)
+            .filter(MeteoLocationModel.id == id)
             .one_or_none()
         )
 
-    def get_by_country(self, country: str) -> list[LocationModel] | None:
+    def get_by_country(self, country: str) -> list[MeteoLocationModel] | None:
         """Get a location by its country.
 
         Params:
             country (str): The country of the location.
 
         Returns:
-            (LocationModel): A LocationModel object.
+            (MeteoLocationModel): A MeteoLocationModel object.
             (None): None if no location is found matching criteria.
 
         """
         return (
-            self.session.query(LocationModel)
-            .filter(LocationModel.country == country)
+            self.session.query(MeteoLocationModel)
+            .filter(MeteoLocationModel.country == country)
             .all()
         )
 
-    def get_by_lat_lon(self, lat_lon: tuple[Decimal, Decimal]) -> LocationModel | None:
+    def get_by_lat_lon(
+        self, lat_lon: tuple[Decimal, Decimal]
+    ) -> MeteoLocationModel | None:
         """Get a location by its latitude and longitude.
 
         Params:
             lat_lon (tuple[Decimal, Decimal]): The latitude and longitude of the location.
 
         Returns:
-            (LocationModel): A LocationModel object.
+            (MeteoLocationModel): A MeteoLocationModel object.
             (None): None if no location is found matching criteria.
 
         """
         return (
-            self.session.query(LocationModel)
+            self.session.query(MeteoLocationModel)
             .filter(
-                LocationModel.latitude == lat_lon[0]
-                and LocationModel.longitude == lat_lon[1]
+                MeteoLocationModel.latitude == lat_lon[0]
+                and MeteoLocationModel.longitude == lat_lon[1]
             )
             .one_or_none()
         )
 
-    def save(self, location: LocationModel) -> LocationModel | None:
+    def save(self, location: MeteoLocationModel) -> MeteoLocationModel | None:
         """Save a location to the database.
 
         Params:
-            location (LocationModel): The location to save.
+            location (MeteoLocationModel): The location to save.
 
         Returns:
-            LocationModel: The saved location.
+            MeteoLocationModel: The saved location.
 
         Raises:
             Exception: If location cannot be saved, an `Exception` is raised.
 
         """
         ## Check if location already exists
-        existing_location: LocationModel | None = self.get_by_id(location.id)
+        existing_location: MeteoLocationModel | None = self.get_by_id(location.id)
 
         if existing_location:
             log.info(

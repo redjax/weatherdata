@@ -27,7 +27,7 @@ def main():
     )
     log.debug(f"Location ({type(location)}): {location}")
 
-    location_model: openmeteo_location_domain.LocationModel = (
+    location_model: openmeteo_location_domain.MeteoLocationModel = (
         api_openmeteo.convert.location_schema_to_model(location)
     )
     if location_model:

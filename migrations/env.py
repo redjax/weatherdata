@@ -7,14 +7,14 @@ from alembic import context
 
 import db
 from depends import db_depends
-from domain.weatherapi.location import LocationModel
+from domain.weatherapi.location import WeatherAPILocationModel
 from domain.weatherapi.weather.current import (
     CurrentWeatherModel,
     CurrentWeatherConditionModel,
     CurrentWeatherAirQualityModel,
 )
 from domain.weatherapi.weather.forecast import ForecastJSONModel
-from domain.openmeteo.location import LocationModel
+from domain.openmeteo.location import MeteoLocationModel
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

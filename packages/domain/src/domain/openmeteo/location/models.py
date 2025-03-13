@@ -10,10 +10,10 @@ from sqlalchemy.dialects.postgresql import JSONB
 import sqlalchemy.exc as sa_exc
 import sqlalchemy.orm as so
 
-__all__ = ["LocationModel"]
+__all__ = ["MeteoLocationModel"]
 
 
-class LocationModel(Base):
+class MeteoLocationModel(Base):
     __tablename__ = "openmeteo_location"
     __table_args__ = (sa.UniqueConstraint("id", name="_id_uc"),)
 

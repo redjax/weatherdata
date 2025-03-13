@@ -55,16 +55,16 @@ def location_search_result_dicts_to_schema(
 
 def location_schema_to_model(
     location_schema: openmeteo_location_domain.LocationIn,
-) -> openmeteo_location_domain.LocationModel:
+) -> openmeteo_location_domain.MeteoLocationModel:
     try:
-        location_model: openmeteo_location_domain.LocationModel = (
-            openmeteo_location_domain.LocationModel(**location_schema.model_dump())
+        location_model: openmeteo_location_domain.MeteoLocationModel = (
+            openmeteo_location_domain.MeteoLocationModel(**location_schema.model_dump())
         )
 
         return location_model
 
     except Exception as exc:
-        msg = f"({type(exc)}) Error converting location schema to LocationModel. Details: {exc}"
+        msg = f"({type(exc)}) Error converting location schema to MeteoLocationModel. Details: {exc}"
         log.error(msg)
 
         raise
