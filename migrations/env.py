@@ -8,8 +8,13 @@ from alembic import context
 import db
 from depends import db_depends
 from domain.weatherapi.location import LocationModel
-from domain.weatherapi.weather.current import CurrentWeatherModel, CurrentWeatherConditionModel, CurrentWeatherAirQualityModel
+from domain.weatherapi.weather.current import (
+    CurrentWeatherModel,
+    CurrentWeatherConditionModel,
+    CurrentWeatherAirQualityModel,
+)
 from domain.weatherapi.weather.forecast import ForecastJSONModel
+from domain.openmeteo.location import LocationModel
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -73,9 +78,7 @@ def run_migrations_online() -> None:
     )
 
     with connectable.connect() as connection:
-        context.configure(
-            connection=connection, target_metadata=target_metadata
-        )
+        context.configure(connection=connection, target_metadata=target_metadata)
 
         with context.begin_transaction():
             context.run_migrations()
