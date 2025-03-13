@@ -4,7 +4,7 @@ from domain.openmeteo import location as openmeteo_location_domain
 
 from loguru import logger as log
 
-__all__ = ["location_search_result_dicts_to_schema"]
+__all__ = ["location_search_result_dicts_to_schema", "location_schema_to_model"]
 
 
 def location_search_result_dicts_to_schema(
@@ -51,3 +51,20 @@ def location_search_result_dicts_to_schema(
         )
 
         return location_schemas
+
+
+def location_schema_to_model(
+    location_schema: openmeteo_location_domain.LocationIn,
+) -> openmeteo_location_domain.LocationModel:
+    try:
+        location_model: openmeteo_location_domain.LocationModel = (
+            openmeteo_location_domain.LocationModel(**location_schema.model_dump())
+        )
+
+        return location_model
+
+    except Exception as exc:
+        msg = f"({type(exc)}) Error converting location schema to LocationModel. Details: {exc}"
+        log.error(msg)
+
+        raise
