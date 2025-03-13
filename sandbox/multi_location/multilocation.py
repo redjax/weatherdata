@@ -69,7 +69,7 @@ def main(locations_file: str):
     log.debug(f"Locations: {locations}")
     log.debug(f"{locations[0].name} lon as Decimal: ({type(locations[0].lon_as_decimal)}) {locations[0].lon_as_decimal}")
     
-    weather_location_schemas: list[dict[str, t.Union[current_weather_domain.CurrentWeatherIn, location_domain.LocationIn]]] = []
+    weather_location_schema_dicts: list[dict[str, t.Union[current_weather_domain.CurrentWeatherIn, location_domain.LocationIn]]] = []
     
     for location in locations:
         log.debug(f"REQUEST current weather in {location.name}")
@@ -77,7 +77,7 @@ def main(locations_file: str):
             current_weather: dict | None = api_weatherapi.client.get_current_weather(location=location.name)
             if current_weather:
                 weather_location_dict = api_weatherapi.convert.current_weather_api_response_dict_to_schemas(current_weather)
-                weather_location_schemas.append(weather_location_dict)
+                weather_location_schema_dicts.append(weather_location_dict)
         except Exception as exc:
             msg = f"({type(exc)}) Error requesting weather in {location.name}. Details: {exc}"
             log.error(msg)
@@ -86,10 +86,21 @@ def main(locations_file: str):
         
         log.info(f"Weather in '{location.name}': {current_weather}")
         
-    log.info(f"Requested weather for [{len(weather_location_schemas)}] location(s)")
+    log.info(f"Requested weather for [{len(weather_location_schema_dicts)}] location(s)")
     
-    log.debug(f"Weather location schemas: {weather_location_schemas}")
+    log.debug(f"Weather location schemas: {weather_location_schema_dicts}")
     
+    for weather_location_dict in weather_location_schema_dicts:
+        location: location_domain.LocationIn = weather_location_dict["location"]
+        current_weather: current_weather_domain.CurrentWeatherIn = weather_location_dict["current_weather"]
+        
+        location_model: location_domain.LocationModel = api_weatherapi.convert.location_schema_to_model(location)
+        current_weather_model: current_weather_domain.CurrentWeatherModel = api_weatherapi.convert.current_weather_schema_to_model(current_weather)
+        
+        log.debug(f"Location model type: ({type(location)}), Current weather model type: ({type(current_weather_model)})")
+        
+        log.debug(f"Location DB model: {location_model.__dict__}")
+        log.debug(f"Current weather DB model: {current_weather_model.__dict__}")
     
 
 if __name__ == "__main__":
