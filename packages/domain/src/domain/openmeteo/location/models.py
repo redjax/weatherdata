@@ -2,11 +2,12 @@ from decimal import Decimal
 
 import typing as t
 
-from db import Base, annotated, StrList
+from db import Base, annotated
 
 from loguru import logger as log
 import sqlalchemy as sa
 from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.ext.mutable import MutableList
 import sqlalchemy.exc as sa_exc
 import sqlalchemy.orm as so
 
@@ -33,12 +34,8 @@ class MeteoLocationModel(Base):
     admin3_id: so.Mapped[int] = so.mapped_column(sa.NUMERIC, nullable=False)
     timezone: so.Mapped[str] = so.mapped_column(sa.TEXT, nullable=False)
     population: so.Mapped[int] = so.mapped_column(sa.NUMERIC, nullable=False)
-    postcodes: so.Mapped[list[str]] = so.mapped_column(
-        sa.JSON()
-        .with_variant(JSONB, "postgresql")
-        .with_variant(sa.JSON, "mysql")
-        .with_variant(sa.TEXT, "sqlite"),
-        nullable=False,
+    postcodes: so.Mapped[str] = so.mapped_column(
+        MutableList.as_mutable(sa.JSON), nullable=False
     )
     country_id: so.Mapped[int] = so.mapped_column(sa.NUMERIC, nullable=False)
     country: so.Mapped[str] = so.mapped_column(sa.TEXT, nullable=False)

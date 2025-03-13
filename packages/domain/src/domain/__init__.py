@@ -1,3 +1,3 @@
 from __future__ import annotations
 
-from . import exc, weatherapi
+from . import exc, weatherapi, openmeteo

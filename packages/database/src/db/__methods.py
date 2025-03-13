@@ -20,6 +20,7 @@ __all__ = [
     "create_base_metadata",
 ]
 
+
 def get_db_uri(
     drivername: str,
     username: str | None,
@@ -154,6 +155,7 @@ def create_base_metadata(
         )
 
     try:
+        print(f"TEMPORARY: Base metadata tables: {base.metadata.tables.keys()}")
         base.metadata.create_all(bind=engine)
     except Exception as exc:
         msg = Exception(
@@ -164,49 +166,51 @@ def create_base_metadata(
 
 def count_table_rows(table: str, engine: sa.Engine, echo: bool = False) -> int:
     """Count the number of rows in a table.
-    
+
     Params:
         table (str): The name of the table to count rows in.
         engine (sqlalchemy.Engine): A SQLAlchemy `Engine` to use for database connections.
     """
     log.info(f"Counting rows in table: {table}")
-    
+
     session_pool = get_session_pool(engine=engine)
-    
+
     ## Count number of rows in given table name
     with session_pool() as session:
         if not sa.inspect(engine).has_table(table):
             log.error(f"Table '{table}' does not exist.")
             return
-        
+
         query = sa_sql.text(f"SELECT COUNT(*) FROM {table}")
         try:
             count = session.execute(query).scalar()
         except Exception as exc:
-            msg= f"({type(exc)}) Error counting rows in table '{table}'. Details: {exc}"
+            msg = (
+                f"({type(exc)}) Error counting rows in table '{table}'. Details: {exc}"
+            )
             log.error(msg)
-            
+
             raise exc
         except sa_exc.SQLAlchemyError as exc:
             log.error(f"Error querying table '{table}': {exc}")
-        
+
         log.info(f"[{count}] row(s) in table '{table}'.")
-        
+
         return count
-    
+
 
 def show_table_names(engine: sa.Engine, echo: bool = False) -> list[str]:
     """List all table names in the database.
-    
+
     Params:
         engine (sqlalchemy.Engine): A SQLAlchemy `Engine` to use for database connections.
         echo (bool): Echo the table names to the console.
     """
     log.info("Showing database tables")
-    
+
     inspector = sa.inspect(engine)
     tables = inspector.get_table_names()
-    
+
     if tables:
         log.debug(f"Tables in the database: {tables}")
         return tables
