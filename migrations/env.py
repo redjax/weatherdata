@@ -14,7 +14,7 @@ from domain.weatherapi.weather.current import (
     CurrentWeatherAirQualityModel,
 )
 from domain.weatherapi.weather.forecast import ForecastJSONModel
-from domain.openmeteo.location import MeteoLocationModel
+from domain.openmeteo.location.models import MeteoLocationModel
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
