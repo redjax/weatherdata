@@ -90,18 +90,6 @@ def main(locations_file: str):
     
     log.debug(f"Weather location schemas: {weather_location_schema_dicts}")
     
-    for weather_location_dict in weather_location_schema_dicts:
-        location: location_domain.LocationIn = weather_location_dict["location"]
-        current_weather: current_weather_domain.CurrentWeatherIn = weather_location_dict["current_weather"]
-        
-        location_model: location_domain.LocationModel = api_weatherapi.convert.location_schema_to_model(location)
-        current_weather_model: current_weather_domain.CurrentWeatherModel = api_weatherapi.convert.current_weather_schema_to_model(current_weather)
-        
-        log.debug(f"Location model type: ({type(location)}), Current weather model type: ({type(current_weather_model)})")
-        
-        log.debug(f"Location DB model: {location_model.__dict__}")
-        log.debug(f"Current weather DB model: {current_weather_model.__dict__}")
-    
 
 if __name__ == "__main__":
     setup.setup_loguru_logging(log_level="DEBUG", colorize=True)
