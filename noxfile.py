@@ -200,6 +200,66 @@ def run_init_clone_setup(session: nox.Session):
         {
             "src": "./config/.secrets.toml",
             "dest": "./config/.secrets.local.toml"
+        },
+        {
+            "src": "./config/celery/settings.toml",
+            "dest": "./config/celery/settings.local.toml"
+        },
+        {
+            "src": "./config/celery/.secrets.toml",
+            "dest": "./config/celery/.secrets.local.toml"
+        },
+        {
+            "src": "./config/database/settings.toml",
+            "dest": "./config/database/settings.local.toml"
+        },
+        {
+            "src": "./config/database/.secrets.toml",
+            "dest": "./config/database/.secrets.local.toml"
+        },
+        {
+            "src": "./config/dramatiq/settings.toml",
+            "dest": "./config/dramatiq/settings.local.toml"
+        },
+        {
+            "src": "./config/dramatiq/.secrets.toml",
+            "dest": "./config/dramatiq/.secrets.local.toml"
+        },
+        {
+            "src": "./config/fastapi/settings.toml",
+            "dest": "./config/fastapi/settings.local.toml"
+        },
+        {
+            "src": "./config/fastapi/.secrets.toml",
+            "dest": "./config/fastapi/.secrets.local.toml"
+        },
+        {
+            "src": "./config/uvicorn/settings.toml",
+            "dest": "./config/uvicorn/settings.local.toml"
+        },
+        {
+            "src": "./config/uvicorn/.secrets.toml",
+            "dest": "./config/uvicorn/.secrets.local.toml"
+        },
+        {
+            "src": "./config/weatherapi/settings.toml",
+            "dest": "./config/weatherapi/settings.local.toml"
+        },
+        {
+            "src": "./config/weatherapi/.secrets.toml",
+            "dest": "./config/weatherapi/.secrets.local.toml"
+        },
+        {
+            "src": "./containers/.env.example",
+            "dest": "./containers/.env"
+        },
+        {
+            "src": "./containers/envs/dev.app.env.example",
+            "dest": "./containers/envs/dev.app.env"
+        },
+        {
+            "src": "./containers/envs/dev.messaging.env.example",
+            "dest": "./containers/envs/dev.messaging.env"
         }
     ]
     
