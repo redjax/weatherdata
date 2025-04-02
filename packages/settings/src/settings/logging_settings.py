@@ -8,5 +8,10 @@ __all__ = ["LOGGING_SETTINGS"]
 LOGGING_SETTINGS = Dynaconf(
     environments=True,
     envvar_prefix="LOG",
-    settings_files=["settings.toml", ".secrets.toml"]
+    settings_files=[
+        "settings.toml",
+        ".secrets.toml",
+        "logging/settings.toml",
+        "logging/.secrets.toml",
+    ],
 )

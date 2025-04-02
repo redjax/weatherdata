@@ -8,5 +8,10 @@ __all__ = ["WEATHERAPI_SETTINGS"]
 WEATHERAPI_SETTINGS = Dynaconf(
     environments=True,
     envvar_prefix="WEATHERAPI",
-    settings_files=["weatherapi/settings.toml", "weatherapi/.secrets.toml"]
+    settings_files=[
+        "settings.toml",
+        ".secrets.toml",
+        "weatherapi/settings.toml",
+        "weatherapi/.secrets.toml",
+    ],
 )

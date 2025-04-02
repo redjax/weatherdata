@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from .base import *
 from .api_settings import *
 from .app_settings import *
 from .celery_settings import *
