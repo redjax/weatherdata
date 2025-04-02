@@ -6,15 +6,16 @@ import typing as t
 log = logging.getLogger(__name__)
 
 import db
+
 from settings import DB_SETTINGS
+import settings
 import sqlalchemy as sa
 import sqlalchemy.orm as so
 
-__all__ = [
-    "get_db_uri",
-    "get_db_engine",
-    "get_session_pool"
-]
+__all__ = ["get_db_uri", "get_db_engine", "get_session_pool"]
+
+# DB_SETTINGS = settings.get_namespace("database")
+
 
 def get_db_uri(
     drivername: str = DB_SETTINGS.get("DB_DRIVERNAME", default="sqlite+pysqlite"),
@@ -26,7 +27,7 @@ def get_db_uri(
     as_str: bool = False,
 ) -> sa.URL:
     """Construct a SQLAlchemy `URL` for a database connection.
-    
+
     Params:
         drivername (str): The SQLAlchemy drivername value, i.e. `sqlite+pysqlite`.
         username (str|None): The username for database auth.
@@ -35,7 +36,7 @@ def get_db_uri(
         port (int|None): The database server port.
         database (str): The database to connect to. For SQLite, use a file path, i.e. `path/to/app.sqlite`.
         as_str (bool): Return the SQLAlchemy `URL` as a string.
-        
+
     Returns:
         (sa.URL): A SQLAlchemy `URL`
 
@@ -57,11 +58,11 @@ def get_db_uri(
 
 def get_db_engine(db_uri: sa.URL = get_db_uri(), echo: bool = False) -> sa.Engine:
     """Construct a SQLAlchemy `Engine` for a database connection.
-    
+
     Params:
         db_uri (sa.URL): A SQLAlchemy `URL` for a database connection.
         echo (bool): Echo SQL statements to the console.
-        
+
     Returns:
         (sa.Engine): A SQLAlchemy `Engine`
 
@@ -75,10 +76,10 @@ def get_session_pool(
     engine: sa.Engine = get_db_engine(),
 ) -> so.sessionmaker[so.Session]:
     """Construct a SQLAlchemy `Session` pool for a database connection.
-    
+
     Params:
         engine (sa.Engine): A SQLAlchemy `Engine` for a database connection.
-        
+
     Returns:
         (so.sessionmaker[so.Session]): A SQLAlchemy `Session` pool
 
