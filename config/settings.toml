@@ -1,14 +1,37 @@
-[default]
-
-log_level = "INFO"
+[app]
 tz = "Etc/UTC"
 
-[dev]
-log_level = "DEBUG"
-# tz = ""
-
-[rc]
-log_level = "DEBUG"
-
-[prod]
+[logging]
 log_level = "INFO"
+
+[celery]
+celery_broker_host = "localhost"
+celery_broker_port = 5672
+celery_broker_username = "guest"
+celery_broker_vhost = "/"
+celery_backend_host = "localhost"
+celery_backend_port = 6379
+
+[fastapi]
+fastapi_debug = false
+fastapi_title = "WeatherData - Dev"
+fastapi_summary = "[Dev] Weatherdata project API."
+fastapi_description = "[Dev] Backend API for Weatherdata app. https://github.com/redjax/weatherdata"
+fastapi_version = "0.1.0"
+fastapi_openapi_url = "/openapi.json"
+fastapi_redirect_slashes = true
+fastapi_docs_url = "/docs"
+fastapi_redoc_url = "/redoc"
+fastapi_openapi_prefix = ""
+fastapi_root_path = ""
+fastapi_root_path_in_servers = true
+## Include custom admin router
+fastapi_include_admin_router = true
+
+[uvicorn]
+uvicorn_app = "api.main:fastapi_app"
+uvicorn_host = "0.0.0.0"
+uvicorn_port = 8000
+uvicorn_root_path = "/"
+uvicorn_reload = true
+uvicorn_log_level = "DEBUG"
