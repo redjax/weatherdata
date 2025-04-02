@@ -9,5 +9,10 @@ __all__ = ["CELERY_SETTINGS"]
 CELERY_SETTINGS: Dynaconf = Dynaconf(
     environments=True,
     envvar_prefix="CELERY",
-    settings_files=["celery/settings.toml", "celery/.secrets.toml"],
+    settings_files=[
+        "settings.toml",
+        ".secrets.toml",
+        "celery/settings.toml",
+        "celery/.secrets.toml",
+    ],
 )

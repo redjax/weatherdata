@@ -9,5 +9,10 @@ __all__ = ["DB_SETTINGS"]
 DB_SETTINGS: Dynaconf = Dynaconf(
     environments=True,
     envvar_prefix="DB",
-    settings_files=["database/settings.toml", "database/.secrets.toml"],
+    settings_files=[
+        "settings.toml",
+        ".secrets.toml",
+        "database/settings.toml",
+        "database/.secrets.toml",
+    ],
 )
