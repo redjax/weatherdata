@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dynaconf import Dynaconf
 from loguru import logger as log
+from settings.base import get_namespace
 import pika
 
 __all__ = [
@@ -11,16 +12,18 @@ __all__ = [
 ]
 
 ## Dramatiq settings loaded with dynaconf
-DRAMATIQ_SETTINGS: Dynaconf = Dynaconf(
-    environments=True,
-    envvar_prefix="DRAMATIQ",
-    settings_files=[
-        "settings.toml",
-        ".secrets.toml",
-        "dramatiq/settings.toml",
-        "dramatiq/.secrets.toml",
-    ],
-)
+# DRAMATIQ_SETTINGS: Dynaconf = Dynaconf(
+#     environments=True,
+#     envvar_prefix="DRAMATIQ",
+#     settings_files=[
+#         "settings.toml",
+#         ".secrets.toml",
+#         "dramatiq/settings.toml",
+#         "dramatiq/.secrets.toml",
+#     ],
+# )
+
+DRAMATIQ_SETTINGS = get_namespace("dramatiq")
 
 
 def return_dramatiq_rabbitmq_url(
