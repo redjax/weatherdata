@@ -25,6 +25,7 @@ import sqlalchemy.orm as so
 
 __all__ = ["get_current_weather"]
 
+
 def get_current_weather(
     location: str = location_name,
     api_key: str = api_key,
@@ -37,10 +38,10 @@ def get_current_weather(
     retry_stagger: int = 3,
     save_to_db: bool = False,
     db_engine: sa.Engine | None = None,
-    db_echo: bool = False
+    db_echo: bool = False,
 ) -> dict | None:
     """Get the current weather for a location.
-    
+
     Params:
         location (str, optional): The location to get the current weather for. Defaults to location_name.
         api_key (str, optional): The API key to use. Defaults to api_key.
@@ -57,20 +58,24 @@ def get_current_weather(
 
     Returns:
         dict | None: The current weather for the location.
-        
+
     Raises:
         Exception: If there is an error getting the current weather, an `Exception` is raised.
 
     """
+    if api_key is None or api_key == "":
+        raise ValueError("WeatherAPI key is None or empty.")
+
     current_weather_request: httpx.Request = requests.return_current_weather_request(
         api_key=api_key, location=location, include_aqi=include_aqi, headers=headers
     )
-    
+
     log.info("Requesting current weather")
 
     with http_lib.get_http_controller(use_cache=use_cache) as http:
         try:
             res: httpx.Response = http.client.send(current_weather_request)
+            res.raise_for_status()
         except httpx.ReadTimeout as timeout:
             log.warning(
                 f"({type(timeout)}) Operation timed out while requesting current weather."
@@ -118,22 +123,22 @@ def get_current_weather(
         )
 
         return None
-    
+
     if save_to_db:
         if not db_engine:
             db_engine = db_depends.get_db_engine()
 
         # log.warning("Saving current weather to database is not implemented")
         errored: bool = False
-        
+
         try:
             db_location_in = location_dict_to_schema(location_dict=decoded["location"])
         except Exception as exc:
             msg = f"({type(exc)}) Error converting decoded response to schema. Details: {exc}"
             log.error(msg)
-            
+
             errored = True
-        
+
         if not errored:
             try:
                 db_current_weather_in = current_weather_dict_to_schema(
@@ -142,24 +147,29 @@ def get_current_weather(
             except Exception as exc:
                 msg = f"({type(exc)}) Error converting decoded response to schema. Details: {exc}"
                 log.error(msg)
-                
+
                 errored = True
-                
+
         if not errored:
             ## Save current weather to database
             try:
                 db_current_weather_out = save_current_weather(
-                    location=db_location_in, current_weather=db_current_weather_in, engine=db_engine, echo=db_echo
+                    location=db_location_in,
+                    current_weather=db_current_weather_in,
+                    engine=db_engine,
+                    echo=db_echo,
                 )
                 log.success("Saved current weather to database")
                 log.debug(f"Current weather from database: {db_current_weather_out}")
             except Exception as exc:
-                msg= f"({type(exc)}) Error saving current weather to database: {exc}"
+                msg = f"({type(exc)}) Error saving current weather to database: {exc}"
                 log.error(msg)
-                
+
                 errored = True
-                
+
         if errored:
-            log.warning("Errored while saving current weather and/or location to database.")
+            log.warning(
+                "Errored while saving current weather and/or location to database."
+            )
 
     return decoded

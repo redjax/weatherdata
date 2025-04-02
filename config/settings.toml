@@ -12,6 +12,9 @@ celery_broker_vhost = "/"
 celery_backend_host = "localhost"
 celery_backend_port = 6379
 
+[weatherapi]
+weatherapi_location_name = "London"
+
 [fastapi]
 fastapi_debug = false
 fastapi_title = "WeatherData - Dev"
