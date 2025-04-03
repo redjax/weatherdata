@@ -18,6 +18,7 @@ I use weather APIs frequently to help me learn programming things. I'm continuin
   - [Adding applications](#adding-applications)
 - [The 'sandbox'](#the-sandbox)
 - [Notes](#notes)
+  - [Fix memcached crash on Raspberry Pi](#fix-memcached-crash-on-raspberry-pi)
 - [Links](#links)
 
 ## Requirements
@@ -161,6 +162,13 @@ The [`sandbox/`](./sandbox/) path is a place where I can prototype or test small
 Sandbox code is just that; it is not packaged, it's not meant to be distributed, and scripts may come and go (I often delete things in the sandbox once I've integrated the code into the app somewhere else).
 
 ## Notes
+
+### Fix memcached crash on Raspberry Pi
+
+On Raspberry Pi (and probably other ARM CPUs), the `libmemcached` package must be installed on the host.
+
+- Debian: `apt install -y libmemcached-dev`
+- RedHat: `dnf install -y memcached libmemcached`
 
 ## Links
 
