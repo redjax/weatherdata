@@ -48,6 +48,12 @@ members = ["packages/*", "applications/*"]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+[tool.setuptools]
+py-modules = []
+
+[tool.hatch.build.targets.wheel]
+packages = ["packages/*", "applications/*"]
+
 [dependency-groups]
 dev = [
     "alembic>=1.14.0",
