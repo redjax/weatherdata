@@ -110,6 +110,8 @@ def request_current_weather(
 
         decoded: dict = http_lib.decode_response(response=res)
         log.debug(f"Decoded current weather response: {decoded}")
+
+        return decoded
     else:
         log.warning(
             f"Non-200 response requesting current weather for location '{location_name}': [{res.status_code}: {res.reason_phrase}]: {res.text}"

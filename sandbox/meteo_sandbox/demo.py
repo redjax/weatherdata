@@ -42,6 +42,10 @@ def main():
         location_name=location.name, lat=location.latitude, lon=location.longitude
     )
 
+    log.info(
+        f"It is {current_weather['current']['temperature_2m']} F in {location.name}"
+    )
+
 
 if __name__ == "__main__":
     setup.setup_loguru_logging(log_level="DEBUG", colorize=True)
