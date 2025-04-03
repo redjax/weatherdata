@@ -36,7 +36,7 @@ def search_location(
         (list[LocationIn]): A list of objects if multiple locations were found.
 
     """
-    url = f"{api_openmeteo.OPENMETEO_GEOCODING_BASE_URL}"
+    url = api_openmeteo.OPENMETEO_GEOCODING_BASE_URL
     params = {
         "name": location_name,
         "count": results_limit,
@@ -61,6 +61,8 @@ def search_location(
         log.warning(
             f"Non-200 response requesting location '{location_name}': [{res.status_code}: {res.reason_phrase}]: {res.text}"
         )
+
+        return
 
     search_result_schemas: (
         list[openmeteo_location_domain.LocationIn]

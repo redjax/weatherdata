@@ -20,6 +20,7 @@ def main():
         f"Location name: {api_openmeteo.location_name} (lat: {api_openmeteo.location_lat}, lon: {api_openmeteo.location_lon})"
     )
 
+    log.info(f"Searching for location '{api_openmeteo.location_name}")
     location: openmeteo_location_domain.LocationIn = (
         api_openmeteo.client.search_location(
             location_name=api_openmeteo.location_name, results_limit=1, language="en"
@@ -27,6 +28,7 @@ def main():
     )
     log.debug(f"Location ({type(location)}): {location}")
 
+    log.info(f"Saving location '{api_openmeteo.location_name}' to database")
     location_model: openmeteo_location_domain.MeteoLocationModel = (
         api_openmeteo.convert.location_schema_to_model(location)
     )
@@ -34,6 +36,11 @@ def main():
         log.debug(f"Location model: {location_model.__dict__}")
     else:
         log.warning(f"location_model is None and should not be.")
+
+    log.info(f"Requesting current weather for location '{location.name}'")
+    current_weather = api_openmeteo.client.request_current_weather(
+        location_name=location.name, lat=location.latitude, lon=location.longitude
+    )
 
 
 if __name__ == "__main__":

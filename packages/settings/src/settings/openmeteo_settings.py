@@ -8,5 +8,10 @@ __all__ = ["OPENMETEO_SETTINGS"]
 OPENMETEO_SETTINGS = Dynaconf(
     environments=True,
     envvar_prefix="OPENMETEO",
-    settings_files=["openmeteo/settings.toml", "openmeteo/.secrets.toml"]
+    settings_files=[
+        "settings.toml",
+        ".secrets..toml",
+        "openmeteo/settings.toml",
+        "openmeteo/.secrets.toml",
+    ],
 )
