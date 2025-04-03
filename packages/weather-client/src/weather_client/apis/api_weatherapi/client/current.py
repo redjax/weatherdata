@@ -70,7 +70,7 @@ def get_current_weather(
         api_key=api_key, location=location, include_aqi=include_aqi, headers=headers
     )
 
-    log.info("Requesting current weather")
+    log.info(f"Requesting current weather in location '{location}'")
 
     with http_lib.get_http_controller(use_cache=use_cache) as http:
         try:
