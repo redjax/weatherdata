@@ -74,7 +74,6 @@ WORKDIR /project
 CMD ["uv", "run", "scripts/celery/start_celery.py", "-m", "beat"]
 
 ## Celery Worker
-
 FROM build AS celery_worker
 
 COPY --from=build /project /project
@@ -84,3 +83,14 @@ COPY --from=uv /uv /usr/bin/uv
 WORKDIR /project
 
 CMD ["uv", "run", "scripts/celery/start_celery.py", "-m", "worker"]
+
+## Scheduled task with schedule Python library
+FROM build AS schdule_lib
+
+COPY --from=build /project /project
+COPY --from=build /weatherdata /weatherdata
+COPY --from=uv /uv /usr/bin/uv
+
+WORKDIR /project
+
+CMD ["uv", "run", "scripts/schedules/weatherapi/current/every_15th_minute_current_weather.py"]
