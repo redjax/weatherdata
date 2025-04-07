@@ -36,7 +36,6 @@ COPY applications/ applications/
 COPY migrations/ migrations/
 COPY packages/ packages/
 COPY scripts/ scripts/
-COPY src/ src/
 
 ## Build
 FROM stage AS build
