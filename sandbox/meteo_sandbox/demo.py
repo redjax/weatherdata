@@ -1,6 +1,7 @@
 from loguru import logger as log
 
 import typing as t
+import json
 
 import setup
 from settings import OPENMETEO_SETTINGS
@@ -45,6 +46,10 @@ def main():
     log.info(
         f"It is {current_weather['current']['temperature_2m']} F in {location.name}"
     )
+
+    # with open("ex_openmeteo_current.json", "w") as f:
+    #     _data = json.dumps(current_weather, indent=4, default=str)
+    #     f.write(_data)
 
 
 if __name__ == "__main__":
