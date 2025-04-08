@@ -119,6 +119,42 @@ class MeteoMinutely15UnitsOut(MeteoMinutely15In):
     id: int
 
 
+class MeteoHourlyUnitsIn(BaseModel):
+    time: str
+    uv_index: str
+    uv_index_clear_sky: str
+    is_day: str
+    sunshine_duration: str
+    thunderstorm_probability: str
+    rain_probability: str
+    snowfall_probability: str
+    freezing_rain_probability: str
+    ice_pellets_probability: str
+    precipitation_probability: str
+
+
+class MeteoHourlyUnitsOut(MeteoHourlyUnitsIn):
+    id: int
+
+
+class MeteoHourlyIn(BaseModel):
+    time: list[str] = Field(default_factory=list)
+    uv_index: list[Decimal] = Field(default_factory=list)
+    uv_index_clear_sky: list[Decimal] = Field(default_factory=list)
+    is_day: list[int] = Field(default_factory=list)
+    sunshine_duration: list = Field(default_factory=list)
+    thunderstorm_probability: list = Field(default_factory=list)
+    rain_probability: list = Field(default_factory=list)
+    snowfall_probability: list = Field(default_factory=list)
+    freezing_rain_probability: list = Field(default_factory=list)
+    ice_pellets_probability: list = Field(default_factory=list)
+    precipitation_probability: list = Field(default_factory=list)
+
+
+class MeteoHourlyOut(MeteoHourlyIn):
+    id: int
+
+
 ## Main class
 
 
