@@ -9,6 +9,7 @@ from depends import db_depends
 import http_lib
 from weather_client.apis import api_openmeteo
 from domain.openmeteo import location as openmeteo_location_domain
+from domain.openmeteo.weather import current as openmeteo_current_weather_domain
 
 import httpx
 import hishel
@@ -50,6 +51,18 @@ def main():
     # with open("ex_openmeteo_current.json", "w") as f:
     #     _data = json.dumps(current_weather, indent=4, default=str)
     #     f.write(_data)
+
+    try:
+        current_weather_schema = (
+            openmeteo_current_weather_domain.MeteoCurrentWeatherIn.model_validate(
+                current_weather
+            )
+        )
+    except Exception as exc:
+        log.error(f"Error converting OpenMeteo current weather response to a schema")
+        raise
+
+    log.debug(f"OpenMeteo current weather:\n{current_weather_schema}")
 
 
 if __name__ == "__main__":
