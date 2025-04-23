@@ -64,6 +64,8 @@ def main():
 
     log.debug(f"OpenMeteo current weather:\n{current_weather_schema}")
 
+    current_weather_model = openmeteo_current_weather_domain.MeteoCurrentModel()
+
 
 if __name__ == "__main__":
     setup.setup_loguru_logging(log_level="DEBUG", colorize=True)
