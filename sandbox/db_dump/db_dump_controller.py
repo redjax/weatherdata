@@ -13,6 +13,14 @@ from settings import DB_SETTINGS
 log = logging.getLogger(__name__)
 
 
+__all__ = [
+    "start_cli",
+    "get_default_backup_filename",
+    "DbSettings",
+    "DatabaseBackupController",
+]
+
+
 def parse_args():
     parser = argparse.ArgumentParser(description="Dump a database to a SQL file")
 
@@ -264,7 +272,41 @@ class DatabaseBackupController:
                 self._connection.close()
 
 
-def main():
+def main(
+    db_host: str,
+    db_port: int,
+    db_username: str,
+    db_password: str,
+    db_database: str,
+    backup_file: str,
+    log_level: str = "INFO",
+    log_fmt: str = "%(asctime)s [%(levelname)s] :: %(message)s",
+    log_datefmt: str = "%Y-%m-%d %H:%M:%S",
+):
+    logging.basicConfig(level=log_level, format=log_fmt, datefmt=log_datefmt)
+    log.debug("DEBUG logging enabled")
+
+    db_settings: dict = {
+        "host": db_host,
+        "port": db_port,
+        "username": db_username,
+        "password": db_password,
+        "database": db_database,
+        "backup_file": backup_file,
+    }
+
+    controller = DatabaseBackupController(db_settings=db_settings)
+    try:
+        controller.run_backup()
+        log.info("Backup completed successfully")
+        exit(0)
+    except Exception as exc:
+        log.error(f"Error dumping MySQL database. Details: {exc}")
+        exit(1)
+
+
+def start_cli():
+    """Add arg parsing before main function."""
     args = parse_args()
 
     log_level = logging.DEBUG if args.debug else logging.INFO
@@ -275,7 +317,7 @@ def main():
         else "%(asctime)s [%(levelname)s] :: %(message)s"
     )
 
-    logging.basicConfig(level=log_level, format=fmt, datefmt="%Y-%m-%d %H:%M:%S")
+    datefmt = "%Y-%m-%d %H:%M:%S"
 
     ## Define database connection details
     host = DB_SETTINGS.get("DB_HOST", "localhost")
@@ -300,24 +342,22 @@ def main():
     else:
         backup_file = get_default_backup_filename(db_name=database)
 
-    db_settings: dict = {
-        "host": host,
-        "port": port,
-        "username": username,
-        "password": password,
-        "database": database,
-        "backup_file": backup_file,
-    }
-
-    controller = DatabaseBackupController(db_settings=db_settings)
-    try:
-        controller.run_backup()
-        log.info("Backup completed successfully")
-        exit(0)
-    except Exception as exc:
-        log.error(f"Error dumping MySQL database. Details: {exc}")
-        exit(1)
+    main(
+        db_host=host,
+        db_port=port,
+        db_username=username,
+        db_password=password,
+        db_database=database,
+        backup_file=backup_file,
+        log_level=log_level,
+        log_fmt=fmt,
+        log_datefmt=datefmt,
+    )
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        start_cli()
+    except Exception as exc:
+        log.error(f"Error running MySQL backup script. Details: {exc}")
+        exit(1)
