@@ -6,6 +6,7 @@ import argparse
 from pathlib import Path
 import logging
 import typing as t
+import datetime as dt
 
 from settings import DB_SETTINGS
 
@@ -21,17 +22,43 @@ def parse_args():
     parser.add_argument("--db-username", default="root", help="Database username")
     parser.add_argument("--db-password", default=None, help="Database password")
     parser.add_argument("--db-database", default=None, help="Database name")
-    parser.add_argument(
-        "--backup-file", default="backup.sql", help="File to save backup to"
-    )
+    parser.add_argument("--backup-file", default=None, help="File to save backup to")
 
     args = parser.parse_args()
 
     return args
 
 
+def get_default_backup_filename(db_name: str | None = None):
+    """Generate a default backup filename based on the current date and time.
+
+    Params:
+        db_name (str): The optional name of the database to include in the filename.
+
+    Returns:
+        str: The default backup filename
+    """
+    timestamp = dt.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+
+    if db_name:
+        return f"{timestamp}_{db_name}_backup.sql"
+
+    return f"{timestamp}_backup.sql"
+
+
 @dataclass
 class DbSettings:
+    """Database connection settings.
+
+    Attributes:
+        host: MySQL database host
+        port: MySQL database port
+        username: MySQL database username
+        password: MySQL database password
+        database: MySQL database name
+        backup_file: File to save backup to
+    """
+
     host: str = field(default="localhost")
     port: int = field(default=3306)
     username: str = field(default="root")
@@ -41,7 +68,14 @@ class DbSettings:
 
 
 class DatabaseBackupController:
-    """Controller class for MySQL database backup operations"""
+    """Controller class for MySQL database backup operations.
+
+    Attributes:
+        args: argparse.Namespace
+        logger: logging.Logger
+        db_settings: DbSettings
+        _connection: pymysql.Connection
+    """
 
     def __init__(
         self,
@@ -57,10 +91,20 @@ class DatabaseBackupController:
         self._connection = None
 
     def _init_db_settings(self, settings: dict = None) -> DbSettings:
+        """Initialize DbSettings object.
+
+        Params:
+            settings (dict): User-provided settings
+
+        Returns:
+            DbSettings
+        """
         merged = self._merge_settings(self.args, settings or {})
+
         ## Only keep keys that are fields of DbSettings
         allowed_keys = set(DbSettings.__dataclass_fields__.keys())
         filtered = {k: v for k, v in merged.items() if k in allowed_keys}
+
         return DbSettings(**filtered)
 
     def _merge_settings(
@@ -70,19 +114,26 @@ class DatabaseBackupController:
         1. Command-line arguments
         2. User-provided settings
         3. settings.py defaults
+
+        Params:
+            args (argparse.Namespace): Command-line arguments
+            user_settings (dict): User-provided settings
+
+        Returns:
+            dict
         """
         user_settings = user_settings or {}
 
-        # Start with settings.py defaults
+        ## Start with env defaults
         merged = dict(DB_SETTINGS)
-        # Update with user-provided settings
+        ## Override with user-provided settings
         merged.update(user_settings)
 
-        # Helper to safely get from args
+        ## Helper to safely get from args
         def argval(attr):
             return getattr(args, attr, None) if args else None
 
-        # Override with CLI args if provided
+        ## Override with CLI args if provided
         cli_mapping = {
             "host": argval("db_host"),
             "port": argval("db_port"),
@@ -92,12 +143,12 @@ class DatabaseBackupController:
             "backup_file": argval("backup_file"),
         }
 
-        # Only override if the CLI value is not None and not empty string
+        ## Only override if the CLI value is not None and not empty string
         for k, v in cli_mapping.items():
             if v is not None and v != "":
                 merged[k] = v
 
-        # Set defaults if still missing
+        ## Set defaults if still missing
         defaults = {
             "host": "localhost",
             "port": 3306,
@@ -112,7 +163,7 @@ class DatabaseBackupController:
         return merged
 
     def _validate_settings(self) -> None:
-        """Validate required database settings"""
+        """Validate required database settings."""
         required = ["host", "port", "username", "password", "database"]
 
         for field in required:
@@ -123,6 +174,7 @@ class DatabaseBackupController:
         """Verify mysqldump installation"""
         self.logger.info("Checking mysqldump installation")
 
+        ## Test if mysqldump is installed
         if path := shutil.which("mysqldump"):
             self.logger.debug(f"mysqldump found at: {path}")
             return True
@@ -136,12 +188,13 @@ class DatabaseBackupController:
         return False
 
     def _test_connection(self) -> None:
-        """Test database connection"""
+        """Test database connection."""
         self.logger.info(
             f"Connecting to {self.db_settings.database} @ "
             f"{self.db_settings.host}:{self.db_settings.port}"
         )
         try:
+            ## Open pymysqlconnection
             self._connection = pymysql.connect(
                 host=self.db_settings.host,
                 port=self.db_settings.port,
@@ -154,7 +207,7 @@ class DatabaseBackupController:
             raise
 
     def _build_mysqldump_command(self) -> str:
-        """Construct the mysqldump command"""
+        """Construct the mysqldump command."""
         return (
             f"mysqldump -h {self.db_settings.host} "
             f"-P {self.db_settings.port} "
@@ -164,7 +217,7 @@ class DatabaseBackupController:
         )
 
     def _ensure_backup_dir(self) -> None:
-        """Create backup directory if needed"""
+        """Create backup directory if needed."""
         backup_path = Path(self.db_settings.backup_file)
 
         if not backup_path.parent.exists():
@@ -172,10 +225,12 @@ class DatabaseBackupController:
             backup_path.parent.mkdir(parents=True, exist_ok=True)
 
     def run_backup(self) -> None:
-        """Execute full backup workflow"""
+        """Execute full backup workflow."""
+        ## Check if mysqldump is installed
         if not self._check_mysqldump():
             raise RuntimeError("mysqldump dependency not met")
 
+        ## Test database connection
         self.logger.info(
             f"Testing connection to {self.db_settings.username}@{self.db_settings.host}:{self.db_settings.port}/{self.db_settings.database}"
         )
@@ -185,6 +240,7 @@ class DatabaseBackupController:
             self.logger.error(f"Error testing database connection. Details: {exc}")
             raise
 
+        ## Prepare backup environment
         self.logger.info(f"Prepare backup directory & build SQL dump command")
         try:
             self._ensure_backup_dir()
@@ -193,10 +249,10 @@ class DatabaseBackupController:
             self.logger.error(f"Error preparing backup environment: {exc}")
             raise
 
+        ## Do backup
         self.logger.info(f"Starting backup to {self.db_settings.backup_file}")
         try:
             subprocess.run(cmd, shell=True, check=True)
-            self.logger.info("Backup completed successfully")
         except subprocess.CalledProcessError as e:
             self.logger.error(f"Backup failed with exit code {e.returncode}: {e}")
             raise
@@ -227,7 +283,6 @@ if __name__ == "__main__":
     username = DB_SETTINGS.get("DB_USERNAME", None)
     password = DB_SETTINGS.get("DB_PASSWORD", None)
     database = DB_SETTINGS.get("DB_DATABASE", None)
-    backup_file = "backup.sql"
 
     if host is None:
         host = args.db_host
@@ -239,8 +294,11 @@ if __name__ == "__main__":
         password = args.db_password
     if database is None:
         database = args.db_database
+
     if args.backup_file is not None:
         backup_file = args.backup_file
+    else:
+        backup_file = get_default_backup_filename(db_name=database)
 
     db_settings: dict = {
         "host": host,
@@ -252,4 +310,10 @@ if __name__ == "__main__":
     }
 
     controller = DatabaseBackupController(db_settings=db_settings)
-    controller.run_backup()
+    try:
+        controller.run_backup()
+        log.info("Backup completed successfully")
+        exit(0)
+    except Exception as exc:
+        log.error(f"Error dumping MySQL database. Details: {exc}")
+        exit(1)
