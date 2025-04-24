@@ -1,3 +1,23 @@
+# /// script
+# requires-python = ">=3.12"
+# dependencies = [
+#     "pymysql",
+# ]
+# ///
+
+"""Dump a MySQL database to a SQL file.
+
+Description:
+    Wraps the `mysqldump` command to dump a MySQL database to a SQL file. Includes a CLI, run with `--help` to see usage.
+
+Usage:
+    python dump_mysql_db.py --db-host <host> --db-port <port> --db-username <username> --db-password <password> --db-database <database> --backup-file <file>
+
+Example:
+    python dump_mysql_db.py --db-host localhost --db-port 3306 --db-username root --db-password password --db-database my_database --backup-file backup.sql
+
+"""
+
 import pymysql
 import subprocess
 import shutil
@@ -7,24 +27,45 @@ from pathlib import Path
 import logging
 import typing as t
 import datetime as dt
-
-from settings import DB_SETTINGS
+import os
+import json
 
 log = logging.getLogger(__name__)
 
 
 __all__ = [
     "start_cli",
+    "check_mysqldump_installed",
     "get_default_backup_filename",
     "DbSettings",
     "DatabaseBackupController",
 ]
+
+## Load database settings from environment variables.
+DB_SETTINGS = {
+    "host": os.environ.get("DB_HOST", "localhost"),
+    "port": os.environ.get("DB_PORT", 3306),
+    "username": os.environ.get("DB_USERNAME", "root"),
+    "password": os.environ.get("DB_PASSWORD", None),
+    "database": os.environ.get("DB_DATABASE", None),
+    "backup_file": os.environ.get("BACKUP_FILE", "backup.sql"),
+}
 
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Dump a database to a SQL file")
 
     parser.add_argument("--debug", action="store_true", help="Enable debug logging")
+    parser.add_argument(
+        "--generate-config-file",
+        action="store_true",
+        help="Generate a config JSON file. After editing, pass it into the CLI with `--config-file`",
+    )
+    parser.add_argument(
+        "--config-file",
+        default="mysql_dump_config.json",
+        help="Define app settings in a config JSON file.",
+    )
     parser.add_argument("--db-host", default="localhost", help="Database host")
     parser.add_argument("--db-port", default=3306, type=int, help="Database port")
     parser.add_argument("--db-username", default="root", help="Database username")
@@ -35,6 +76,25 @@ def parse_args():
     args = parser.parse_args()
 
     return args
+
+
+def check_mysqldump_installed() -> bool:
+    """Verify mysqldump installation"""
+    log.info("Checking mysqldump installation")
+
+    ## Test if mysqldump is installed
+    if path := shutil.which("mysqldump"):
+        log.debug(f"mysqldump found at: {path}")
+        return True
+
+    log.error(
+        "mysqldump not found in PATH.\nInstallation instructions:\n"
+        "  Ubuntu/Debian: sudo apt install default-mysql-client\n"
+        "  CentOS/RHEL:   sudo yum install mysql\n"
+        "  macOS:         brew install mysql"
+    )
+
+    return False
 
 
 def get_default_backup_filename(db_name: str | None = None):
@@ -52,6 +112,20 @@ def get_default_backup_filename(db_name: str | None = None):
         return f"{timestamp}_{db_name}_backup.sql"
 
     return f"{timestamp}_backup.sql"
+
+
+def save_default_config_json():
+    default_app_config = {
+        "log_level": "info",
+        "db_host": "localhost",
+        "db_port": 3306,
+        "db_username": "root",
+        "db_password": "<mysql-password>",
+        "db_database": "db_name",
+    }
+
+    with open("mysql_dump_config.json", "w") as f:
+        json.dump(default_app_config, f, indent=4)
 
 
 @dataclass
@@ -178,23 +252,6 @@ class DatabaseBackupController:
             if not getattr(self.db_settings, field, None):
                 raise ValueError(f"Missing required database setting: {field}")
 
-    def _check_mysqldump(self) -> bool:
-        """Verify mysqldump installation"""
-        self.logger.info("Checking mysqldump installation")
-
-        ## Test if mysqldump is installed
-        if path := shutil.which("mysqldump"):
-            self.logger.debug(f"mysqldump found at: {path}")
-            return True
-
-        self.logger.error(
-            "mysqldump not found in PATH.\nInstallation instructions:\n"
-            "  Ubuntu/Debian: sudo apt install default-mysql-client\n"
-            "  CentOS/RHEL:   sudo yum install mysql\n"
-            "  macOS:         brew install mysql"
-        )
-        return False
-
     def _test_connection(self) -> None:
         """Test database connection."""
         self.logger.info(
@@ -235,7 +292,7 @@ class DatabaseBackupController:
     def run_backup(self) -> None:
         """Execute full backup workflow."""
         ## Check if mysqldump is installed
-        if not self._check_mysqldump():
+        if not check_mysqldump_installed():
             raise RuntimeError("mysqldump dependency not met")
 
         ## Test database connection
@@ -279,13 +336,7 @@ def main(
     db_password: str,
     db_database: str,
     backup_file: str,
-    log_level: str = "INFO",
-    log_fmt: str = "%(asctime)s [%(levelname)s] :: %(message)s",
-    log_datefmt: str = "%Y-%m-%d %H:%M:%S",
 ):
-    logging.basicConfig(level=log_level, format=log_fmt, datefmt=log_datefmt)
-    log.debug("DEBUG logging enabled")
-
     db_settings: dict = {
         "host": db_host,
         "port": db_port,
@@ -308,8 +359,15 @@ def main(
 def start_cli():
     """Add arg parsing before main function."""
     args = parse_args()
+    ## Set empty user settings dict to populate if --config-file was used
+    user_settings = {}
 
-    log_level = logging.DEBUG if args.debug else logging.INFO
+    log_level = "DEBUG" if args.debug else "INFO"
+    if (
+        "log_level" in user_settings.keys()
+        and user_settings.get("log_level") != log_level
+    ):
+        log_level = user_settings.get(log_level)
 
     fmt = (
         "%(asctime)s | [%(levelname)s] | %(name)s:%(lineno)s :: %(message)s"
@@ -319,12 +377,49 @@ def start_cli():
 
     datefmt = "%Y-%m-%d %H:%M:%S"
 
+    logging.basicConfig(level=log_level.upper(), format=fmt, datefmt=datefmt)
+    log.debug("DEBUG logging enabled")
+
+    ## If --generate-config-file was passed, save the default JSON file
+    #  & exit
+    if args.generate_config_file:
+        save_default_config_json()
+        exit(0)
+
+    _config_loaded_from_file = False
+
+    if args.config_file is not None:
+        if Path(args.config_file).exists():
+            with open(args.config_file, "r") as f:
+                user_settings = json.load(f)
+                _config_loaded_from_file = True
+
     ## Define database connection details
-    host = DB_SETTINGS.get("DB_HOST", "localhost")
-    port = DB_SETTINGS.get("DB_PORT", 3306)
-    username = DB_SETTINGS.get("DB_USERNAME", None)
-    password = DB_SETTINGS.get("DB_PASSWORD", None)
-    database = DB_SETTINGS.get("DB_DATABASE", None)
+    host = (
+        user_settings.get("db_host")
+        if user_settings.get("db_host")
+        else DB_SETTINGS.get("DB_HOST")
+    )
+    port = (
+        user_settings.get("db_port")
+        if user_settings.get("db_port")
+        else DB_SETTINGS.get("DB_PORT")
+    )
+    username = (
+        user_settings.get("db_username")
+        if user_settings.get("db_username")
+        else DB_SETTINGS.get("DB_USERNAME")
+    )
+    password = (
+        user_settings.get("db_password")
+        if user_settings.get("db_password")
+        else DB_SETTINGS.get("DB_PASSWORD")
+    )
+    database = (
+        user_settings.get("db_database")
+        if user_settings.get("db_database")
+        else DB_SETTINGS.get("DB_DATABASE")
+    )
 
     if host is None:
         host = args.db_host
@@ -349,9 +444,6 @@ def start_cli():
         db_password=password,
         db_database=database,
         backup_file=backup_file,
-        log_level=log_level,
-        log_fmt=fmt,
-        log_datefmt=datefmt,
     )
 
 
