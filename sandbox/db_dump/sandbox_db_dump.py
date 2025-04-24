@@ -4,11 +4,11 @@ import shutil
 from dataclasses import dataclass, field
 import argparse
 from pathlib import Path
+import logging
 
-import setup
-from settings import DB_SETTINGS, LOGGING_SETTINGS
+from settings import DB_SETTINGS
 
-from loguru import logger as log
+log = logging.getLogger(__name__)
 
 
 def parse_args():
@@ -171,7 +171,14 @@ if __name__ == "__main__":
     else:
         log_level = "INFO"
 
-    setup.setup_loguru_logging(log_level=log_level, colorize=True)
+    if log_level == "DEBUG":
+        fmt = "%(asctime)s | [%(levelname)s] | %(name)s:%(lineno)s :: %(message)s"
+        datefmt = "%Y-%m-%d %H:%M:%S"
+    else:
+        fmt = "%(asctime)s [%(levelname)s] :: %(message)s"
+        datefmt = "%Y-%m-%d %H:%M:%S"
+
+    logging.basicConfig(level=log_level, format=fmt, datefmt=datefmt)
     log.debug("DEBUG logging enabled")
 
     ## Define database connection details
