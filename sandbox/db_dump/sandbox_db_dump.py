@@ -169,7 +169,7 @@ if __name__ == "__main__":
     if args.debug:
         log_level = "DEBUG"
     else:
-        log_level = LOGGING_SETTINGS.get("LOG_LEVEL", "INFO")
+        log_level = "INFO"
 
     setup.setup_loguru_logging(log_level=log_level, colorize=True)
     log.debug("DEBUG logging enabled")
