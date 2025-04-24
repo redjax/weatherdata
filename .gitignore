@@ -209,3 +209,6 @@ site/
 *.json
 
 !*example*.json
+
+## Ignore database dumps
+*.sql
