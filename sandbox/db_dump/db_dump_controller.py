@@ -264,7 +264,7 @@ class DatabaseBackupController:
                 self._connection.close()
 
 
-if __name__ == "__main__":
+def main():
     args = parse_args()
 
     log_level = logging.DEBUG if args.debug else logging.INFO
@@ -317,3 +317,7 @@ if __name__ == "__main__":
     except Exception as exc:
         log.error(f"Error dumping MySQL database. Details: {exc}")
         exit(1)
+
+
+if __name__ == "__main__":
+    main()
