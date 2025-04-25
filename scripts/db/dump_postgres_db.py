@@ -78,11 +78,21 @@ def check_pg_dump_installed() -> bool:
         log.debug(f"pg_dump found at: {path}")
         return True
 
+    debian_pgdump_add_repo_str: str = """    
+sudo apt install curl gnupg lsb-release -y
+curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo gpg --dearmor -o /usr/share/keyrings/postgresql.gpg
+echo "deb [signed-by=/usr/share/keyrings/postgresql.gpg] http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" | \\\nsudo tee /etc/apt/sources.list.d/pgdg.list
+sudo apt update -y
+sudo apt install -y postgresql-client-16
+"""
+
     log.error(
         "pg_dump not found in PATH.\nInstallation instructions:\n"
         "  Ubuntu/Debian: sudo apt install postgresql-client\n"
         "  CentOS/RHEL:   sudo yum install postgresql\n"
-        "  macOS:         brew install postgresql"
+        "  macOS:         brew install postgresql\n"
+        "\n"
+        f"Note: On Debian Linux, you may need to add a repository using:\n{debian_pgdump_add_repo_str}"
     )
 
     return False
@@ -101,7 +111,7 @@ def get_default_backup_filename(db_name: str | None = None):
     timestamp = dt.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
     if db_name:
-        return f"{timestamp}_{db_name}_backup.sql"
+        return f"{timestamp}_postgres_{db_name}_backup.sql"
 
     return f"{timestamp}_backup.sql"
 
