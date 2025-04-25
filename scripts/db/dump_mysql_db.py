@@ -113,7 +113,7 @@ def get_default_backup_filename(db_name: str | None = None):
     timestamp = dt.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
     if db_name:
-        return f"{timestamp}_{db_name}_backup.sql"
+        return f"{timestamp}_mysql_{db_name}_backup.sql"
 
     return f"{timestamp}_backup.sql"
 
