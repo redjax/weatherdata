@@ -104,12 +104,15 @@ def get_connection_config(connections: list[dict], name: str):
     raise ValueError(f"No connection found with name '{name}'")
 
 
-def export_tables_to_json(conn_cfg: dict, tables: list[str], output_path: str):
+def export_tables_to_json(conn_cfg: dict, tables: list[str], output_path: str, output_format: str):
+    log.debug(f"Connection config: {conn_cfg}")
+
     password: str = get_password(conn_cfg.get("password_file", ""))
     conn_str: str = build_connection_string(conn_cfg, password)
+    
     engine: sa.Engine = sa.create_engine(conn_str)
-    output_format: str = conn_cfg['dump_format']
-
+    
+    log.debug(f"Creating in-memory DuckDB database for exported data")
     ## in-memory duckdb connection
     con = duckdb.connect()
     
@@ -166,21 +169,58 @@ def export_tables_to_json(conn_cfg: dict, tables: list[str], output_path: str):
     log.info(f"Data exported to path: {Path(output_path).parent}")
 
 
-def import_tables_from_json(conn_cfg, tables, input_path_template, deduplicate_on):
+def import_tables(
+    conn_cfg: dict,
+    tables: list[str],
+    input_path_template: str,
+    dump_format: str = "json",
+    deduplicate_on: list[str] = None,
+    ts: str = None
+):
+    """Import tables from files (JSON or Parquet) into the target DB."""
+    log.debug(f"Connection config: {conn_cfg}")
+
     password = get_password(conn_cfg.get("password_file", ""))
     conn_str = build_connection_string(conn_cfg, password)
     engine = sa.create_engine(conn_str)
-    
+
+    ## If no timestamp is provided, try today's date or glob for latest
+    if ts is None:
+        ## or "full" if you want to match full timestamps
+        ts = get_ts(fmt="date")
+
     for table in tables:
-        input_path = input_path_template.replace("{table}", table)
+        ## Build input path
+        input_path = input_path_template.replace("{table}", table).replace("{ts}", ts)
+        input_path_obj = Path(input_path)
+
+        ## If file doesn't exist, try to glob for the latest matching file
+        if not input_path_obj.exists():
+            files = sorted(input_path_obj.parent.glob(f"*_{table}.{dump_format}"), reverse=True)
+            if not files:
+                log.error(f"No input file found for table '{table}' at {input_path}")
+                continue
+            input_path = str(files[0])
+            log.info(f"Using latest file for table '{table}': {input_path}")
+
         con = duckdb.connect()
-        log.info(f"Importing table '{table}' from {input_path} into {conn_cfg['name']}")
+        log.info(f"Importing table '{table}' from {input_path} into {conn_cfg['name']} (format: {dump_format})")
+        
         try:
-            df = con.execute(f"SELECT * FROM read_json_auto('{input_path}')").df()
+            match dump_format:
+                case "json":
+                    df = con.execute(f"SELECT * FROM read_json_auto('{input_path}')").df()
+                case "parquet":
+                    df = con.execute(f"SELECT * FROM read_parquet('{input_path}')").df()
+                case _:
+                    raise ValueError(f"Unsupported dump_format: {dump_format}")
+            
             if deduplicate_on:
                 df = df.drop_duplicates(subset=deduplicate_on)
+
             df.to_sql(table, engine, if_exists="append", index=False)
             log.info(f"Imported {len(df)} rows into {table}")
+
         except Exception as exc:
             log.error(f"Failed importing table '{table}'. Details: {exc}")
             raise
@@ -188,35 +228,37 @@ def import_tables_from_json(conn_cfg, tables, input_path_template, deduplicate_o
 
 def run(connections: list[dict], jobs: list[dict]):
     if not connections:
-        raise ValueError(f"Missing list of connections")
+        raise ValueError("Missing list of connections")
     if not isinstance(connections, list):
-        raise TypeError(
-            f"Invalid type for 'connection': {type(connections)}. Must be a list of connection dicts"
-        )
+        raise TypeError("Invalid type for 'connection': {type(connections)}. Must be a list of connection dicts")
     if not len(connections) > 0:
         raise ValueError("Must pass a list with at least 1 connection object")
 
     log.debug(f"Connections: {len(connections)}, Jobs: {len(jobs)}")
 
     for job in jobs:
+        log.debug(f"Executing job: {job}")
+
         match job["type"]:
             case "export":
                 conn_cfg = get_connection_config(connections, job["connection"])
-                log.debug(f"EXPORT config: {conn_cfg}")
-
-                export_tables_to_json(conn_cfg, job["tables"], job["dump_path"])
+                try:
+                    export_tables_to_json(conn_cfg, job["tables"], job["dump_path"], output_format=job["dump_format"])
+                except Exception as exc:
+                    log.error(f"Failed job: {job}. Details: {exc}")
+                    continue
 
             case "import":
                 conn_cfg = get_connection_config(connections, job["connection"])
-                log.debug(f"IMPORT config: {conn_cfg}")
-
-                import_tables_from_json(
+                import_tables(
                     conn_cfg,
                     job["tables"],
                     job["dump_path"],
-                    job.get("deduplicate_on"),
+                    dump_format=job.get("dump_format", "json"),
+                    deduplicate_on=job.get("deduplicate_on"),
+                    ## Optionally pass a specific timestamp if you want
+                    ts=None,
                 )
-
             case _:
                 raise ValueError(f"Unknown job type: {job['type']}")
 
