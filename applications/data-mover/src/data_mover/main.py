@@ -81,7 +81,7 @@ def build_connection_string(conn_cfg: dict, password: str):
     match conn_cfg["type"]:
         case "sqlite":
             return f"sqlite:///{conn_cfg['database']}"
-        case "postgres:":
+        case "postgres":
             return (
                 f"postgresql+psycopg2://{conn_cfg['username']}:{password}"
                 f"@{conn_cfg['host']}:{conn_cfg['port']}/{conn_cfg['database']}"
@@ -104,7 +104,7 @@ def get_connection_config(connections: list[dict], name: str):
     raise ValueError(f"No connection found with name '{name}'")
 
 
-def export_tables_to_json(conn_cfg: dict, tables: list[str], output_path: str, output_format: str):
+def export_tables(conn_cfg: dict, tables: list[str], output_path: str, output_format: str):
     log.debug(f"Connection config: {conn_cfg}")
 
     password: str = get_password(conn_cfg.get("password_file", ""))
@@ -170,33 +170,30 @@ def export_tables_to_json(conn_cfg: dict, tables: list[str], output_path: str, o
 
 
 def import_tables(
-    conn_cfg: dict,
-    tables: list[str],
-    input_path_template: str,
-    dump_format: str = "json",
-    deduplicate_on: list[str] = None,
-    ts: str = None
+    conn_cfg,
+    tables,
+    input_path_template,
+    dump_format="json",
+    ts=None
 ):
-    """Import tables from files (JSON or Parquet) into the target DB."""
-    log.debug(f"Connection config: {conn_cfg}")
-
     password = get_password(conn_cfg.get("password_file", ""))
     conn_str = build_connection_string(conn_cfg, password)
     engine = sa.create_engine(conn_str)
 
-    ## If no timestamp is provided, try today's date or glob for latest
     if ts is None:
-        ## or "full" if you want to match full timestamps
         ts = get_ts(fmt="date")
 
     for table in tables:
-        ## Build input path
         input_path = input_path_template.replace("{table}", table).replace("{ts}", ts)
         input_path_obj = Path(input_path)
 
-        ## If file doesn't exist, try to glob for the latest matching file
         if not input_path_obj.exists():
-            files = sorted(input_path_obj.parent.glob(f"*_{table}.{dump_format}"), reverse=True)
+            ext = dump_format if dump_format in ("json", "parquet") else "*"
+            files = sorted(
+                input_path_obj.parent.glob(f"*_{table}.{ext}"),
+                key=lambda f: f.stat().st_mtime,
+                reverse=True
+            )
             if not files:
                 log.error(f"No input file found for table '{table}' at {input_path}")
                 continue
@@ -204,19 +201,49 @@ def import_tables(
             log.info(f"Using latest file for table '{table}': {input_path}")
 
         con = duckdb.connect()
+
         log.info(f"Importing table '{table}' from {input_path} into {conn_cfg['name']} (format: {dump_format})")
-        
         try:
-            match dump_format:
-                case "json":
-                    df = con.execute(f"SELECT * FROM read_json_auto('{input_path}')").df()
-                case "parquet":
-                    df = con.execute(f"SELECT * FROM read_parquet('{input_path}')").df()
-                case _:
-                    raise ValueError(f"Unsupported dump_format: {dump_format}")
-            
-            if deduplicate_on:
-                df = df.drop_duplicates(subset=deduplicate_on)
+            # Load file using DuckDB
+            if dump_format == "json":
+                df = con.execute(f"SELECT * FROM read_json_auto('{input_path}')").df()
+            elif dump_format == "parquet":
+                df = con.execute(f"SELECT * FROM read_parquet('{input_path}')").df()
+            else:
+                raise ValueError(f"Unsupported dump_format: {dump_format}")
+
+            if "id" in df.columns:
+                log.debug("Removing 'id' column from import data")
+                df.drop(columns=["id"], inplace=True)
+
+            # Skip if DataFrame is empty after removing id
+            if df.empty:
+                log.info(f"No rows to import for {table}.")
+                continue
+
+            # Get existing rows from DB for full-row comparison
+            log.debug("Fetching existing rows for duplicate check")
+            try:
+                existing = pd.read_sql_table(table, engine)
+                if "id" in existing.columns:
+                    existing.drop(columns=["id"], inplace=True)
+            except Exception as exc:
+                log.warning(f"Failed fetching existing rows from {table}: {exc}")
+                existing = pd.DataFrame(columns=df.columns)
+
+            # Filter: keep only new rows (anti-join)
+            before = len(df)
+            merged = df.merge(existing.drop_duplicates(), how="left", indicator=True)
+            new_rows = merged[merged["_merge"] == "left_only"].drop(columns=["_merge"])
+            df = new_rows
+
+            skipped = before - len(df)
+            if skipped > 0:
+                log.info(f"Skipped {skipped} duplicate rows for {table} (already present).")
+
+            if df.empty:
+                log.info(f"No new rows to import for {table}.")
+                continue
 
             df.to_sql(table, engine, if_exists="append", index=False)
             log.info(f"Imported {len(df)} rows into {table}")
@@ -243,7 +270,7 @@ def run(connections: list[dict], jobs: list[dict]):
             case "export":
                 conn_cfg = get_connection_config(connections, job["connection"])
                 try:
-                    export_tables_to_json(conn_cfg, job["tables"], job["dump_path"], output_format=job["dump_format"])
+                    export_tables(conn_cfg, job["tables"], job["dump_path"], output_format=job["dump_format"])
                 except Exception as exc:
                     log.error(f"Failed job: {job}. Details: {exc}")
                     continue
@@ -255,7 +282,7 @@ def run(connections: list[dict], jobs: list[dict]):
                     job["tables"],
                     job["dump_path"],
                     dump_format=job.get("dump_format", "json"),
-                    deduplicate_on=job.get("deduplicate_on"),
+                    # deduplicate_on=job.get("deduplicate_on"),
                     ## Optionally pass a specific timestamp if you want
                     ts=None,
                 )
