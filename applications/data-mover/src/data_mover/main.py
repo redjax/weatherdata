@@ -117,7 +117,6 @@ def export_tables(conn_cfg: dict, tables: list[str], output_path: str, output_fo
     password: str = get_password(conn_cfg.get("password_file", ""))
     conn_str: str = build_connection_string(conn_cfg, password)
     
-    
     engine: sa.Engine = sa.create_engine(conn_str)
     
     log.debug(f"Creating in-memory DuckDB database for exported data")
@@ -152,24 +151,10 @@ def export_tables(conn_cfg: dict, tables: list[str], output_path: str, output_fo
             Path(this_output).parent.mkdir(exist_ok=True, parents=True)
 
         log.info(f"Exporting table '{table}' from {conn_cfg['name']} to {this_output} (format: {output_format})")
-        log.info(f"Exporting table '{table}' from {conn_cfg['name']} to {this_output} (format: {output_format})")
         try:
             df: pd.DataFrame = pd.read_sql_table(table, engine)
             con.register(table, df)
 
-            match output_format:
-                case "json":
-                    con.execute(
-                        f"COPY (SELECT * FROM {table}) TO '{this_output}' (FORMAT JSON, ARRAY)"
-                    )
-                    log.info(f"Exported {len(df)} rows to {this_output}")
-                    
-                case "parquet":
-                    con.execute(
-                        f"COPY (SELECT * FROM {table}) TO '{this_output}' (FORMAT PARQUET)"
-                    )
-                case _:
-                    raise ValueError(f"Unknown export format: {output_format}")
             match output_format:
                 case "json":
                     con.execute(
@@ -188,7 +173,6 @@ def export_tables(conn_cfg: dict, tables: list[str], output_path: str, output_fo
             log.error(f"Failed exporting table '{table}'. Details: {exc}")
             raise
 
-    log.info(f"Data exported to path: {Path(output_path).parent}")
     log.info(f"Data exported to path: {Path(output_path).parent}")
 
 
@@ -336,9 +320,7 @@ def import_tables(
 def run(connections: list[dict], jobs: list[dict]):
     if not connections:
         raise ValueError("Missing list of connections")
-        raise ValueError("Missing list of connections")
     if not isinstance(connections, list):
-        raise TypeError("Invalid type for 'connection': {type(connections)}. Must be a list of connection dicts")
         raise TypeError("Invalid type for 'connection': {type(connections)}. Must be a list of connection dicts")
     if not len(connections) > 0:
         raise ValueError("Must pass a list with at least 1 connection object")
@@ -346,8 +328,6 @@ def run(connections: list[dict], jobs: list[dict]):
     log.debug(f"Connections: {len(connections)}, Jobs: {len(jobs)}")
 
     for job in jobs:
-        log.debug(f"Executing job: {job}")
-
         log.debug(f"Executing job: {job}")
 
         match job["type"]:
