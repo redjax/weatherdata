@@ -1,0 +1,50 @@
+{
+  "connections": [
+    {
+      "name": "local_sqlite-dev",
+      "type": "sqlite",
+      "drivername": "sqlite+pysqlite",
+      "username": "",
+      "password_file": "",
+      "host": "",
+      "port": "",
+      "database": ".db/dev-db.sqlite"
+    },
+    {
+      "name": "hostname_postgres-dev",
+      "type": "postgres",
+      "drivername": "postgresql+psycopg2",
+      "username": "postgres",
+      "password_file": ".jobs/data/secret/example_pg",
+      "host": "localhost",
+      "port": "5432",
+      "database": "weatherdata-dev"
+    },
+    {
+      "name": "hostname_mysql-dev",
+      "type": "mysql",
+      "drivername": "mysql+pymysql",
+      "username": "mysql",
+      "password_file": ".secret/example_mysql",
+      "host": "localhost",
+      "port": "3306",
+      "database": "weatherdata-dev"
+    }
+  ],
+  "jobs": [
+    {
+      "type": "export",
+      "source_connection": "local_sqlite-dev",
+      "tables": ["weather_observations"],
+      "output_format": "json",
+      "output_path": "exports/localhost_sqlite.json"
+    },
+    {
+      "type": "import",
+      "target_connection": "hostname_postgres-dev",
+      "tables": ["weather_observations"],
+      "input_path": "exports/localhost_sqlite.json",
+      "deduplicate_on": ["timestamp", "location_id"]
+    }
+  ]
+}
