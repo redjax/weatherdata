@@ -42,22 +42,9 @@
     }
   ],
   "jobs": [
-        {
-      "type": "export",
-      "connection": "local_sqlite-dev",
-      "tables": [
-        "weatherapi_air_quality",
-        "weatherapi_current_condition",
-        "weatherapi_current_weather",
-        "weatherapi_forecast_json",
-        "weatherapi_location"
-      ],
-      "dump_format": "json",
-      "dump_path": "exports/localhost_sqlite/{ts}_{table}.json"
-    },
     {
-      "type": "export",
-      "connection": "local_sqlite-dev",
+      "type": "import",
+      "connection": "new_local_sqlite-dev",
       "tables": [
         "weatherapi_air_quality",
         "weatherapi_current_condition",
@@ -66,11 +53,11 @@
         "weatherapi_location"
       ],
       "dump_format": "parquet",
-      "dump_path": "exports/localhost_sqlite/{ts}_{table}.parquet"
+      "dump_path": "exports/localhost_sqlite/20250620/{ts}_{table}.parquet"
     },
     {
-      "type": "export",
-      "connection": "hostname_postgres-dev",
+      "type": "import",
+      "connection": "new_local_sqlite-dev",
       "tables": [
         "weatherapi_air_quality",
         "weatherapi_current_condition",
@@ -79,7 +66,7 @@
         "weatherapi_location"
       ],
       "dump_format": "parquet",
-      "dump_path": "exports/hostname_postgres-dev/{ts}_{table}.parquet"
+      "dump_path": "exports/hostname_postgres-dev/20250620/{ts}_{table}.parquet"
     }
   ]
 }
