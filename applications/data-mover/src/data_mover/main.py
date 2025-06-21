@@ -206,6 +206,8 @@ def import_tables(
     if ts is None:
         ts = get_ts(fmt="date")
 
+    id_maps = {}
+
     for table in tables:
         input_path = input_path_template.replace("{table}", table).replace("{ts}", ts)
         input_path_obj = Path(input_path)
@@ -235,18 +237,19 @@ def import_tables(
             else:
                 raise ValueError(f"Unsupported dump_format: {dump_format}")
 
-            if "id" in df.columns:
+            has_id_column = "id" in df.columns
+            if has_id_column:
                 log.debug("Removing 'id' column from import data")
+                df["__source_id__"] = df["id"]
                 df.drop(columns=["id"], inplace=True)
 
-            # Skip if DataFrame is empty after removing id
             if df.empty:
                 log.info(f"No rows to import for {table}.")
                 continue
-            
+
             before = len(df)
 
-            # Get existing rows from DB for full-row comparison
+            # Deduplication logic
             log.debug("Fetching existing rows for duplicate check")
             try:
                 existing = pd.read_sql_table(table, engine)
@@ -256,31 +259,26 @@ def import_tables(
                 log.warning(f"Failed fetching existing rows from {table}: {exc}")
                 existing = pd.DataFrame(columns=df.columns)
 
-            ## Filter: keep only new rows (anti-join)
             dedup_columns = DEDUP_KEYS.get(table)
-
             if dedup_columns:
                 log.debug(f"Using DEDUP_KEYS for {table}: {dedup_columns}")
                 try:
                     existing_subset = existing[dedup_columns].drop_duplicates()
                     df_subset = df[dedup_columns].drop_duplicates()
 
-                    # Do an anti-join to find only rows not already present
                     merged = df_subset.merge(existing_subset, how="left", indicator=True)
                     new_keys = merged[merged["_merge"] == "left_only"].drop(columns=["_merge"])
 
-                    # Merge new_keys back with full df to get full rows
                     df = df.merge(new_keys, on=dedup_columns, how="inner")
                 except Exception as exc:
                     log.error(f"Deduplication failed for table '{table}'. Details: {exc}")
-                    raise exc
+                    raise
             else:
                 log.debug(f"No DEDUP_KEYS defined for {table}. Falling back to full-row deduplication.")
                 merged = df.merge(existing.drop_duplicates(), how="left", indicator=True)
                 df = merged[merged["_merge"] == "left_only"].drop(columns=["_merge"])
 
             skipped = before - len(df)
-
             if skipped > 0:
                 log.info(f"Skipped {skipped} duplicate rows for {table} (already present).")
 
@@ -288,8 +286,47 @@ def import_tables(
                 log.info(f"No new rows to import for {table}.")
                 continue
 
+            # Update foreign keys using id_maps and filter missing
+            for col in df.columns:
+                if col.endswith("_id"):
+                    ref_table = col[:-3]
+                    if ref_table in id_maps:
+                        if col in df.columns:
+                            df[col] = df[col].map(id_maps[ref_table]).fillna(df[col])
+                    else:
+                        # Fetch valid foreign keys from parent table
+                        try:
+                            valid_ids = pd.read_sql_table(ref_table, engine)["id"].tolist()
+                            before_filter = len(df)
+                            df = df[df[col].isin(valid_ids)]
+                            after_filter = len(df)
+                            if after_filter < before_filter:
+                                log.info(f"Filtered {before_filter - after_filter} rows from '{table}' due to missing foreign keys in '{ref_table}'")
+                        except Exception as exc:
+                            log.warning(f"Could not validate foreign key {col} in {table}: {exc}")
+
+            # Capture __source_id__ before dropping it
+            has_source_id = "__source_id__" in df.columns
+            df_source_map = df[["__source_id__"] + dedup_columns].copy() if has_source_id and dedup_columns else None
+
+            # Drop __source_id__ before database insert
+            if has_source_id:
+                df.drop(columns=["__source_id__"], inplace=True)
+
+            # Insert into database
             df.to_sql(table, engine, if_exists="append", index=False)
             log.info(f"Imported {len(df)} rows into {table}")
+
+            # Build id_map for this table if needed
+            if has_id_column and df_source_map is not None:
+                try:
+                    db_rows = pd.read_sql_table(table, engine)
+                    db_rows = db_rows[dedup_columns + ["id"]].drop_duplicates()
+                    merged = df_source_map.merge(db_rows, on=dedup_columns, how="inner")
+                    id_maps[table] = dict(zip(merged["__source_id__"], merged["id"]))
+                    log.debug(f"Built id_map for {table} with {len(id_maps[table])} entries.")
+                except Exception as exc:
+                    log.warning(f"Could not build id_map for {table}: {exc}")
 
         except Exception as exc:
             log.error(f"Failed importing table '{table}'. Details: {exc}")
