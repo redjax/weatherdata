@@ -212,3 +212,6 @@ site/
 
 ## Ignore database dumps
 *.sql
+
+## Data exports
+exports/*
