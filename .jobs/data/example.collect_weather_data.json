@@ -79,7 +79,7 @@
         "weatherapi_location"
       ],
       "dump_format": "parquet",
-      "dump_path": "exports/hostname_postgres-dev/{ts}_{table}.parquet"
+      "dump_path": "exports/localhost_sqlite/{ts}_{table}.parquet"
     }
   ]
 }
