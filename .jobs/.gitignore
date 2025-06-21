@@ -1,0 +1,4 @@
+data/secret/*
+
+!data/secret/
+!data/secret/*example*
