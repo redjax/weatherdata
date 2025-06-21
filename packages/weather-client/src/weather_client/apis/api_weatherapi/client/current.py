@@ -5,10 +5,12 @@ import time
 from weather_client.apis.api_weatherapi.constants import WEATHERAPI_BASE_URL
 from weather_client.apis.api_weatherapi.convert.methods import (
     current_weather_dict_to_schema,
+    current_weather_response_dict_to_schema,
     location_dict_to_schema,
 )
 from weather_client.apis.api_weatherapi.db_client.current_weather import (
     save_current_weather,
+    save_current_weather_response
 )
 from weather_client.apis.api_weatherapi.settings import api_key, location_name
 
@@ -127,9 +129,34 @@ def get_current_weather(
     if save_to_db:
         if not db_engine:
             db_engine = db_depends.get_db_engine()
-
+        
         # log.warning("Saving current weather to database is not implemented")
         errored: bool = False
+    
+        ## Save current weather JSON response to database
+        try:
+            db_current_weather_json = current_weather_response_dict_to_schema(current_weather_response_dict=decoded)
+        except Exception as exc:
+            msg = f"({type(exc)}) Error converting current weather response to schema. Details: {exc}"
+            log.error(msg)
+            
+            errored = True        
+        
+        if not errored:
+            try:
+                save_current_weather_response(
+                    current_weather_schema=db_current_weather_json, engine=db_engine, echo=db_echo
+                )
+            except Exception as exc:
+                msg = f"({type(exc)}) Error converting raw current weather response to schema. Details: {exc}"
+                log.error(msg)
+                
+                errored = True
+                
+        if errored:
+            log.warning("Errored while saving raw current weather response to database.")
+
+            return decoded
 
         try:
             db_location_in = location_dict_to_schema(location_dict=decoded["location"])

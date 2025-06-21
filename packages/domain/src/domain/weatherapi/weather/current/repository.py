@@ -17,6 +17,7 @@ import sqlalchemy.orm as so
 
 __all__ = [
     "CurrentWeatherRepository",
+    "CurrentWeatherJSONRepository",
     "CurrentWeatherConditionRepository",
     "CurrentWeatherAirQualityRepository",
 ]

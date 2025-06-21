@@ -8,6 +8,9 @@ from domain.weatherapi.weather.current import (
     CurrentWeatherIn,
     CurrentWeatherModel,
     CurrentWeatherOut,
+    CurrentWeatherJSONIn,
+    CurrentWeatherJSONOut,
+    CurrentWeatherJSONModel
 )
 from domain.weatherapi.weather.forecast import (
     ForecastJSONIn,
@@ -19,6 +22,7 @@ from loguru import logger as log
 
 __all__ = [
     "current_weather_dict_to_schema",
+    "current_weather_response_dict_to_schema",
     "location_dict_to_schema",
     "current_weather_schema_to_model",
     "weather_forecast_dict_to_schema",
@@ -152,6 +156,23 @@ def weather_forecast_dict_to_schema(weather_forecast_dict: dict) -> ForecastJSON
     )
 
     return weather_forecast_json
+
+
+@log.catch
+def current_weather_response_dict_to_schema(current_weather_response_dict: dict) -> CurrentWeatherJSONIn:
+    """Convert a current weatheer response dictionary to a CurrentWeatherJSONIn schema.
+    
+    Params:
+      current_weather_response_dict (dict): The raw current weather response dictionary to convert.
+      
+    Returns:
+      CurrentWeatherJSONIn: The converted CurrentWeatherJSONIn schema.
+
+    """
+    current_weather_json: CurrentWeatherJSONIn =  CurrentWeatherJSONIn(current_weather_json=current_weather_response_dict)
+    
+    return current_weather_json
+
 
 @log.catch
 def current_weather_api_response_to_dict(content: t.Union[dict, str, bytes]):
