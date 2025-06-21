@@ -243,6 +243,8 @@ def import_tables(
             if df.empty:
                 log.info(f"No rows to import for {table}.")
                 continue
+            
+            before = len(df)
 
             # Get existing rows from DB for full-row comparison
             log.debug("Fetching existing rows for duplicate check")
@@ -254,13 +256,31 @@ def import_tables(
                 log.warning(f"Failed fetching existing rows from {table}: {exc}")
                 existing = pd.DataFrame(columns=df.columns)
 
-            # Filter: keep only new rows (anti-join)
-            before = len(df)
-            merged = df.merge(existing.drop_duplicates(), how="left", indicator=True)
-            new_rows = merged[merged["_merge"] == "left_only"].drop(columns=["_merge"])
-            df = new_rows
+            ## Filter: keep only new rows (anti-join)
+            dedup_columns = DEDUP_KEYS.get(table)
+
+            if dedup_columns:
+                log.debug(f"Using DEDUP_KEYS for {table}: {dedup_columns}")
+                try:
+                    existing_subset = existing[dedup_columns].drop_duplicates()
+                    df_subset = df[dedup_columns].drop_duplicates()
+
+                    # Do an anti-join to find only rows not already present
+                    merged = df_subset.merge(existing_subset, how="left", indicator=True)
+                    new_keys = merged[merged["_merge"] == "left_only"].drop(columns=["_merge"])
+
+                    # Merge new_keys back with full df to get full rows
+                    df = df.merge(new_keys, on=dedup_columns, how="inner")
+                except Exception as exc:
+                    log.error(f"Deduplication failed for table '{table}'. Details: {exc}")
+                    raise exc
+            else:
+                log.debug(f"No DEDUP_KEYS defined for {table}. Falling back to full-row deduplication.")
+                merged = df.merge(existing.drop_duplicates(), how="left", indicator=True)
+                df = merged[merged["_merge"] == "left_only"].drop(columns=["_merge"])
 
             skipped = before - len(df)
+
             if skipped > 0:
                 log.info(f"Skipped {skipped} duplicate rows for {table} (already present).")
 
