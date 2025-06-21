@@ -17,6 +17,9 @@ LOGGING_SETTINGS = settings.get_namespace("logging")
 ## Define tables & columns with unique constraints to deduplicate on
 DEDUP_KEYS = {
     "weatherapi_location": ["name", "country"],
+    "weatherapi_current_weather": ["last_updated_epoch"],
+    "weatherapi_current_condition": ["weather_id"],
+    "weatherapi_air_quality": ["weather_id"],
 }
 
 
