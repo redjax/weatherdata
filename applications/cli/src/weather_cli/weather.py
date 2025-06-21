@@ -72,7 +72,15 @@ Wind:
 """
 
     if save_to_db:
-        log.info(f"Saving current weather to database")
+        log.info("Saving raw current weather response to database")
+        try:
+            saved_current_weather_response: weather_domain.current.CurrentWeatherJSONOut = api_weatherapi.db_client.save_current_weather_response(current_weather_schema=current_weather_res, engine=db_depends.get_db_engine())
+        except Exception as exc:
+            msg = f"({type(exc)}) Error saving raw current weather response to database. Details: {exc}"
+            log.error(msg)
+        
+        
+        log.info("Saving current weather to database")
         
         try:
             saved_current_weather: weather_domain.current.CurrentWeatherOut = api_weatherapi.db_client.save_current_weather(location=location, current_weather=current_weather, engine=db_depends.get_db_engine())

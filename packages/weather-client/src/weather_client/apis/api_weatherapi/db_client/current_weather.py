@@ -48,7 +48,7 @@ def save_current_weather_response(
         
     if isinstance(current_weather_schema, dict):
         try:
-            current_weather_schema: domain_current_weather.CurrentWeatherJSONIn = domain_current_weather.CurrentWeatherJSONIn.model_validate(current_weather_schema)
+            current_weather_schema: domain_current_weather.CurrentWeatherJSONIn = domain_current_weather.CurrentWeatherJSONIn(current_weather_json=current_weather_schema)
         except Exception as exc:
             msg = f"({type(exc)}) Error parsing current weather response dict as CurrentWeatherJSONIn domain object. Details: {exc}"
             log.error(msg)
