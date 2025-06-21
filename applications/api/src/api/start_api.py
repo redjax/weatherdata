@@ -119,7 +119,7 @@ def initialize_custom_server(
 
 
 if __name__ == "__main__":
-    setup.setup_loguru_logging(log_level=settings.LOGGING_SETTINGS.get("LOG_LEVEL", default="INFO"))
+    setup.setup_loguru_logging(log_level=settings.LOGGING_SETTINGS.get("LOG_LEVEL", default="INFO"), colorize=True)
     # setup.setup_database()
     
     uvicorn_settings = UvicornSettings()
