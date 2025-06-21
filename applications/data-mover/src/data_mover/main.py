@@ -118,8 +118,8 @@ def export_tables(conn_cfg: dict, tables: list[str], output_path: str, output_fo
     conn_str: str = build_connection_string(conn_cfg, password)
     
     engine: sa.Engine = sa.create_engine(conn_str)
-    
-    log.debug(f"Creating in-memory DuckDB database for exported data")
+    output_format: str = conn_cfg['dump_format']
+
     ## in-memory duckdb connection
     con = duckdb.connect()
     
@@ -151,10 +151,24 @@ def export_tables(conn_cfg: dict, tables: list[str], output_path: str, output_fo
             Path(this_output).parent.mkdir(exist_ok=True, parents=True)
 
         log.info(f"Exporting table '{table}' from {conn_cfg['name']} to {this_output} (format: {output_format})")
+        log.info(f"Exporting table '{table}' from {conn_cfg['name']} to {this_output} (format: {output_format})")
         try:
             df: pd.DataFrame = pd.read_sql_table(table, engine)
             con.register(table, df)
 
+            match output_format:
+                case "json":
+                    con.execute(
+                        f"COPY (SELECT * FROM {table}) TO '{this_output}' (FORMAT JSON, ARRAY)"
+                    )
+                    log.info(f"Exported {len(df)} rows to {this_output}")
+                    
+                case "parquet":
+                    con.execute(
+                        f"COPY (SELECT * FROM {table}) TO '{this_output}' (FORMAT PARQUET)"
+                    )
+                case _:
+                    raise ValueError(f"Unknown export format: {output_format}")
             match output_format:
                 case "json":
                     con.execute(
@@ -174,6 +188,7 @@ def export_tables(conn_cfg: dict, tables: list[str], output_path: str, output_fo
             raise
 
     log.info(f"Data exported to path: {Path(output_path).parent}")
+    log.info(f"Data exported to path: {Path(output_path).parent}")
 
 
 def import_tables(
@@ -186,12 +201,7 @@ def import_tables(
     password = get_password(conn_cfg.get("password_file", ""))
     conn_str = build_connection_string(conn_cfg, password)
     engine = sa.create_engine(conn_str)
-
-    if ts is None:
-        ts = get_ts(fmt="date")
-
-    id_maps = {}
-
+    
     for table in tables:
         input_path = input_path_template.replace("{table}", table).replace("{ts}", ts)
         input_path_obj = Path(input_path)
@@ -333,22 +343,19 @@ def run(connections: list[dict], jobs: list[dict]):
         match job["type"]:
             case "export":
                 conn_cfg = get_connection_config(connections, job["connection"])
-                try:
-                    export_tables(conn_cfg, job["tables"], job["dump_path"], output_format=job["dump_format"])
-                except Exception as exc:
-                    log.error(f"Failed job: {job}. Details: {exc}")
-                    continue
+                log.debug(f"EXPORT config: {conn_cfg}")
+
+                export_tables_to_json(conn_cfg, job["tables"], job["dump_path"])
 
             case "import":
                 conn_cfg = get_connection_config(connections, job["connection"])
-                import_tables(
+                log.debug(f"IMPORT config: {conn_cfg}")
+
+                import_tables_from_json(
                     conn_cfg,
                     job["tables"],
                     job["dump_path"],
-                    dump_format=job.get("dump_format", "json"),
-                    # deduplicate_on=job.get("deduplicate_on"),
-                    ## Optionally pass a specific timestamp if you want
-                    ts=None,
+                    job.get("deduplicate_on"),
                 )
             case _:
                 raise ValueError(f"Unknown job type: {job['type']}")
