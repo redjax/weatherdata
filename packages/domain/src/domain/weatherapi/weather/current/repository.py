@@ -6,6 +6,7 @@ from .models import (
     CurrentWeatherAirQualityModel,
     CurrentWeatherConditionModel,
     CurrentWeatherModel,
+    CurrentWeatherJSONModel
 )
 
 from db.base import BaseRepository
@@ -19,6 +20,12 @@ __all__ = [
     "CurrentWeatherConditionRepository",
     "CurrentWeatherAirQualityRepository",
 ]
+
+
+class CurrentWeatherJSONRepository(BaseRepository):
+    def __init__(self, session: so.Session):
+        super().__init__(session, CurrentWeatherJSONModel)
+
 
 class CurrentWeatherRepository(BaseRepository[CurrentWeatherModel]):
     """Repository for CurrentWeatherModel.
