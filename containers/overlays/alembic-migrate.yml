@@ -1,0 +1,27 @@
+---
+networks:
+  weatherdata_devnet:
+
+services:
+  alembic_migrate:
+    container_name: ${CELERY_BEAT_CONTAINER_NAME:-weatherdata_alembic_migrate}
+    restart: no
+    build:
+      context: ..
+      dockerfile: ./containers/dockerfiles/dev.Dockerfile
+      target: alembic_migrate
+    working_dir: /project
+    env_file:
+      - ./envs/dev.app.env
+    # ## Uncomment for debugging
+    # # command: ["/bin/bash"]
+    volumes:
+      - ../applications:/project/applications
+      - ../packages:/project/packages
+      - ../scripts:/project/scripts
+      - ../src:/project/src
+      - ./container_data/weatherdata/db:/weatherdata/db
+      - ../migrations:/project/migrations
+      - ../alembic.ini:/project/alembic.ini
+    networks:
+      - weatherdata_devnet

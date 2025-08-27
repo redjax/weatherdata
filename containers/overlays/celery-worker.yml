@@ -1,0 +1,30 @@
+---
+networks:
+  weatherdata_devnet:
+
+services:
+  celery_worker:
+    container_name: ${CELERY_WORKER_CONTAINER_NAME:-weatherdata_celery_worker}
+    restart: unless-stopped
+    build:
+      context: ..
+      dockerfile: ./containers/dockerfiles/dev.Dockerfile
+      target: celery_worker
+    working_dir: /project
+    # user: appuser
+    depends_on:
+      - rabbitmq
+      - redis
+      - alembic_migrate
+    env_file:
+      - ./envs/dev.app.env
+    command: ["uv", "run", "scripts/celery/start_celery.py", "-m", "worker"]
+    # command: ["uv", "run", "scripts/debug/debug_settings.py"]
+    volumes:
+      - ../applications:/project/applications
+      - ../packages:/project/packages
+      - ../scripts:/project/scripts
+      - ../src:/project/src
+      - ./container_data/weatherdata/celery_worker/logs:/project/logs
+    networks:
+      - weatherdata_devnet
