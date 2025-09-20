@@ -15,6 +15,11 @@ celery_backend_port = 6379
 [weatherapi]
 weatherapi_location_name = "London"
 
+[openmeteo]
+openmeteo_location = "london"
+openmeteo_lat = 51.50853
+openmeteo_lon = -0.12574
+
 [fastapi]
 fastapi_debug = false
 fastapi_title = "WeatherData - Dev"

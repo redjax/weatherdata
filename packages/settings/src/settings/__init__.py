@@ -8,3 +8,4 @@ from .db_settings import *
 from .dramatiq_settings import *
 from .logging_settings import *
 from .weatherapi_settings import *
+from .openmeteo_settings import *

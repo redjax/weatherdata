@@ -87,10 +87,13 @@ def save_current_weather_response(
 
 
 def save_current_weather(
-    location: t.Union[domain_location.LocationIn, dict, str], current_weather: t.Union[domain_current_weather.CurrentWeatherIn, dict, str], engine: sa.Engine | None = None, echo: bool = False
+    location: t.Union[domain_location.LocationIn, dict, str],
+    current_weather: t.Union[domain_current_weather.CurrentWeatherIn, dict, str],
+    engine: sa.Engine | None = None,
+    echo: bool = False,
 ) -> domain_current_weather.CurrentWeatherOut | None:
     """Save a CurrentWeather to the database.
-    
+
     Params:
         location (LocationIn | dict | str): The location to save the current weather for. Can be a LocationIn domain object, dict, or JSON string.
         current_weather (CurrentWeatherIn | dict | str): The current weather to save. Can be a CurrentWeatherIn domain object, dict, or JSON string.
@@ -100,7 +103,7 @@ def save_current_weather(
 
     Raises:
         Exception: If current weather cannot be saved, an `Exception` is raised.
-    
+
     """
     if not current_weather:
         raise ValueError("Missing current weather to save")
@@ -116,7 +119,9 @@ def save_current_weather(
 
     if isinstance(current_weather, dict):
         try:
-            current_weather: domain_current_weather.CurrentWeatherIn = domain_current_weather.CurrentWeatherIn.model_validate(current_weather)
+            current_weather: domain_current_weather.CurrentWeatherIn = (
+                domain_current_weather.CurrentWeatherIn.model_validate(current_weather)
+            )
         except Exception as exc:
             msg = f"({type(exc)}) Error parsing current weather dict as CurrentWeatherIn domain object. Details: {exc}"
             log.error(msg)
@@ -125,7 +130,7 @@ def save_current_weather(
 
     if not location:
         raise ValueError("Missing location to save current weather to")
-    
+
     if isinstance(location, str):
         try:
             location: dict = json.loads(location)
@@ -137,7 +142,9 @@ def save_current_weather(
 
     if isinstance(location, dict):
         try:
-            location: domain_location.LocationIn = domain_location.LocationIn.model_validate(location)
+            location: domain_location.LocationIn = (
+                domain_location.LocationIn.model_validate(location)
+            )
         except Exception as exc:
             msg = f"({type(exc)}) Error parsing location dict as LocationIn domain object. Details: {exc}"
             log.error(msg)
@@ -145,12 +152,16 @@ def save_current_weather(
             raise exc
 
     ## Build special schemas
-    condition_schema: domain_current_weather.CurrentWeatherConditionIn = current_weather.condition
-    air_quality_schema: domain_current_weather.CurrentWeatherAirQualityIn = current_weather.air_quality
+    condition_schema: domain_current_weather.CurrentWeatherConditionIn = (
+        current_weather.condition
+    )
+    air_quality_schema: domain_current_weather.CurrentWeatherAirQualityIn = (
+        current_weather.air_quality
+    )
 
     if engine is None:
         engine = db_depends.get_db_engine(echo=echo)
-    
+
     session_pool = db_depends.get_session_pool(engine=engine)
 
     with session_pool() as session:
@@ -158,21 +169,27 @@ def save_current_weather(
         location_repo = domain_location.LocationRepository(session=session)
 
         try:
-            db_location: domain_location.LocationModel = save_location(location=location, engine=engine, echo=echo)
+            db_location: domain_location.WeatherAPIWeatherAPIWeatherAPILocationModel = (
+                save_location(location=location, engine=engine, echo=echo)
+            )
         except Exception as exc:
             msg = f"({type(exc)}) Error saving location. Details: {exc}"
             log.error(msg)
 
             raise exc
-        
+
         if db_location is None:
             log.warning("Location database transaction returned None.")
             return None
         else:
             log.info("Converting location database model to API schema")
-            location_schema: domain_location.LocationOut = domain_location.LocationOut.model_validate(db_location)
+            location_schema: domain_location.LocationOut = (
+                domain_location.LocationOut.model_validate(db_location)
+            )
 
-        existing_current_weather_model: domain_current_weather.CurrentWeatherModel | None = repo.get_by_last_updated_epoch(
+        existing_current_weather_model: (
+            domain_current_weather.CurrentWeatherModel | None
+        ) = repo.get_by_last_updated_epoch(
             last_updated_epoch=current_weather.last_updated_epoch
         )
 
@@ -193,10 +210,12 @@ def save_current_weather(
             air_quality_dict: dict = air_quality_schema.model_dump()
 
             try:
-                db_model: domain_current_weather.CurrentWeatherModel = repo.create_with_related(
-                    weather_data=weather_dict,
-                    condition_data=condition_dict,
-                    air_quality_data=air_quality_dict,
+                db_model: domain_current_weather.CurrentWeatherModel = (
+                    repo.create_with_related(
+                        weather_data=weather_dict,
+                        condition_data=condition_dict,
+                        air_quality_data=air_quality_dict,
+                    )
                 )
             except Exception as exc:
                 msg = f"({type(exc)}) Error adding current weather to database. Details: {exc}"
@@ -238,21 +257,21 @@ def save_current_weather(
 
 def count_current_weather(engine: sa.Engine | None = None, echo: bool = False):
     """Return a count of the number of rows in the current weather table.
-    
+
     Params:
         engine (Engine | None, optional): The database engine to use. If None, the default engine is used. Defaults to None.
         echo (bool, optional): Whether to echo SQL statements to the console. Defaults to False.
-    
+
     Returns:
         int: The count of the number of rows in the current weather table.
-    
+
     Raises:
         Exception: If there is an error counting the number of rows in the current weather table, an `Exception` is raised.
 
-    """    
+    """
     if engine is None:
         engine = db_depends.get_db_engine(echo=echo)
-    
+
     session_pool = db_depends.get_session_pool(engine=engine)
 
     with session_pool() as session:
