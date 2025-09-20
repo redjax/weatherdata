@@ -12,6 +12,7 @@ from domain.weatherapi.weather.current import (
     CurrentWeatherModel,
     CurrentWeatherConditionModel,
     CurrentWeatherAirQualityModel,
+    CurrentWeatherJSONModel
 )
 from domain.weatherapi.weather.forecast import ForecastJSONModel
 from domain.openmeteo.location.models import MeteoLocationModel

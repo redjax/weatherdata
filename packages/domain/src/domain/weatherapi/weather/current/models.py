@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from decimal import Decimal
 import typing as t
+import datetime as dt
 
 from db import Base, annotated
 from domain.weatherapi.location import WeatherAPILocationModel
@@ -9,13 +10,29 @@ from loguru import logger as log
 import sqlalchemy as sa
 import sqlalchemy.exc as sa_exc
 import sqlalchemy.orm as so
+from sqlalchemy.types import JSON
+
 
 __all__ = [
     "CurrentWeatherModel",
     "CurrentWeatherConditionModel",
     "CurrentWeatherAirQualityModel",
+    "CurrentWeatherJSONModel"
 ]
 
+
+class CurrentWeatherJSONModel(Base):
+    __tablename__ = "weatherapi_current_json"
+    
+    id: so.Mapped[annotated.INT_PK]
+    
+    created_at: so.Mapped[dt.datetime] = so.mapped_column(
+        sa.DateTime(timezone=True),
+        default=dt.datetime.now,
+        nullable=False,
+    )
+
+    current_weather_json: so.Mapped[dict] = so.mapped_column(JSON)
 
 class CurrentWeatherModel(Base):
     """Current weather model.

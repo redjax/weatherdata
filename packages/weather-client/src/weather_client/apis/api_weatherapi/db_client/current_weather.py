@@ -15,9 +15,75 @@ import sqlalchemy.exc as sa_exc
 import sqlalchemy.orm as so
 
 __all__ = [
-    "save_current_weather",
-    "count_current_weather",
+    "save_current_weather_response", "save_current_weather", "count_current_weather",
 ]
+
+
+def save_current_weather_response(
+    current_weather_schema: t.Union[domain_current_weather.CurrentWeatherJSONIn, dict, str], engine: sa.Engine | None = None, echo: bool = False
+) -> domain_current_weather.CurrentWeatherJSONOut:
+    """Save a current weather response (in JSON form) to the database.
+
+    Params:
+        current_weather_schema (CurrentWeatherJSONIn | dict | str): The current weather response to save. Can be a CurrentWeatherJSONIn domain object, dict, or JSON string.
+
+    Returns:
+        CurrentWeatherJSONOut: The saved current weather response.
+
+    Raises:
+        Exception: If current weather response cannot be saved, an `Exception` is raised.
+    
+    """
+    if not current_weather_schema:
+        raise ValueError("Missing current weather response to save")
+    
+    if isinstance(current_weather_schema, str):
+        try:
+            current_weather_schema: dict = json.loads(current_weather_schema)
+        except Exception as exc:
+            msg = f"({type(exc)}) Error parsing current weather response string as JSON. Details: {exc}"
+            log.error(msg)
+            
+            raise exc
+        
+    if isinstance(current_weather_schema, dict):
+        try:
+            current_weather_schema: domain_current_weather.CurrentWeatherJSONIn = domain_current_weather.CurrentWeatherJSONIn(current_weather_json=current_weather_schema)
+        except Exception as exc:
+            msg = f"({type(exc)}) Error parsing current weather response dict as CurrentWeatherJSONIn domain object. Details: {exc}"
+            log.error(msg)
+            
+            raise exc
+    
+    if engine is None:
+        engine = db_depends.get_db_engine(echo=echo)
+
+    session_pool = db_depends.get_session_pool(engine=engine)
+
+    with session_pool() as session:
+        repo = domain_current_weather.CurrentWeatherJSONRepository(session=session)
+
+        current_weather_model = domain_current_weather.CurrentWeatherJSONModel(**current_weather_schema.model_dump())
+
+        try:
+            db_current_weather = repo.create(current_weather_model)
+        except Exception as exc:
+            msg = f"({type(exc)}) Error saving current weather response JSON. Details: {exc}"
+            log.error(msg)
+
+            raise exc
+
+    try:
+        current_weather_out: domain_current_weather.CurrentWeatherJSONOut = domain_current_weather.CurrentWeatherJSONOut.model_validate(
+            current_weather_model.__dict__
+        )
+
+        return current_weather_out
+    except Exception as exc:
+        msg = f"({type(exc)}) Error converting JSON from database to CurrentWeatherJSONOut schema. Details: {exc}"
+        log.error(msg)
+
+        raise exc
 
 
 def save_current_weather(
