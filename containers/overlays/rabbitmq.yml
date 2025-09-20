@@ -1,0 +1,26 @@
+---
+volumes:
+  redis_data:
+  rabbitmq_data:
+
+networks:
+  weatherdata_devnet:
+
+services:
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: weatherdata_rabbitmq
+    restart: unless-stopped
+    env_file:
+      - ./envs/dev.messaging.env
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-rabbitmq}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS:-rabbitmq}
+      RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_VHOST:-rabbitmq}
+    volumes:
+      - ${RABBITMQ_DATA_DIR:-rabbitmq_data}:/var/lib/rabbitmq
+    ports:
+      - ${RABBITMQ_AMPQ_PORT:-5672}:5672
+      - ${RABBITMQ_HTTP_PORT:-15672}:15672
+    networks:
+      - weatherdata_devnet

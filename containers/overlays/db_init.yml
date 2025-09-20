@@ -1,0 +1,42 @@
+---
+networks:
+  weatherdata_net: {}
+    # external: true
+
+volumes:
+  postgres_data: {}
+
+services:
+
+  db_init:
+    ## Container to initialize the Postgres database for the weather app.
+    #  Runs when the stack is brought up, does not restart.
+    container_name: "weatherdata-db_init"
+    restart: no
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        UV_IMAGE_VER: ${UV_IMAGE_VER:-0.4.27}
+        PYTHON_IMAGE_VER: ${PYTHON_IMAGE_VER:-3.12-slim}
+      target: run_scripts
+    entrypoint: ["uv", "run", "python", "/project/scripts/db_init.py"]
+    depends_on:
+      - postgres
+    volumes:
+      - ./src:/project/src
+      - ./alembic.ini:/project/alembic.ini
+      - ./migrations:/project/migrations
+      - ./scripts:/project/scripts
+    environment:
+      DYNACONF_LOG_LEVEL: DEBUG
+      DYNACONF_DB_TYPE: ${DB_TYPE:-postgres}
+      DYNACONF_DB_DRIVERNAME: ${DB_DRIVERNAME:-postgresql+psycopg2}
+      DYNACONF_DB_HOST: ${DB_HOST:-postgres}
+      DYNACONF_DB_PORT: ${DB_PORT:-5432}
+      DYNACONF_DB_NAME: ${DB_NAME:-auto_weather}
+      DYNACONF_DB_USERNAME: ${POSTGRES_USER:-postgres}
+      DYNACONF_DB_PASSWORD: ${POSTGRES_PASSWORD:-postgres}  
+      DYNACONF_DB_DATABASE: ${POSTGRES_DATABASE:-auto_weather}  
+    networks:
+      - weatherdata_net
