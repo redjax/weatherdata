@@ -1,0 +1,85 @@
+{
+  "connections": [
+    {
+      "name": "local_sqlite-dev",
+      "type": "sqlite",
+      "drivername": "sqlite+pysqlite",
+      "username": "",
+      "password_file": "",
+      "host": "",
+      "port": "",
+      "database": ".db/dev-db.sqlite3"
+    },
+    {
+      "name": "new_local_sqlite-dev",
+      "type": "sqlite",
+      "drivername": "sqlite+pysqlite",
+      "username": "",
+      "password_file": "",
+      "host": "",
+      "port": "",
+      "database": ".db/new-dev-db.sqlite3"
+    },
+    {
+      "name": "hostname_postgres-dev",
+      "type": "postgres",
+      "drivername": "postgresql+psycopg2",
+      "username": "postgres",
+      "password_file": ".jobs/data/secret/example_pg",
+      "host": "hostname.home",
+      "port": "5432",
+      "database": "weatherdata-dev"
+    },
+    {
+      "name": "hostname_mysql-dev",
+      "type": "mysql",
+      "drivername": "mysql+pymysql",
+      "username": "mysql",
+      "password_file": ".secret/example_mysql",
+      "host": "hostname.home",
+      "port": "3306",
+      "database": "weatherdata-dev"
+    }
+  ],
+  "jobs": [
+        {
+      "type": "export",
+      "connection": "local_sqlite-dev",
+      "tables": [
+        "weatherapi_air_quality",
+        "weatherapi_current_condition",
+        "weatherapi_current_weather",
+        "weatherapi_forecast_json",
+        "weatherapi_location"
+      ],
+      "dump_format": "json",
+      "dump_path": "exports/localhost_sqlite/{ts}_{table}.json"
+    },
+    {
+      "type": "export",
+      "connection": "local_sqlite-dev",
+      "tables": [
+        "weatherapi_air_quality",
+        "weatherapi_current_condition",
+        "weatherapi_current_weather",
+        "weatherapi_forecast_json",
+        "weatherapi_location"
+      ],
+      "dump_format": "parquet",
+      "dump_path": "exports/localhost_sqlite/{ts}_{table}.parquet"
+    },
+    {
+      "type": "export",
+      "connection": "hostname_postgres-dev",
+      "tables": [
+        "weatherapi_air_quality",
+        "weatherapi_current_condition",
+        "weatherapi_current_weather",
+        "weatherapi_forecast_json",
+        "weatherapi_location"
+      ],
+      "dump_format": "parquet",
+      "dump_path": "exports/hostname_postgres-dev/{ts}_{table}.parquet"
+    }
+  ]
+}
